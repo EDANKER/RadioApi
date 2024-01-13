@@ -1,6 +1,6 @@
 ﻿namespace Radio.Model;
 
-public class Teacher
+public class User
 {
     
 }
