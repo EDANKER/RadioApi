@@ -8,13 +8,10 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo());
 });
-builder.Services.AddCors(options => options.AddPolicy("Corssettings", policyBuilder => policyBuilder
-    .WithOrigins("mydomen.com")
-    .WithHeaders("Id")));
+
 
 var app = builder.Build();
 
-app.UseCors("Corssettings");
 
 if (app.Environment.IsDevelopment())
 {
