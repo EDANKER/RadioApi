@@ -1,6 +1,14 @@
-﻿namespace Radio.Controller.Authorization;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public class LoginUserController
+namespace Radio.Controller.Authorization;
+
+public interface ILoginUserController
+{
+    
+}
+[Route("api/v1/[controller]")]
+[ApiController]
+public class LoginUserController : ControllerBase, ILoginUserController
 {
     
 }

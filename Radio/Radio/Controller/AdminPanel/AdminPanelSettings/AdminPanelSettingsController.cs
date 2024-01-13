@@ -3,7 +3,7 @@ using Radio.Model;
 
 namespace Radio.Controller.Admin;
 
-public interface IAdminSettingsController
+public interface IAdminPanelSettingsController
 {
     public Task<IActionResult> CreateNewUser(User user);
     public Task<IActionResult> DeleteUser(int id);
@@ -12,7 +12,7 @@ public interface IAdminSettingsController
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class AdminSettingsController : ControllerBase, IAdminSettingsController
+public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsController
 {
 
     [HttpPost("createNewUser")]
