@@ -9,7 +9,7 @@ public interface ISaveMusicController
 
 [Route("/api/v1/[controller]")]
 [ApiController]
-public class SaveMusicController : ISaveMusicController
+public class SaveMusicController : ControllerBase, ISaveMusicController
 {
     [HttpPost("saveMusic")]
     public Task<IActionResult> SaveMusic()

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Radio.Controller.Admin.GetAllUser;
 
@@ -10,12 +11,12 @@ public interface IGetAllUserController
 
 [Route("/api/v1/[controller]")]
 [ApiController]
-public class GetUserController : IGetAllUserController
+public class GetUserController : ControllerBase, IGetAllUserController
 {
     [HttpGet("getAllUser")]
-    public Task<IActionResult> GetAllUser()
+    public async Task<IActionResult> GetAllUser()
     {
-        throw new NotImplementedException();
+        return Ok("Hello");
     }
 
     [HttpGet("getIdUser{id:int}")]
