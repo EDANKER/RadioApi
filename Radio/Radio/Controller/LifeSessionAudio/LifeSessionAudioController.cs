@@ -9,8 +9,9 @@ public interface ILifeSessionAudioController
 
 [Route("/api/v1/[controller]")]
 [ApiController]
-public class LifeSessionAudioController : ControllerBase,  ILifeSessionAudioController
+public class LifeSessionAudioController : ILifeSessionAudioController
 {
+    [HttpPost]
     public Task<IActionResult> LifeSessionAudio()
     {
         throw new NotImplementedException();

@@ -8,6 +8,8 @@ public interface IDeleteMusicController
     public Task<IActionResult> DeleteIdMusic();
 }
 
+[Route("/api/v1/[controller]")]
+[ApiController]
 public class DeleteMusicController : ControllerBase, IDeleteMusicController
 {
     [HttpDelete("deleteAllMusic")]

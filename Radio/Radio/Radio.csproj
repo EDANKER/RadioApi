@@ -10,6 +10,8 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-preview.7.23375.9"/>
+        <PackageReference Include="NUnit" Version="4.0.1" />
+        <PackageReference Include="NUnit.Runners" Version="3.12.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
@@ -17,10 +19,6 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="tests\" />
     </ItemGroup>
 
 </Project>
