@@ -25,7 +25,7 @@
 ```bash
 💎Controller - Home Logic 
 💎Model - Models Used
-💎Tests - Unit Test
+💎Tests/Tests - Unit Test
 ```
 
 ## Test Project
