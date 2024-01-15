@@ -13,8 +13,6 @@ public class LoginUserController : ControllerBase, ILoginUserController
     [HttpPost("[action]")]
     public async Task<IActionResult> Login(string login, string password)
     {
-
-
         return Ok();
     }
 }

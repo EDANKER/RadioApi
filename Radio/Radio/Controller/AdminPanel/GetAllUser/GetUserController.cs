@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Radio.Controller.Admin.GetAllUser;
@@ -14,6 +15,7 @@ public interface IGetAllUserController
 public class GetUserController : ControllerBase, IGetAllUserController
 {
     [HttpGet("getAllUser")]
+    [EnableCors("RadioWeb")]
     public async Task<IActionResult> GetAllUser()
     {
         return Ok("Hello");

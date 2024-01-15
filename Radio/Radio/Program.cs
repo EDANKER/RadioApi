@@ -1,36 +1,36 @@
-using Microsoft.OpenApi.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("RadioWeb",builder =>
+    {
+        builder.WithHeaders("Id");
+        builder.WithOrigins("main.ru");
+    });
+});
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer();
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo());
-});
-builder.Services.AddCors(options => options.AddPolicy("CorsSettings", policyBuilder => policyBuilder
-    .WithOrigins("mydomen.com")
-    .WithHeaders("Id")));
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-app.UseCors("CorsSettings");
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    });
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
+app.UseAuthentication();
 app.MapControllers();
 
-app.Run(async context =>
-{
-    await context.Response.WriteAsync("Hello");
-});
+app.UseCors("RadioWeb");
 
 app.Run();
