@@ -5,7 +5,7 @@ namespace Radio.Controller.Music.DeleteMusic;
 public interface IDeleteMusicController
 {
     public Task<IActionResult> DeleteAllMusic();
-    public Task<IActionResult> DeleteIdMusic();
+    public Task<IActionResult> DeleteIdMusic(int id);
 }
 
 [Route("/api/v1/[controller]")]
@@ -18,8 +18,8 @@ public class DeleteMusicController : ControllerBase, IDeleteMusicController
         throw new NotImplementedException();
     }
 
-    [HttpDelete("deleteIdMusic")]
-    public Task<IActionResult> DeleteIdMusic()
+    [HttpDelete("deleteIdMusic{id:int}")]
+    public Task<IActionResult> DeleteIdMusic(int id)
     {
         throw new NotImplementedException();
     }

@@ -12,8 +12,8 @@ public interface ISaveMusicController
 public class SaveMusicController : ControllerBase, ISaveMusicController
 {
     [HttpPost("saveMusic")]
-    public Task<IActionResult> SaveMusic()
+    public async Task<IActionResult> SaveMusic()
     {
-        throw new NotImplementedException();
+        return Ok();
     }
 }

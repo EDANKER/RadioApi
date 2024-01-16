@@ -16,20 +16,20 @@ public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsC
 {
 
     [HttpPost("createNewUser")]
-    public Task<IActionResult> CreateNewUser(User user)
+    public async Task<IActionResult> CreateNewUser(User user)
     {
-        throw new NotImplementedException();
+        return Ok();
     }
 
     [HttpDelete("deleteUser")]
-    public Task<IActionResult> DeleteUser(int id)
+    public async Task<IActionResult> DeleteUser(int id)
     {
-        throw new NotImplementedException();
+        return Ok();
     }
 
     [HttpPut("updateUser")]
-    public Task<IActionResult> UpdateUser(User user)
+    public async Task<IActionResult> UpdateUser(User user)
     {
-        throw new NotImplementedException();
+        return Ok();
     }
 }

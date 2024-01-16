@@ -4,25 +4,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Radio.Controller.Admin.GetAllUser;
 
-public interface IGetAllUserController
+public interface IGetUserController
 {
-    public Task<IActionResult> GetAllUser();
-    public Task<IActionResult> GetIdUser(int id);
+    public Task<IActionResult> GetLimitUser(int limit);
+    public Task<IActionResult> GetNameUser(string name);
 }
 
 [Route("/api/v1/[controller]")]
 [ApiController]
-public class GetUserController : ControllerBase, IGetAllUserController
+public class GetUserController : ControllerBase, IGetUserController
 {
-    [HttpGet("getAllUser")]
+    [HttpGet("getAllUser{limit:int}")]
     [EnableCors("RadioWeb")]
-    public async Task<IActionResult> GetAllUser()
+    public async Task<IActionResult> GetLimitUser(int limit)
     {
         return Ok("Hello");
     }
 
-    [HttpGet("getIdUser{id:int}")]
-    public Task<IActionResult> GetIdUser(int id)
+    [HttpGet("getIdUser{name}")]
+    public Task<IActionResult> GetNameUser(string name)
     {
         throw new NotImplementedException();
     }
