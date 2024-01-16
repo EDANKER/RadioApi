@@ -18,7 +18,7 @@ public class AdminSettingsPanelControllerTest
     [Test]
     public async Task AdminSettingsPanelDeleteReturnStatusCodeOk()
     {
-        var result = await _adminPanelSettings.DeleteUser(1);
+        var result = await _adminPanelSettings.DeleteUser("Vasia");
         Assert.That(result, Is.InstanceOf<OkResult>());
     }
 

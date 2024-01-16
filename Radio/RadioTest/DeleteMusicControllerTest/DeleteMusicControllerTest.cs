@@ -17,7 +17,7 @@ public class DeleteMusicControllerTest
     [Test]
     public async Task DeleteMusicIdReturnStatusCodeOk()
     {
-       var result = await _deleteMusicController.DeleteIdMusic(1);
+       var result = await _deleteMusicController.DeleteIdMusic("Radio");
        Assert.That(result, Is.InstanceOf<OkResult>());
     }
 

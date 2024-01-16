@@ -7,7 +7,7 @@ namespace Radio.Controller.Admin;
 public interface IAdminPanelSettingsController
 {
     public Task<IActionResult> CreateNewUser(User user);
-    public Task<IActionResult> DeleteUser(int id);
+    public Task<IActionResult> DeleteUser(string name);
     public Task<IActionResult> UpdateUser(User user);
 }
 
@@ -23,7 +23,7 @@ public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsC
     }
 
     [HttpDelete("deleteUser")]
-    public async Task<IActionResult> DeleteUser(int id)
+    public async Task<IActionResult> DeleteUser(string name)
     {
         return Ok();
     }
