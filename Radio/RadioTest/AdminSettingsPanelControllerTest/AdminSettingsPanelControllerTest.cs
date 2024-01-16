@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Radio.Controller.Admin;
 using Radio.Model;
+using Radio.Model.User;
 
 namespace RadioTest;
 
