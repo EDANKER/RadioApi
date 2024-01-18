@@ -118,3 +118,6 @@ C:\Users\edgar\Desktop\RadioApi\Radio\RadioTest\bin\Debug\net8.0\Swashbuckle.Asp
 C:\Users\edgar\Desktop\RadioApi\Radio\RadioTest\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\edgar\Desktop\RadioApi\Radio\RadioTest\bin\Debug\net8.0\Radio.dll
 C:\Users\edgar\Desktop\RadioApi\Radio\RadioTest\bin\Debug\net8.0\Radio.pdb
+C:\Users\edgar\Desktop\RadioApi\Radio\RadioTest\bin\Debug\net8.0\Npgsql.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\RadioTest\bin\Debug\net8.0\AWSSDK.Core.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\RadioTest\bin\Debug\net8.0\AWSSDK.S3.dll

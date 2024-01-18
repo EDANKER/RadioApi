@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RadioTest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fd87dbe2130d4c739d199d630a9f722a2e82ac43")]
 [assembly: System.Reflection.AssemblyProductAttribute("RadioTest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RadioTest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

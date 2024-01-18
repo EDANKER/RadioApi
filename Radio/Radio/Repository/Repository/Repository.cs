@@ -1,6 +1,6 @@
 ﻿using Npgsql;
 
-namespace Radio.Repository.UserRepository;
+namespace Radio.Repository.Repository;
 
 public interface IRepository<T>
 {
@@ -9,7 +9,7 @@ public interface IRepository<T>
     public void GetLimit(T item, int limit);
     public void Delete(T item);
     public void DeleteName(T item, string name);
-    public void Update(T item);
+    public void Update(T item, string what);
 }
 
 public class Repository<T> : IRepository<T>
@@ -30,40 +30,45 @@ public class Repository<T> : IRepository<T>
         string command = $"INSERT INTO {item}" +
                          $"(name, login, speak, settingsTime, " +
                          $"SettingsUser, TurnItOneMusic) " +
-                         $"VALUES()";
+                         $"VALUES(@Name, @Lofin, @Speak, " +
+                         $"@SettingsTime, @SettingsUser, TurnItOneMusic)";
 
         _npgsqlConnection = new NpgsqlConnection(_connect);
         await _npgsqlConnection.OpenAsync();
-        
+
         _npgsqlCommand = new NpgsqlCommand(command, _npgsqlConnection);
         _npgsqlCommand.Parameters.Add("");
-        
+
         await _npgsqlCommand.ExecuteNonQueryAsync();
         await _npgsqlConnection.CloseAsync();
     }
 
     public void GetName(T item, string name)
     {
-        throw new NotImplementedException();
+        string command = $"SELECT * FROM {item} " +
+                         "WHERE name = @Name";
     }
 
     public void GetLimit(T item, int limit)
     {
-        throw new NotImplementedException();
+        string command = $"SELECT * FROM {item}" +
+                         $" LIMIT {limit}";
     }
 
     public void Delete(T item)
     {
-        throw new NotImplementedException();
+        string command = $"DELETE FROM {item}";
     }
 
     public void DeleteName(T item, string name)
     {
-        throw new NotImplementedException();
+        string command = $"DELETE FROM {item} " +
+                         $"WHERE name = @Name";
     }
 
-    public void Update(T item)
+    public void Update(T item, string what)
     {
-        throw new NotImplementedException();
+        string command = $"UPDATE {item} " +
+                         $"SET {what} = @What";
     }
 }

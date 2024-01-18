@@ -40,3 +40,5 @@ C:\Users\edgar\Desktop\RadioApi\Radio\Radio\obj\Debug\net8.0\Radio.pdb
 C:\Users\edgar\Desktop\RadioApi\Radio\Radio\obj\Debug\net8.0\Radio.genruntimeconfig.cache
 C:\Users\edgar\Desktop\RadioApi\Radio\Radio\obj\Debug\net8.0\ref\Radio.dll
 C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\Npgsql.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\AWSSDK.Core.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\AWSSDK.S3.dll

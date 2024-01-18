@@ -16,14 +16,14 @@ public interface IGetUserController
 [ApiController]
 public class GetUserController : ControllerBase, IGetUserController
 {
-    [HttpGet("getAllUser{limit:int}")]
+    [HttpGet("[action]{limit:int}")]
     [EnableCors("RadioWeb")]
     public async Task<IActionResult> GetLimitUser(int limit)
     {
         return Ok("Hello");
     }
 
-    [HttpGet("getIdUser{name}")]
+    [HttpGet("[action]{name}")]
     public Task<IActionResult> GetNameUser(string name)
     {
         throw new NotImplementedException();
