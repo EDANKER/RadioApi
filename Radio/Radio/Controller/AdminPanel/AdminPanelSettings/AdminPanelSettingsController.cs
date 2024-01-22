@@ -11,6 +11,8 @@ public interface IAdminPanelSettingsController
     public Task<IActionResult> CreateNewUser(User user);
     public Task<IActionResult> DeleteUser(string name);
     public Task<IActionResult> UpdateUser(User user);
+    public Task<IActionResult> GetLimitUser(int limit);
+    public Task<IActionResult> GetNameUser(string name);
 }
 
 [Route("api/v1/[controller]")]
@@ -40,5 +42,17 @@ public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsC
     public async Task<IActionResult> UpdateUser(User user)
     {
         return Ok();
+    }
+
+    [HttpGet("[action]{limit:int}")]
+    public Task<IActionResult> GetLimitUser(int limit)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpGet("[action]{name}")]
+    public Task<IActionResult> GetNameUser(string name)
+    {
+        throw new NotImplementedException();
     }
 }

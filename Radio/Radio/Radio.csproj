@@ -12,6 +12,7 @@
         <PackageReference Include="AWSSDK.S3" Version="3.7.305.12" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-preview.7.23375.9"/>
+        <PackageReference Include="MySql.Data" Version="8.3.0" />
         <PackageReference Include="Npgsql" Version="8.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
@@ -30,6 +31,15 @@
       <Compile Update="Test\Test\GetUserControllerTest.cs">
         <Attributes>TestFixture</Attributes>
       </Compile>
+      <Compile Update="Model\Music\Music.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\PlayList\PlayList.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Services\MusicServices\MusicServices.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -42,6 +52,10 @@
       <_ContentIncludedByDefault Remove="Tests\Tests\obj\project.assets.json" />
       <_ContentIncludedByDefault Remove="Tests\Tests\obj\project.packagespec.json" />
       <_ContentIncludedByDefault Remove="Tests\Tests\obj\TestProject1.csproj.nuget.dgspec.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\" />
     </ItemGroup>
 
 </Project>

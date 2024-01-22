@@ -2,10 +2,11 @@
 
 public class User
 {
-    public User(string name, string login, bool speak, 
+    public User(string tag, string name, string login, bool speak, 
         bool settingsTime, bool settingsUser, bool turnItOnMusic, 
         bool createPlayList, bool saveMusic)
     {
+        Tag = tag;
         Name = name;
         Login = login;
         Speak = speak;
@@ -16,6 +17,7 @@ public class User
         SaveMusic = saveMusic;
     }
 
+    public string Tag { get; set; }
     public string Name { get; set; }
     public string Login { get; set; }
     public bool Speak { get; set; }
