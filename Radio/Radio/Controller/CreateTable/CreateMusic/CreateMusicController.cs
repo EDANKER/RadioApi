@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Npgsql;
 
-namespace Radio.Controller.CreateTable.CreatePlayListMusic;
+namespace Radio.Controller.CreateTable.CreateMusic;
 
 public interface ICreateMusicController
 {
@@ -24,13 +23,7 @@ public class CreateMusicController : ControllerBase, ICreateMusicController
                                "namePlayList VARCHAR(255), " +
                                "path TEXT)";
 
-        NpgsqlConnection npgsqlConnection = new NpgsqlConnection(_connect);
-        await npgsqlConnection.OpenAsync();
         
-        NpgsqlCommand npgsqlCommand = new NpgsqlCommand(command, npgsqlConnection);
-        
-        await npgsqlCommand.ExecuteNonQueryAsync();
-        await npgsqlConnection.CloseAsync();
 
         return Ok();
     }

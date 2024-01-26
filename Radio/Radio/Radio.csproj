@@ -12,8 +12,13 @@
         <PackageReference Include="AWSSDK.S3" Version="3.7.305.12" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-preview.7.23375.9"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.3" />
         <PackageReference Include="MySql.Data" Version="8.3.0" />
-        <PackageReference Include="Npgsql" Version="8.0.1" />
+        <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
     
@@ -40,6 +45,21 @@
       <Compile Update="Services\MusicServices\MusicServices.cs">
         <Attributes>TestFixture</Attributes>
       </Compile>
+      <Compile Update="Controller\Authorization\LoginUserController\LoginUserController.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\OutPutModel\Music\GetMusic.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\OutPutModel\Settings\GetSettings.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\OutPutModel\User\GetUser.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\OutPutModel\PlayList\GetPlayList.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -55,7 +75,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\" />
+      <ProjectReference Include="..\Repository\Repository.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controller\TurnOnSector\" />
+      <Folder Include="Model\InputModel\" />
     </ItemGroup>
 
 </Project>

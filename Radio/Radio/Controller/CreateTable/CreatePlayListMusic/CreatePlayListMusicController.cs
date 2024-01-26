@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Npgsql;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Radio.Controller.CreateTable.CreatePlayListMusic;
 
@@ -23,14 +21,6 @@ public class CreatePlayListMusicController : ControllerBase, ICreatePlayListMusi
         const string command = "CREATE TABLE PlayList" +
                                "(name VARCHAR(255), " +
                                "imgPath VARCHAR(255))";
-
-        NpgsqlConnection npgsqlConnection = new NpgsqlConnection(_connect);
-        await npgsqlConnection.OpenAsync();
-        
-        NpgsqlCommand npgsqlCommand = new NpgsqlCommand(command, npgsqlConnection);
-
-        await npgsqlCommand.ExecuteNonQueryAsync();
-        await npgsqlConnection.CloseAsync();
 
         return Ok();
     }

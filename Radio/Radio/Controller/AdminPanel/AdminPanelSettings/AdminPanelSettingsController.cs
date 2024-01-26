@@ -1,17 +1,16 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Radio.Model;
+﻿using Microsoft.AspNetCore.Mvc;
+using Radio.Data.Repository;
 using Radio.Model.User;
-using Radio.Repository.Repository;
 
-namespace Radio.Controller.Admin;
+
+namespace Radio.Controller.AdminPanel.AdminPanelSettings;
 
 public interface IAdminPanelSettingsController
 {
     public Task<IActionResult> CreateNewUser(User user);
     public Task<IActionResult> DeleteUser(string name);
     public Task<IActionResult> UpdateUser(User user);
-    public Task<IActionResult> GetLimitUser(int limit);
+    public Task<IActionResult> GetUser(int limit);
     public Task<IActionResult> GetNameUser(string name);
 }
 
@@ -19,9 +18,9 @@ public interface IAdminPanelSettingsController
 [ApiController]
 public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsController
 {
-    private IRepository<User> _repository;
+    private IUserRepository _repository;
 
-    public AdminPanelSettingsController(IRepository<User> repository)
+    public AdminPanelSettingsController(IUserRepository repository)
     {
         _repository = repository;
     }
@@ -45,7 +44,7 @@ public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsC
     }
 
     [HttpGet("[action]{limit:int}")]
-    public Task<IActionResult> GetLimitUser(int limit)
+    public Task<IActionResult> GetUser(int limit)
     {
         throw new NotImplementedException();
     }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Npgsql;
 
 namespace Radio.Controller.CreateTable.CreateUser;
 
@@ -27,13 +26,6 @@ public class CreateUserController : ControllerBase, ICreateUserController
                                "settingsTime BIT, " +
                                "turnItOnMusic BIT)";
 
-        NpgsqlConnection npgsqlConnection = new NpgsqlConnection(_connect);
-        await npgsqlConnection.OpenAsync();
-        
-        NpgsqlCommand npgsqlCommand = new NpgsqlCommand(command, npgsqlConnection);
-
-        await npgsqlCommand.ExecuteNonQueryAsync();
-        await npgsqlConnection.CloseAsync();
         
         return Ok();
     }
