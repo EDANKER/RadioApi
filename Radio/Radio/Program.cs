@@ -31,6 +31,4 @@ app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
 
-app.UseCors("RadioWeb");
-
 app.Run();
