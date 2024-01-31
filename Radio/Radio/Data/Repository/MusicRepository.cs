@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using MySql.Data.MySqlClient;
 using Radio.Model.Music;
+using Radio.Model.RequestModel.Music;
 
 namespace Radio.Data.Repository;
 
@@ -10,8 +11,9 @@ public interface IMusicRepository
     public Task<DbDataReader> GetId(string item, int id);
     public Task<DbDataReader> GetLimit(string item, int limit);
     public Task<DbDataReader> GetName(string item, string name);
-    public Task Delete(string item, string name);
-    public Task DeleteName(string item, string name);
+    public Task<DbDataReader> GetPlayListTag(string item, int id);
+    public Task Delete(string item, int id);
+    public Task DeleteName(string item,int id);
     public Task Update(string item, string name);
 }
 
@@ -107,7 +109,12 @@ public class MusicRepository : IMusicRepository
         return _dataReader;
     }
 
-    public async Task Delete(string item, string name)
+    public Task<DbDataReader> GetPlayListTag(string item, int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task Delete(string item, int id)
     {
         string command = $"DELETE FROM {item}";
         
@@ -121,7 +128,7 @@ public class MusicRepository : IMusicRepository
         await _mySqlConnection.CloseAsync();
     }
 
-    public async Task DeleteName(string item, string name)
+    public async Task DeleteName(string item, int id)
     {
         string command = $"DELETE FROM {item} " +
                          $"WHERE name = @Name";

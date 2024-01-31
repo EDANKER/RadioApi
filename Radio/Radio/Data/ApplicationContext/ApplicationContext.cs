@@ -1,11 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Radio.Model.Music;
+using Radio.Model.PlayList;
 using Radio.Model.User;
 
 namespace Radio.Data.ApplicationContext;
 
 public class ApplicationContext : DbContext
 {
-    public DbSet<User> DbSet => Set<User>();
+    public DbSet<GetPlayList> PlayList => Set<GetPlayList>();
+    public DbSet<GetMusic> Musics => Set<GetMusic>();
+    public DbSet<GetUser> User => Set<GetUser>();
     private IConfiguration _configuration;
 
     public ApplicationContext(IConfiguration configuration)
@@ -13,11 +17,6 @@ public class ApplicationContext : DbContext
         _configuration = configuration;
     }
 
-    public ApplicationContext(DbContextOptions<ApplicationContext> options)
-    {
-       
-    }
-    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseMySQL(_configuration.GetConnectionString("MySql"));

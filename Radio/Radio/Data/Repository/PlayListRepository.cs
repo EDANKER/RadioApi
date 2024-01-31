@@ -9,10 +9,8 @@ public interface IPlayListRepository
     public Task CreateOrSave(string item, PlayList playLis);
     public Task<DbDataReader> GetId(string item, int id);
     public Task<DbDataReader> GetLimit(string item, int limit);
-    public Task<DbDataReader> GetName(string item, string name);
-    public Task Delete(string item, string name);
-    public Task DeleteName(string item, string name);
-    public Task Update(string item, string name);
+    public Task DeleteId(string item, int id);
+    public Task Update(string item, string name, int id);
 }
 
 public class PlayListRepository : IPlayListRepository
@@ -64,7 +62,6 @@ public class PlayListRepository : IPlayListRepository
         _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int64).Value = id;
 
         _dataReader = await _mySqlCommand.ExecuteReaderAsync();
-
         await _mySqlConnection.CloseAsync();
 
         return _dataReader;
@@ -72,8 +69,8 @@ public class PlayListRepository : IPlayListRepository
 
     public async Task<DbDataReader> GetLimit(string item, int limit)
     {
-        string command = $"SELECT * FROM @Item" +
-                         $" LIMIT = @Limit";
+        const string command = $"SELECT * FROM @Item " +
+                               $"LIMIT = @Limit";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
@@ -81,73 +78,43 @@ public class PlayListRepository : IPlayListRepository
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
         _mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int64).Value = limit;
         _mySqlCommand.Parameters.Add("@Item", MySqlDbType.Int64).Value = item;
-
-
+        
         await _mySqlCommand.ExecuteNonQueryAsync();
         await _mySqlConnection.CloseAsync();
 
         return _dataReader;
     }
 
-    public async Task<DbDataReader> GetName(string item, string name)
+    public async Task DeleteId(string item, int id)
     {
-        string command = $"SELECT * FROM @Item" +
-                         $"WHERE name = @Name";
+        const string command = $"DELETE FROM @Item " +
+                               $"WHERE id = @Id";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.Int64).Value = item;
-
-
-        await _mySqlCommand.ExecuteNonQueryAsync();
-        await _mySqlConnection.CloseAsync();
-
-        return _dataReader;
-    }
-
-    public async Task Delete(string item, string name)
-    {
-        string command = $"DELETE FROM {item}";
-
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
-
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-
+        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.String).Value = item;
+        _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int64).Value = id;
 
         await _mySqlCommand.ExecuteNonQueryAsync();
         await _mySqlConnection.CloseAsync();
     }
 
-    public async Task DeleteName(string item, string name)
+    public async Task Update(string item, string purpose, int id)
     {
-        string command = $"DELETE FROM {item} " +
-                         $"WHERE name = @Name";
+        const string command = $"UPDATE @Item " +
+                               $"SET name = @Purpose " +
+                               $"WHERE id = @Id";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-
-
-        await _mySqlCommand.ExecuteNonQueryAsync();
-        await _mySqlConnection.CloseAsync();
-    }
-
-    public async Task Update(string item, string name)
-    {
-        string command = $"UPDATE {item} " +
-                         $"SET {name} = @What";
-
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
-
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-
-
+        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.String).Value = item;
+        _mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.VarChar).Value = purpose;
+        _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int64).Value = id;
+        
         await _mySqlCommand.ExecuteNonQueryAsync();
         await _mySqlConnection.CloseAsync();
     }

@@ -9,7 +9,7 @@ namespace Radio.Services.PlayListServices;
 public interface IPlayListServices
 {
     public Task<List<PlayList>> GetPlayList(int limit);
-    public Task<List<PlayList>> GetPlayId(int id);
+    public Task<List<PlayList>> GetPlayListId(int id);
 }
 
 public class PlayListServices : IPlayListServices
@@ -17,12 +17,12 @@ public class PlayListServices : IPlayListServices
     private IPlayListRepository _repository;
     private PlayList _playList;
     private List<PlayList> _playLists;
-    private List<Music> _musics;
 
-    public PlayListServices(IPlayListRepository repository, PlayList playList)
+    public PlayListServices(IPlayListRepository repository, PlayList playList, List<PlayList> playLists)
     {
         _repository = repository;
         _playList = playList;
+        _playLists = playLists;
     }
 
     public async Task<List<PlayList>> GetPlayList(int limit)
@@ -42,13 +42,14 @@ public class PlayListServices : IPlayListServices
                 object imgPath = reader.GetValue(2);
 
                 _playList = new PlayList(name.ToString(), description.ToString(), imgPath.ToString());
+                _playLists.Add(_playList);
             }
         }
 
         return _playLists;
     }
 
-    public async Task<List<PlayList>> GetPlayId(int id)
+    public async Task<List<PlayList>> GetPlayListId(int id)
     {
         _playLists = new List<PlayList>();
         DbDataReader reader = await _repository.GetId("PlayList", id);
@@ -62,6 +63,7 @@ public class PlayListServices : IPlayListServices
                 object imgPath = reader.GetValue(2);
 
                 _playList = new PlayList(name.ToString(), description.ToString(), imgPath.ToString());
+                _playLists.Add(_playList);
             }
         }
 

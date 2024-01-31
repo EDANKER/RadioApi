@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
 using Radio.Data.Repository;
 using Radio.Services.PlayListServices;
 
@@ -8,8 +7,8 @@ namespace Radio.Controller.PlayList;
 public interface IPlayListController
 {
     public Task<IActionResult> CreatePlayList(Model.PlayList.PlayList playList);
-    public Task<IActionResult> UpdatePlayList(string name);
-    public Task<IActionResult> DeletePlayList(string name);
+    public Task<IActionResult> UpdatePlayList(string purpose, int id);
+    public Task<IActionResult> DeletePlayList(int id);
     public Task<IActionResult> GetPlayListId(int id);
     public Task<IActionResult> GetPlayList(int limit);
 }
@@ -19,16 +18,12 @@ public interface IPlayListController
 public class PlayListController : ControllerBase, IPlayListController
 {
     private IPlayListServices _playListServices;
-
-    private string _connect;
-
     private IPlayListRepository _repository;
 
-    public PlayListController(IConfiguration configuration,IPlayListServices playListServices, IPlayListRepository repository)
+    public PlayListController(IPlayListServices playListServices, IPlayListRepository repository)
     {
         _playListServices = playListServices;
         _repository = repository;
-        _connect = configuration.GetConnectionString("MySqL");
     }
 
     [HttpPost("[action]")]
@@ -37,22 +32,22 @@ public class PlayListController : ControllerBase, IPlayListController
         return Ok(_repository.CreateOrSave("PlayList", playList));
     }
 
-    [HttpPut("[action]")]
-    public Task<IActionResult> UpdatePlayList(string name)
+    [HttpPut("[action]{id:int}")]
+    public async Task<IActionResult> UpdatePlayList(string purpose, int id)
     {
-        throw new NotImplementedException();
+        return Ok(_repository.Update("PlayList", purpose, id));
     }
 
-    [HttpDelete("[action]")]
-    public async Task<IActionResult> DeletePlayList(string name)
+    [HttpDelete("[action]{id:int}")]
+    public async Task<IActionResult> DeletePlayList(int id)
     {
-        return Ok();
+        return Ok(_repository.DeleteId("PlayList", id));
     }
 
-    [HttpGet("[action]{id:int}")]
+    [HttpGet("GetPlayListId{id:int}")]
     public async Task<IActionResult> GetPlayListId(int id)
     {
-        return Ok(_playListServices.GetPlayId(id));
+        return Ok(_playListServices.GetPlayListId(id));
     }
 
     [HttpGet("[action]{limit:int}")]

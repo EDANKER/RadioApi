@@ -20,9 +20,8 @@
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_Extensions_ApiDescription_Server Condition=" '$(PkgMicrosoft_Extensions_ApiDescription_Server)' == '' ">C:\Users\edgar\.nuget\packages\microsoft.extensions.apidescription.server\6.0.5</PkgMicrosoft_Extensions_ApiDescription_Server>
-    <PkgNewtonsoft_Json Condition=" '$(PkgNewtonsoft_Json)' == '' ">C:\Users\edgar\.nuget\packages\newtonsoft.json\10.0.1</PkgNewtonsoft_Json>
-    <PkgMicrosoft_EntityFrameworkCore_Tools_DotNet Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools_DotNet)' == '' ">C:\Users\edgar\.nuget\packages\microsoft.entityframeworkcore.tools.dotnet\2.0.3</PkgMicrosoft_EntityFrameworkCore_Tools_DotNet>
     <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">C:\Users\edgar\.nuget\packages\microsoft.codeanalysis.analyzers\3.3.3</PkgMicrosoft_CodeAnalysis_Analyzers>
+    <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\edgar\.nuget\packages\microsoft.entityframeworkcore.tools\8.0.1</PkgMicrosoft_EntityFrameworkCore_Tools>
     <PkgAWSSDK_Core Condition=" '$(PkgAWSSDK_Core)' == '' ">C:\Users\edgar\.nuget\packages\awssdk.core\3.7.301.7</PkgAWSSDK_Core>
     <PkgAWSSDK_S3 Condition=" '$(PkgAWSSDK_S3)' == '' ">C:\Users\edgar\.nuget\packages\awssdk.s3\3.7.305.12</PkgAWSSDK_S3>
   </PropertyGroup>
