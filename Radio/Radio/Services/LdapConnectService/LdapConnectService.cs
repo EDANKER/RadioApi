@@ -9,7 +9,7 @@ public interface ILdapConnect
     public Task<bool> Validation(string id, string password);
 }
 
-public class LdapConnect : ILdapConnect
+public class LdapConnectService : ILdapConnect
 {
     public Task<bool> Validation(string id, string password)
     {

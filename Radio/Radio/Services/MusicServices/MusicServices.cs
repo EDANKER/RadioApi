@@ -6,25 +6,25 @@ namespace Radio.Services.MusicServices;
 public interface IMusicServices
 {
     public Task<List<Music>> GetMusic(int limit);
-    public Task<List<Music>> GetMusicName(string name);
+    public Task<List<Music>> GetMusicId(int id);
     public Task<List<Music>> GetMusicTagPlayList(int id);
 }
 
 public class MusicServices : IMusicServices
 {
     private IMusicRepository _repository;
-    private List<Music> _musics;
+    private List<Music> _musicsList;
     private Music _music;
 
-    public MusicServices(List<Music> musics, IMusicRepository repository)
+    public MusicServices(List<Music> musicsList, IMusicRepository repository)
     {
-        _musics = musics;
+        _musicsList = musicsList;
         _repository = repository;
     }
 
     public async Task<List<Music>> GetMusic(int limit)
     {
-        _musics = new List<Music>();
+        _musicsList = new List<Music>();
 
         var reader = await _repository.GetLimit("Music", limit);
 
@@ -37,17 +37,18 @@ public class MusicServices : IMusicServices
                 object idPlayList = reader.GetValue(2);
 
                 _music = new Music(name.ToString(), path.ToString(), idPlayList.ToString());
+                _musicsList.Add(_music);
             }
         }
         
-        return _musics;
+        return _musicsList;
     }
 
-    public async Task<List<Music>> GetMusicName(string nameTable)
+    public async Task<List<Music>> GetMusicId(int id)
     {
-        _musics = new List<Music>();
+        _musicsList = new List<Music>();
 
-        var reader = await _repository.GetName("Music", nameTable);
+        var reader = await _repository.GetId("Music", id);
 
         if (reader.HasRows)
         {
@@ -58,15 +59,16 @@ public class MusicServices : IMusicServices
                 object idPlayList = reader.GetValue(2);
 
                 _music = new Music(name.ToString(), path.ToString(), idPlayList.ToString());
+                _musicsList.Add(_music);
             }
         }
         
-        return _musics;
+        return _musicsList;
     }
 
     public async Task<List<Music>> GetMusicTagPlayList(int id)
     {
-        _musics = new List<Music>();
+        _musicsList = new List<Music>();
 
         var reader = await _repository.GetPlayListTag("Music", id);
 
@@ -79,9 +81,10 @@ public class MusicServices : IMusicServices
                 object idPlayList = reader.GetValue(2);
 
                 _music = new Music(name.ToString(), path.ToString(), idPlayList.ToString());
+                _musicsList.Add(_music);
             }
         }
         
-        return _musics;
+        return _musicsList;
     }
 }

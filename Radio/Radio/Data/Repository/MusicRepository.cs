@@ -10,7 +10,6 @@ public interface IMusicRepository
     public Task CreateOrSave(string item, Music music);
     public Task<DbDataReader> GetId(string item, int id);
     public Task<DbDataReader> GetLimit(string item, int limit);
-    public Task<DbDataReader> GetName(string item, string name);
     public Task<DbDataReader> GetPlayListTag(string item, int id);
     public Task Delete(string item, int id);
     public Task DeleteName(string item,int id);
@@ -81,25 +80,6 @@ public class MusicRepository : IMusicRepository
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
         _mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int64).Value = limit;
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.Int64).Value = item;
-        
-        
-        await _mySqlCommand.ExecuteNonQueryAsync();
-        await _mySqlConnection.CloseAsync();
-
-        return _dataReader;
-    }
-
-    public async Task<DbDataReader> GetName(string item, string name)
-    {
-        string command = $"SELECT * FROM @Item" +
-                         $"WHERE name = @Name";
-        
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
-
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
         _mySqlCommand.Parameters.Add("@Item", MySqlDbType.Int64).Value = item;
         
         

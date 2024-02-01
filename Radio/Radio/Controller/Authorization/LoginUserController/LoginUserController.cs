@@ -1,31 +1,32 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using Novell.Directory.Ldap;
+﻿using Microsoft.AspNetCore.Mvc;
 using Radio.Data.LdapConnect;
+using Radio.Services.GeneratorTokenServices;
 
 namespace Radio.Controller.Authorization.LoginUserController;
 
 public interface ILoginUserController
 {
-    public Task<IActionResult> Login(string login, string password);
+    public Task<IActionResult> Login(Model.Authorization.Authorization authorization);
 }
 [Route("api/v1/[controller]")]
 [ApiController]
 public class LoginUserController : ControllerBase, ILoginUserController
 {
     private ILdapConnect _connect;
+    private IGeneratorTokenServices _generatorTokenServices;
 
-    public LoginUserController(ILdapConnect connect)
+    public LoginUserController(ILdapConnect connect, IGeneratorTokenServices generatorTokenServices)
     {
         _connect = connect;
+        _generatorTokenServices = generatorTokenServices;
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> Login(string login, string password)
+    public async Task<IActionResult> Login([FromBody]Model.Authorization.Authorization authorization)
     {
-        if (!await _connect.Validation(login, password))
-            return NoContent();
+        // if (!await _connect.Validation(authorization.Login, authorization.Password))
+        //     return NoContent();
 
-        return Ok();
+        return Ok(_generatorTokenServices.Generator(authorization.Login, authorization.Password));
     }
 }

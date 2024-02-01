@@ -9,7 +9,6 @@ public interface IUserRepository
     public Task CreateOrSave(string item, User user);
     public Task<DbDataReader> GetId(string item, int id);
     public Task<DbDataReader> GetLimit(string item, int limit);
-    public Task<DbDataReader> GetName(string item, string name);
     public Task Delete(string item, string name);
     public Task DeleteName(string item, string name);
     public Task Update(string item, string name);
@@ -84,25 +83,6 @@ public class UserRepository : IUserRepository
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
         _mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int64).Value = limit;
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.Int64).Value = item;
-
-
-        await _mySqlCommand.ExecuteNonQueryAsync();
-        await _mySqlConnection.CloseAsync();
-
-        return _dataReader;
-    }
-
-    public async Task<DbDataReader> GetName(string item, string name)
-    {
-        const string command = "SELECT * FROM @Item" +
-                               "WHERE name = @Name";
-
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
-
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
         _mySqlCommand.Parameters.Add("@Item", MySqlDbType.Int64).Value = item;
 
 

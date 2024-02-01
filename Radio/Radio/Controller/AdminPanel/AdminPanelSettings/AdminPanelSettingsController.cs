@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Radio.Data.Repository;
 using Radio.Model.User;
 
@@ -13,7 +14,7 @@ public interface IAdminPanelSettingsController
     public Task<IActionResult> GetUser(int limit);
     public Task<IActionResult> GetNameUser(string name);
 }
-
+[Authorize(Roles = "Admin")]
 [Route("api/v1/[controller]")]
 [ApiController]
 public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsController
@@ -43,13 +44,13 @@ public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsC
         return Ok();
     }
 
-    [HttpGet("[action]{limit:int}")]
+    [HttpGet("[action]/{limit:int}")]
     public Task<IActionResult> GetUser(int limit)
     {
         throw new NotImplementedException();
     }
 
-    [HttpGet("[action]{name}")]
+    [HttpGet("[action]/{name}")]
     public Task<IActionResult> GetNameUser(string name)
     {
         throw new NotImplementedException();

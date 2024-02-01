@@ -34,19 +34,19 @@ public class MusicController : ControllerBase, IMusicController
         return Ok(_musicRepository.CreateOrSave("Music", music));
     }
 
-    [HttpGet("[action]{limit:int}")]
+    [HttpGet("[action]/{limit:int}")]
     public async Task<IActionResult> GetMusicLimit(int limit)
     {
         return Ok(_music.GetMusic(limit));
     }
 
-    [HttpGet("[action]{id:int}")]
+    [HttpGet("[action]/{id:int}")]
     public async Task<IActionResult> GetMusic(int id)
     {
         return Ok(_musicRepository.GetId("Music",id));
     }
 
-    [HttpDelete("[action]{id:int}")]
+    [HttpDelete("[action]/{id:int}")]
     public async Task<IActionResult> DeleteMusic(int id)
     {
         return Ok(_musicRepository.DeleteName("Music",id));

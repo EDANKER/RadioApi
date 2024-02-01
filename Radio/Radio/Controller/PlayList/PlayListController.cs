@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Radio.Data.Repository;
 using Radio.Services.PlayListServices;
 
@@ -12,9 +13,10 @@ public interface IPlayListController
     public Task<IActionResult> GetPlayListId(int id);
     public Task<IActionResult> GetPlayList(int limit);
 }
-
-[Route("api/v1/[controller]")]
+[Authorize]
 [ApiController]
+[Route("api/v1/[controller]")]
+
 public class PlayListController : ControllerBase, IPlayListController
 {
     private IPlayListServices _playListServices;
@@ -27,32 +29,38 @@ public class PlayListController : ControllerBase, IPlayListController
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> CreatePlayList(Model.PlayList.PlayList playList)
+    public async Task<IActionResult> CreatePlayList([FromBody] Model.PlayList.PlayList playList)
     {
         return Ok(_repository.CreateOrSave("PlayList", playList));
     }
 
-    [HttpPut("[action]{id:int}")]
-    public async Task<IActionResult> UpdatePlayList(string purpose, int id)
+    [HttpPut("[action]/{id:int}")]
+    public async Task<IActionResult> UpdatePlayList([FromBody] string purpose, [FromHeader]int id)
     {
         return Ok(_repository.Update("PlayList", purpose, id));
     }
 
-    [HttpDelete("[action]{id:int}")]
+    [HttpDelete("[action]/{id:int}")]
     public async Task<IActionResult> DeletePlayList(int id)
     {
         return Ok(_repository.DeleteId("PlayList", id));
     }
 
-    [HttpGet("GetPlayListId{id:int}")]
+    [HttpGet("GetPlayListId/{id:int}")]
     public async Task<IActionResult> GetPlayListId(int id)
     {
         return Ok(_playListServices.GetPlayListId(id));
     }
 
-    [HttpGet("[action]{limit:int}")]
+    [HttpGet("[action]/{limit:int}")]
     public async Task<IActionResult> GetPlayList(int limit)
     {
         return Ok(_playListServices.GetPlayList(limit));
+    }
+
+    [HttpGet("Hi")]
+    public async Task<IActionResult> Get()
+    {
+        return Ok("Heelo");
     }
 }
