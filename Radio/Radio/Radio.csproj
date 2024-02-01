@@ -59,6 +59,15 @@
       <Compile Update="Model\OutPutModel\PlayList\GetPlayList.cs">
         <Attributes>TestFixture</Attributes>
       </Compile>
+      <Compile Update="Data\Repository\User\UserRepository.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Data\Repository\Music\MusicRepository.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Data\Repository\PlayList\PlayListRepository.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
