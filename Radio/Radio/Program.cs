@@ -18,11 +18,10 @@ builder.Services.AddCors(options =>
 });
 JwtTokenConfig jwtTokenConfig = new JwtTokenConfig();
 builder.Services.AddSingleton(jwtTokenConfig);
-
+builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
     .AddJwtBearer(options =>
     {
@@ -38,7 +37,6 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)),
         };
     });
-builder.Services.AddAuthorization();
 builder.Services.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
 builder.Services.AddSingleton<ILdapConnect, LdapConnectService>();
 builder.Services.AddControllers();

@@ -40,19 +40,20 @@ public class GeneratorTokenServices : IGeneratorTokenServices
         return response.ToString();
     }
 
-    private ClaimsIdentity GetIdentity(string login, string password)
+    private static ClaimsIdentity GetIdentity(string login, string password)
     {
         Task<bool> ldapConnectService = new LdapConnectService()
             .Validation(login, password);
-        if (ldapConnectService.Result)
+        AdminPanelServices.AdminPanelServices adminPanelServices = new AdminPanelServices.AdminPanelServices();
+        if (!ldapConnectService.Result)
         {
-            return null;
+            return default;
         }
 
         List<Claim> claims = new List<Claim>
         {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, "Game"),
-            new Claim(ClaimsIdentity.DefaultRoleClaimType, "Admin"),
+            new Claim(ClaimsIdentity.DefaultNameClaimType, login),
+            new Claim(ClaimsIdentity.DefaultRoleClaimType, login),
         };
 
         ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims.ToString(), "token", ClaimsIdentity.DefaultNameClaimType);

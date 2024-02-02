@@ -34,7 +34,7 @@ public class MusicController : ControllerBase, IMusicController
         return Ok(_musicRepository.CreateOrSave("Music", music));
     }
 
-    [HttpGet("[action]/{limit:int}")]
+    [HttpGet("[action]Limit/{limit:int}")]
     public async Task<IActionResult> GetMusicLimit(int limit)
     {
         return Ok(_music.GetMusic(limit));
