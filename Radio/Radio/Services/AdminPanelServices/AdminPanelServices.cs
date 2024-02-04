@@ -1,23 +1,40 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Data.Common;
+using Microsoft.AspNetCore.Authorization;
+using Radio.Data.Repository;
 using Radio.Model.User;
 
 namespace Radio.Services.AdminPanelServices;
 
 public interface IAdminPanelServices
 {
-    public List<User> GetLimitUser();
+    public Task<List<User>> GetLimitUser(int limit);
     public List<User> GetIdUser(int id);
 }
 
 public class AdminPanelServices : IAdminPanelServices
 {
-    public List<User> GetLimitUser()
+    private List<User> _users;
+    private IUserRepository _userRepository;
+    public async Task<List<User>> GetLimitUser(int limit)
     {
-        throw new NotImplementedException();
+        _users = new List<User>();
+        DbDataReader reader = await _userRepository.GetLimit("User", limit);
+
+        if (reader.HasRows)
+        {
+            while (await reader.ReadAsync())
+            {
+                
+            }
+        }
+        
+        return _users;
     }
 
     public List<User> GetIdUser(int id)
     {
-        throw new NotImplementedException();
+        _users = new List<User>();
+        
+        return _users;
     }
 }

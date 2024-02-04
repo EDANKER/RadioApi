@@ -2,14 +2,14 @@
 using System.Net;
 using LdapConnection = System.DirectoryServices.Protocols.LdapConnection;
 
-namespace Radio.Data.LdapConnect;
+namespace Radio.Services.LdapConnectService;
 
-public interface ILdapConnect
+public interface ILdapConnectService
 {
     public Task<bool> Validation(string id, string password);
 }
 
-public class LdapConnectService : ILdapConnect
+public class LdapConnectServiceService : ILdapConnectService
 {
     public Task<bool> Validation(string id, string password)
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Radio.Data.Repository;
+using Radio.Data.Repository.PlayList;
 using Radio.Services.PlayListServices;
 
 namespace Radio.Controller.PlayList;
@@ -13,7 +14,6 @@ public interface IPlayListController
     public Task<IActionResult> GetPlayListId(int id);
     public Task<IActionResult> GetPlayList(int limit);
 }
-[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 
@@ -31,36 +31,30 @@ public class PlayListController : ControllerBase, IPlayListController
     [HttpPost("[action]")]
     public async Task<IActionResult> CreatePlayList([FromBody] Model.PlayList.PlayList playList)
     {
-        return Ok(_repository.CreateOrSave("PlayList", playList));
+        return Ok(await _repository.CreateOrSave("PlayList", playList));
     }
 
     [HttpPut("[action]/{id:int}")]
-    public async Task<IActionResult> UpdatePlayList([FromBody] string purpose, [FromHeader]int id)
+    public async Task<IActionResult> UpdatePlayList([FromBody] string purpose, int id)
     {
-        return Ok(_repository.Update("PlayList", purpose, id));
+        return Ok(await _repository.Update("PlayList", purpose,"Name", id));
     }
 
     [HttpDelete("[action]/{id:int}")]
     public async Task<IActionResult> DeletePlayList(int id)
     {
-        return Ok(_repository.DeleteId("PlayList", id));
+        return Ok(await _repository.DeleteId("PlayList", id));
     }
 
     [HttpGet("GetPlayListId/{id:int}")]
     public async Task<IActionResult> GetPlayListId(int id)
     {
-        return Ok(_playListServices.GetPlayListId(id));
+        return Ok(await _playListServices.GetPlayListId(id));
     }
 
     [HttpGet("[action]/{limit:int}")]
     public async Task<IActionResult> GetPlayList(int limit)
     {
-        return Ok(_playListServices.GetPlayList(limit));
-    }
-
-    [HttpGet("Hi")]
-    public async Task<IActionResult> Get()
-    {
-        return Ok("Heelo");
+        return Ok(await _playListServices.GetPlayList(limit));
     }
 }

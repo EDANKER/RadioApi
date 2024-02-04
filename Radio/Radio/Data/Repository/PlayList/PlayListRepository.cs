@@ -1,122 +1,172 @@
-﻿using System.Data.Common;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Data;
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using MySql.Data.MySqlClient;
 using Radio.Model.PlayList;
 
-namespace Radio.Data.Repository;
+namespace Radio.Data.Repository.PlayList;
 
 public interface IPlayListRepository
 {
-    public Task CreateOrSave(string item, PlayList playLis);
-    public Task<DbDataReader> GetId(string item, int id);
-    public Task<DbDataReader> GetLimit(string item, int limit);
-    public Task DeleteId(string item, int id);
-    public Task Update(string item, string name, int id);
+    public Task<bool> CreateOrSave(string item, Model.PlayList.PlayList playLis);
+    public Task<List<GetPlayList>> GetId(string item, int id);
+    public Task<List<GetPlayList>> GetLimit(string item, int limit);
+    public Task<bool> DeleteId(string item, int id);
+    public Task<bool> Update(string item, string name, string field, int id);
 }
 
 public class PlayListRepository : IPlayListRepository
 {
-    private string _connect;
     private MySqlConnection _mySqlConnection;
     private MySqlCommand _mySqlCommand;
     private DbDataReader _dataReader;
+    private List<GetPlayList> _playLists;
+    private GetPlayList _playList;
 
-    public PlayListRepository(IConfiguration configuration, MySqlCommand mySqlCommand, MySqlConnection mySqlConnection,
-        DbDataReader dataReader)
-    {
-        _mySqlConnection = mySqlConnection;
-        _dataReader = dataReader;
-        _mySqlCommand = mySqlCommand;
-        _connect = configuration.GetConnectionString("MySql");
-    }
+    private string _connect =
+        "Server=mysql.students.it-college.ru;Database=i22s0909;" +
+        "Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
 
-    public async Task CreateOrSave(string item, PlayList playList)
+    public async Task<bool> CreateOrSave(string item, Model.PlayList.PlayList playList)
     {
-        const string command = $"INSERT INTO @Item" +
-                               $"(name, description ,imgPath,)" +
-                               $"VALUES(@Name, @Description,@ImgPath)";
+        string command = $"INSERT INTO {item}" +
+                         "(name, description ,imgPath)" +
+                         "VALUES(@Name, @Description,@ImgPath)";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.String).Value = item;
-        _mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playList.Name;
-        _mySqlCommand.Parameters.Add("@Description", MySqlDbType.VarChar).Value = playList.Description;
-        _mySqlCommand.Parameters.Add("@ImgPath", MySqlDbType.VarChar).Value = playList.ImgPath;
+        _mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = playList.Name;
+        _mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = playList.Description;
+        _mySqlCommand.Parameters.Add("@ImgPath", MySqlDbType.LongText).Value = playList.ImgPath;
 
-        await _mySqlCommand.ExecuteNonQueryAsync();
-        await _mySqlConnection.CloseAsync();
+        try
+        {
+            await _mySqlCommand.ExecuteNonQueryAsync();
+            await _mySqlConnection.CloseAsync();
+            return true;
+        }
+        catch (MySqlException e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
     }
 
-    public async Task<DbDataReader> GetId(string item, int id)
+    public async Task<List<GetPlayList>> GetId(string item, int id)
     {
-        const string command = $"SELECT * FROM @Item " +
-                               "WHERE id = @Id";
+        _playLists = new List<GetPlayList>();
+        string command = $"SELECT * FROM {item} " +
+                         $"WHERE Id = @Id";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("Item", MySqlDbType.String).Value = item;
         _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int64).Value = id;
 
         _dataReader = await _mySqlCommand.ExecuteReaderAsync();
+        
+        if (_dataReader.HasRows)
+        {
+            while (await _dataReader.ReadAsync())
+            {
+                object name = _dataReader.GetValue(1);
+                object description = _dataReader.GetValue(2);
+                object imgPath = _dataReader.GetValue(3);
+
+                _playList = new GetPlayList(id,name.ToString(), description.ToString(), imgPath.ToString());
+                _playLists.Add(_playList);
+            }
+        }
+        
         await _mySqlConnection.CloseAsync();
 
-        return _dataReader;
+        return _playLists;
     }
 
-    public async Task<DbDataReader> GetLimit(string item, int limit)
+    public async Task<List<GetPlayList>> GetLimit(string item, int limit)
     {
-        const string command = $"SELECT * FROM @Item " +
-                               $"LIMIT = @Limit";
+        _playLists = new List<GetPlayList>();
+        string command = $"SELECT * FROM {item} " +
+                         $"LIMIT @Limit";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
         _mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int64).Value = limit;
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.Int64).Value = item;
-        
-        await _mySqlCommand.ExecuteNonQueryAsync();
+
+       _dataReader =  await _mySqlCommand.ExecuteReaderAsync();
+        if (_dataReader.HasRows)
+        {
+            while (await _dataReader.ReadAsync())
+            {
+                object id = _dataReader.GetValue(0);
+                object name = _dataReader.GetValue(1);
+                object description = _dataReader.GetValue(2);
+                object imgPath = _dataReader.GetValue(3);
+
+                _playList = new GetPlayList((int)id,name.ToString(), description.ToString(), imgPath.ToString());
+                _playLists.Add(_playList);
+            }
+        }
         await _mySqlConnection.CloseAsync();
 
-        return _dataReader;
+        return _playLists;
     }
 
-    public async Task DeleteId(string item, int id)
+    public async Task<bool> DeleteId(string item, int id)
     {
-        const string command = $"DELETE FROM @Item " +
-                               $"WHERE id = @Id";
+        string command = $"DELETE FROM {item} " +
+                         $"WHERE id = @Id";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.String).Value = item;
         _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int64).Value = id;
 
-        await _mySqlCommand.ExecuteNonQueryAsync();
-        await _mySqlConnection.CloseAsync();
+        try
+        {
+            await _mySqlCommand.ExecuteNonQueryAsync();
+            await _mySqlConnection.CloseAsync();
+        }
+        catch (MySqlException e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+
+        return true;
     }
 
-    public async Task Update(string item, string purpose, int id)
+    public async Task<bool> Update(string item, string purpose, string field, int id)
     {
-        const string command = $"UPDATE @Item " +
-                               $"SET name = @Purpose " +
-                               $"WHERE id = @Id";
+        string command = $"UPDATE {item} " +
+                         $"SET {field} = @Purpose " +
+                         $"WHERE id = @Id";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.String).Value = item;
-        _mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.VarChar).Value = purpose;
+        _mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.LongText).Value = purpose;
         _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int64).Value = id;
-        
-        await _mySqlCommand.ExecuteNonQueryAsync();
-        await _mySqlConnection.CloseAsync();
+
+        try
+        {
+            await _mySqlCommand.ExecuteNonQueryAsync();
+            await _mySqlConnection.CloseAsync();
+        }
+        catch (MySqlException e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+
+        return true;
     }
 }

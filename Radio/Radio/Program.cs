@@ -1,10 +1,15 @@
 using System.Configuration;
+using System.Data.Common;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Radio.Data.LdapConnect;
+using Radio.Controller.PlayList;
+using Radio.Data.Repository.PlayList;
 using Radio.Model.JwtTokenConfig;
 using Radio.Services.GeneratorTokenServices;
+using Radio.Services.LdapConnectService;
+using Radio.Services.PlayListServices;
+using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,27 +23,27 @@ builder.Services.AddCors(options =>
 });
 JwtTokenConfig jwtTokenConfig = new JwtTokenConfig();
 builder.Services.AddSingleton(jwtTokenConfig);
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(options =>
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("admin", policyBuilder => 
+    policyBuilder.RequireRole("admin"));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
+).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidAudience = jwtTokenConfig.Audience,
-            ValidIssuer = jwtTokenConfig.Issuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)),
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidAudience = jwtTokenConfig.Audience,
+        ValidIssuer = jwtTokenConfig.Issuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)),
+    };
+});
+builder.Services.AddScoped<IPlayListRepository, PlayListRepository>();
+builder.Services.AddScoped<IPlayListServices, PlayListServices>();
 builder.Services.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
-builder.Services.AddSingleton<ILdapConnect, LdapConnectService>();
+builder.Services.AddSingleton<ILdapConnectService, LdapConnectServiceService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
