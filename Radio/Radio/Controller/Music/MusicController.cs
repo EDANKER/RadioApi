@@ -31,6 +31,7 @@ public class MusicController : ControllerBase, IMusicController
         _musicRepository = musicRepository;
     }
 
+    [HttpGet]
     public Task<IActionResult> PlayMusic()
     {
         throw new NotImplementedException();
