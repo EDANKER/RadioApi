@@ -2,7 +2,7 @@
 
 public class Music
 {
-    public Music(string name, string path, string idPlayList)
+    public Music(string name, string path, int idPlayList)
     {
         Name = name;
         Path = path;
@@ -11,5 +11,5 @@ public class Music
 
     public string Name { get; set; }
     public string Path { get; set; }
-    public string IdPlayList { get; set; }
+    public int IdPlayList { get; set; }
 }

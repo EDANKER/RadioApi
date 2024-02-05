@@ -4,10 +4,12 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Radio.Controller.PlayList;
+using Radio.Data.Repository;
 using Radio.Data.Repository.PlayList;
 using Radio.Model.JwtTokenConfig;
 using Radio.Services.GeneratorTokenServices;
 using Radio.Services.LdapConnectService;
+using Radio.Services.MusicServices;
 using Radio.Services.PlayListServices;
 using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
 
@@ -40,6 +42,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)),
     };
 });
+builder.Services.AddScoped<IMusicServices, MusicServices>();
+builder.Services.AddScoped<IMusicRepository, MusicRepository>();
 builder.Services.AddScoped<IPlayListRepository, PlayListRepository>();
 builder.Services.AddScoped<IPlayListServices, PlayListServices>();
 builder.Services.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();

@@ -12,6 +12,7 @@ public interface IUserRepository
     public Task Delete(string item, string name);
     public Task DeleteName(string item, string name);
     public Task Update(string item, string name);
+    public Task<bool> Search(string item, string name);
 }
 
 public class UserRepository : IUserRepository
@@ -134,5 +135,23 @@ public class UserRepository : IUserRepository
 
         await _mySqlCommand.ExecuteNonQueryAsync();
         await _mySqlConnection.CloseAsync();
+    }
+    
+    public async Task<bool> Search(string item, string name)
+    {
+        string command = $"SELECT EXISTS(SELECT * FROM {item} " +
+                         $"WHERE name = @Name)";
+        
+        _mySqlConnection = new MySqlConnection(_connect);
+        await _mySqlConnection.OpenAsync();
+
+        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
+        _mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
+
+        object? exist = await _mySqlCommand.ExecuteScalarAsync();
+        bool convertBool = Convert.ToBoolean(exist);
+        await _mySqlConnection.CloseAsync();
+
+        return convertBool;
     }
 }

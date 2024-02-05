@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Radio.Data.Repository;
+﻿using Microsoft.AspNetCore.Mvc;
 using Radio.Data.Repository.PlayList;
 using Radio.Services.PlayListServices;
 
@@ -9,7 +7,7 @@ namespace Radio.Controller.PlayList;
 public interface IPlayListController
 {
     public Task<IActionResult> CreatePlayList(Model.PlayList.PlayList playList);
-    public Task<IActionResult> UpdatePlayList(string purpose, int id);
+    public Task<IActionResult> UpdatePlayList(string field, string purpose, int id);
     public Task<IActionResult> DeletePlayList(int id);
     public Task<IActionResult> GetPlayListId(int id);
     public Task<IActionResult> GetPlayList(int limit);
@@ -31,13 +29,18 @@ public class PlayListController : ControllerBase, IPlayListController
     [HttpPost("[action]")]
     public async Task<IActionResult> CreatePlayList([FromBody] Model.PlayList.PlayList playList)
     {
+        if (await _repository.Search("PlayList", playList.Name))
+        {
+            return BadRequest("Такие данные уже есть или данные пусты");
+        }
+        
         return Ok(await _repository.CreateOrSave("PlayList", playList));
     }
 
     [HttpPut("[action]/{id:int}")]
-    public async Task<IActionResult> UpdatePlayList([FromBody] string purpose, int id)
+    public async Task<IActionResult> UpdatePlayList([FromBody] string field,string purpose, int id)
     {
-        return Ok(await _repository.Update("PlayList", purpose,"Name", id));
+        return Ok(await _repository.Update("PlayList", purpose, field, id));
     }
 
     [HttpDelete("[action]/{id:int}")]

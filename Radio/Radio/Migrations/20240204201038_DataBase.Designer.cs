@@ -10,7 +10,7 @@ using Radio.Data.ApplicationContext;
 namespace Radio.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240129074715_DataBase")]
+    [Migration("20240204201038_DataBase")]
     partial class DataBase
     {
         /// <inheritdoc />
