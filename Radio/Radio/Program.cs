@@ -60,4 +60,9 @@ app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
 
+app.Run(async context =>
+{
+    await context.Response.WriteAsync("Hello");
+});
+
 app.Run();
