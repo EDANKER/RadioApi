@@ -1,9 +1,6 @@
-using System.Configuration;
-using System.Data.Common;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Radio.Controller.PlayList;
 using Radio.Data.Repository;
 using Radio.Data.Repository.PlayList;
 using Radio.Model.JwtTokenConfig;
@@ -11,7 +8,6 @@ using Radio.Services.GeneratorTokenServices;
 using Radio.Services.LdapConnectService;
 using Radio.Services.MusicServices;
 using Radio.Services.PlayListServices;
-using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +15,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("RadioWeb", builder =>
     {
-        builder.WithHeaders("Id");
-        builder.WithOrigins("main.ru");
+        builder.AllowAnyMethod();
     });
 });
 JwtTokenConfig jwtTokenConfig = new JwtTokenConfig();
