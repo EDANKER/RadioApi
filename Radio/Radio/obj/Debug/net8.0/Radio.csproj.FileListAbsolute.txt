@@ -141,3 +141,9 @@ C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\runtimes\win\lib\ne
 C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\Novell.Directory.Ldap.NETStandard.dll
 C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\LightLDAP.dll
 C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\LightLDAPClient.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\NAudio.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\NAudio.Asio.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\NAudio.Core.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\NAudio.Midi.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\NAudio.Wasapi.dll
+C:\Users\edgar\Desktop\RadioApi\Radio\Radio\bin\Debug\net8.0\NAudio.WinMM.dll

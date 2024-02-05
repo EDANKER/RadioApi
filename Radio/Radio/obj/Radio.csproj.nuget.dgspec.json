@@ -70,6 +70,10 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "NAudio": {
+              "target": "Package",
+              "version": "[2.2.1, )"
+            },
             "Novell.Directory.Ldap.NETStandard2_0": {
               "target": "Package",
               "version": "[3.1.0, )"

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mysqlx;
+using NAudio.Wave;
 using Radio.Data.Repository;
 using Radio.Services.MusicServices;
 
@@ -8,7 +9,7 @@ namespace Radio.Controller.Music;
 
 public interface IMusicController
 {
-    public Task<IActionResult> PlayMusic();
+    public Task<IActionResult> PlayMusic(string path);
     public Task<IActionResult> SaveMusic(IFormFile formFile, int id);
     public Task<IActionResult> GetMusicLimit(int limit);
     public Task<IActionResult> GetMusic(int id);
@@ -31,10 +32,16 @@ public class MusicController : ControllerBase, IMusicController
         _musicRepository = musicRepository;
     }
 
-    [HttpGet]
-    public Task<IActionResult> PlayMusic()
+    [HttpPost("PlayMusic")]
+    public async Task<IActionResult> PlayMusic(string path)
     {
-        throw new NotImplementedException();
+        AudioFileReader audioFileReader = new AudioFileReader(path);
+        WaveOutEvent waveOutEvent = new WaveOutEvent();
+        
+        waveOutEvent.Init(audioFileReader);
+        waveOutEvent.Play();
+
+        return Ok();
     }
 
     [HttpPost("[action]/{id:int}")]
@@ -49,8 +56,8 @@ public class MusicController : ControllerBase, IMusicController
         string filePath = Path.Combine(uploadsPath, formFile.FileName);
         FileStream fileStream = new FileStream(filePath, FileMode.Create);
 
-        Model.RequestModel.Music.Music music = new Model.RequestModel.Music.Music(formFile.FileName, uploadsPath, id);
-        await fileStream.CopyToAsync(fileStream);
+        Model.RequestModel.Music.Music music = new Model.RequestModel.Music.Music(formFile.FileName, "Data/Uploads/Music/" + formFile.FileName, id);
+        await formFile.CopyToAsync(fileStream);
 
         return Ok(await _musicRepository.CreateOrSave("Musics", music));
     }

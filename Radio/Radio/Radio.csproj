@@ -19,6 +19,7 @@
         </PackageReference>
         <PackageReference Include="MySql.Data" Version="8.3.0" />
         <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
+        <PackageReference Include="NAudio" Version="2.2.1" />
         <PackageReference Include="Novell.Directory.Ldap.NETStandard2_0" Version="3.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
         <PackageReference Include="System.DirectoryServices.Protocols" Version="8.0.0" />
