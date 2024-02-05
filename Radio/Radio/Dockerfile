@@ -8,7 +8,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Radio/Radio.csproj", "Radio/"]
+COPY ["Radio.csproj", "Radio/"]
 RUN dotnet restore "Radio/Radio.csproj"
 COPY . .
 WORKDIR "/src/Radio"
