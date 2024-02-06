@@ -24,9 +24,8 @@ namespace Radio.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("IdPlayList")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("IdPlayList")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

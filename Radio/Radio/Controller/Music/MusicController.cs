@@ -83,7 +83,7 @@ public class MusicController : ControllerBase, IMusicController
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(string name)
     {
-        return Ok(_musicRepository.Update("Musics", name));
+        return Ok(await _musicRepository.Update("Musics", name));
     }
     
     [HttpGet("[action]")]

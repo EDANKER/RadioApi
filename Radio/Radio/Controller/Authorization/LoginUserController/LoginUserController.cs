@@ -27,6 +27,6 @@ public class LoginUserController : ControllerBase, ILoginUserController
         if (!await _connectService.Validation(authorization.Login, authorization.Password))
             return BadRequest();
 
-        return Ok(_generatorTokenServices.Generator(authorization.Id,authorization.Login));
+        return Ok(_generatorTokenServices.Generator(authorization.Login));
     }
 }

@@ -22,7 +22,7 @@ namespace Radio.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false),
                     Path = table.Column<string>(type: "longtext", nullable: false),
-                    IdPlayList = table.Column<string>(type: "longtext", nullable: false)
+                    IdPlayList = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

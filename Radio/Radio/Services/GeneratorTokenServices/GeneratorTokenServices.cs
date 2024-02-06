@@ -8,14 +8,14 @@ namespace Radio.Services.GeneratorTokenServices;
 
 public interface IGeneratorTokenServices
 {
-    public string Generator(int id, string login);
+    public string Generator(string login);
 }
 
 public class GeneratorTokenServices : IGeneratorTokenServices
 {
-    public string Generator(int id, string login)
+    public string Generator(string login)
     {
-        var clams = Claims(id, login);
+        var clams = Claims(login);
         JwtTokenConfig jwtTokenConfig = new JwtTokenConfig();
         DateTime dateTime = DateTime.UtcNow;
 
@@ -39,7 +39,7 @@ public class GeneratorTokenServices : IGeneratorTokenServices
         return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
     }
 
-    private static List<Claim> Claims(int id, string login)
+    private static List<Claim> Claims(string login)
     {
         List<Claim> claims = new List<Claim>
         {

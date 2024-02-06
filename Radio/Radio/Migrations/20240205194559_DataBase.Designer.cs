@@ -10,7 +10,7 @@ using Radio.Data.ApplicationContext;
 namespace Radio.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240204201038_DataBase")]
+    [Migration("20240205194559_DataBase")]
     partial class DataBase
     {
         /// <inheritdoc />
@@ -27,9 +27,8 @@ namespace Radio.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("IdPlayList")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("IdPlayList")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

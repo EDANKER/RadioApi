@@ -11,13 +11,8 @@ using Radio.Services.PlayListServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("RadioWeb", builder =>
-    {
-        builder.AllowAnyMethod();
-    });
-});
+builder.Services.AddCors();
+
 JwtTokenConfig jwtTokenConfig = new JwtTokenConfig();
 builder.Services.AddSingleton(jwtTokenConfig);
 builder.Services.AddAuthorizationBuilder()

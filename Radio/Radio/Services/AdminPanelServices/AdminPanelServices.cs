@@ -9,6 +9,7 @@ public interface IAdminPanelServices
 {
     public Task<List<User>> GetLimitUser(int limit);
     public List<User> GetIdUser(int id);
+    public List<User> GetName(string name);
 }
 
 public class AdminPanelServices : IAdminPanelServices
@@ -35,6 +36,13 @@ public class AdminPanelServices : IAdminPanelServices
     {
         _users = new List<User>();
         
+        return _users;
+    }
+
+    public List<User> GetName(string name)
+    {
+        _users = new List<User>();
+
         return _users;
     }
 }
