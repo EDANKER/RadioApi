@@ -23,17 +23,23 @@ public class UserRepository : IUserRepository
     private List<GetUser> _getUsers;
     private GetUser _user;
 
-    private string _connect =
-        "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
+    private IConfiguration _configuration;
 
+    public UserRepository(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+    
+    private string Connect => _configuration.GetConnectionString("MySql");
 
+    
     public async Task<string> CreateOrSave(string item, Model.RequestModel.User.User user)
     {
         string command = $"INSERT INTO {item} " +
                          "(FullName, Login, Role) " +
                          "VALUES(@FullName, @Login, @Role)";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -61,7 +67,7 @@ public class UserRepository : IUserRepository
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -94,7 +100,7 @@ public class UserRepository : IUserRepository
         string command = $"SELECT * FROM {item} " +
                          "LIMIT @Limit";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -129,7 +135,7 @@ public class UserRepository : IUserRepository
         string command = $"SELECT * FROM  {item} " +
                          $"WHERE Name = @Name";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -162,7 +168,7 @@ public class UserRepository : IUserRepository
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -190,7 +196,7 @@ public class UserRepository : IUserRepository
                          $"@Login, Role = @Role " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -220,7 +226,7 @@ public class UserRepository : IUserRepository
                          $"WHERE FullName = @FullName " +
                          $"AND Login = @Login)";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
