@@ -1,14 +1,14 @@
 ﻿using System.Data.Common;
 using MySql.Data.MySqlClient;
-using Radio.Model.User;
 
-namespace Radio.Data.Repository;
+namespace Radio.Data.Repository.User;
 
 public interface IUserRepository
 {
-    public Task CreateOrSave(string item, User user);
+    public Task CreateOrSave(string item, Model.User.User user);
     public Task<DbDataReader> GetId(string item, int id);
     public Task<DbDataReader> GetLimit(string item, int limit);
+    public Task<DbDataReader> GetName(string item, string name);
     public Task Delete(string item, string name);
     public Task DeleteName(string item, string name);
     public Task Update(string item, string name);
@@ -17,21 +17,15 @@ public interface IUserRepository
 
 public class UserRepository : IUserRepository
 {
-    private string _connect;
     private MySqlConnection _mySqlConnection;
     private MySqlCommand _mySqlCommand;
     private DbDataReader _dataReader;
 
-    public UserRepository(IConfiguration configuration, MySqlCommand mySqlCommand, MySqlConnection mySqlConnection,
-        DbDataReader dataReader)
-    {
-        _mySqlConnection = mySqlConnection;
-        _dataReader = dataReader;
-        _mySqlCommand = mySqlCommand;
-        _connect = configuration.GetConnectionString("MySql");
-    }
+    private string _connect =
+        "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
 
-    public async Task CreateOrSave(string item, User user)
+
+    public async Task CreateOrSave(string item, Model.User.User user)
     {
         const string command = "INSERT INTO @Item" +
                                "(name, login, speak, settingsTime, " +
@@ -44,7 +38,6 @@ public class UserRepository : IUserRepository
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.String).Value = item;
         _mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = user.Name;
         _mySqlCommand.Parameters.Add("@Login", MySqlDbType.VarChar).Value = user.Login;
         _mySqlCommand.Parameters.Add("@Speak", MySqlDbType.Bit).Value = user.Settings.Speak;
@@ -57,15 +50,14 @@ public class UserRepository : IUserRepository
 
     public async Task<DbDataReader> GetId(string item, int id)
     {
-        const string command = "SELECT * FROM @Item " +
-                               "WHERE id = @Id";
+        string command = $"SELECT * FROM {item} " +
+                         "WHERE id = @Id";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
         _mySqlCommand.Parameters.Add("Item", MySqlDbType.String).Value = item;
-        _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int64).Value = id;
 
         _dataReader = await _mySqlCommand.ExecuteReaderAsync();
 
@@ -76,15 +68,32 @@ public class UserRepository : IUserRepository
 
     public async Task<DbDataReader> GetLimit(string item, int limit)
     {
-        string command = "SELECT * FROM @Item" +
-                         " LIMIT = @Limit";
+        string command = $"SELECT * FROM {item} " +
+                         "LIMIT = @Limit";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
         _mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int64).Value = limit;
-        _mySqlCommand.Parameters.Add("@Item", MySqlDbType.Int64).Value = item;
+
+
+        await _mySqlCommand.ExecuteNonQueryAsync();
+        await _mySqlConnection.CloseAsync();
+
+        return _dataReader;
+    }
+
+    public async Task<DbDataReader> GetName(string item, string name)
+    {
+        string command = $"SELECT * FROM  {item} " +
+                         $"WHERE Name = @Name";
+
+        _mySqlConnection = new MySqlConnection(_connect);
+        await _mySqlConnection.OpenAsync();
+
+        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
+        _mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
 
 
         await _mySqlCommand.ExecuteNonQueryAsync();
@@ -136,12 +145,12 @@ public class UserRepository : IUserRepository
         await _mySqlCommand.ExecuteNonQueryAsync();
         await _mySqlConnection.CloseAsync();
     }
-    
+
     public async Task<bool> Search(string item, string name)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                          $"WHERE name = @Name)";
-        
+
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 

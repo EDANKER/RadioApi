@@ -36,7 +36,7 @@ public class GeneratorTokenServices : IGeneratorTokenServices
             loginUser = login,
         };
 
-        return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        return response.ToString();
     }
 
     private static List<Claim> Claims(string login)
@@ -52,8 +52,8 @@ public class GeneratorTokenServices : IGeneratorTokenServices
 
     private static string Roles(int id)
     {
-        AdminPanelServices.AdminPanelServices adminPanelServices = new AdminPanelServices.AdminPanelServices();
-        foreach (var data in adminPanelServices.GetIdUser(id))
+        AdminPanelServices.UserServices userServices = new AdminPanelServices.UserServices();
+        foreach (var data in userServices.GetIdUser(id))
         {
             return data.Tag;
         }

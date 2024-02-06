@@ -15,7 +15,7 @@ public class LdapConnectServiceService : ILdapConnectService
     {
         try
         {
-            LdapDirectoryIdentifier directoryIdentifier = new LdapDirectoryIdentifier("ldap.it-college.ru:389", false, false);
+            LdapDirectoryIdentifier directoryIdentifier = new LdapDirectoryIdentifier("ldap.it-college.ru:389", true, false);
             NetworkCredential networkCredential = new NetworkCredential("uid=" + id + ",ou=people,ou=Students,dc=it-college,dc=ru", password);
 
             LdapConnection ldapConnection = new LdapConnection(directoryIdentifier, networkCredential, AuthType.Basic);
