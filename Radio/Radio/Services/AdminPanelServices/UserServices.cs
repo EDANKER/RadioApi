@@ -2,18 +2,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Radio.Data.Repository;
 using Radio.Data.Repository.User;
-using Radio.Model.User;
+using Radio.Model.RequestModel.User;
+using Radio.Model.ResponseModel.User;
 
 namespace Radio.Services.AdminPanelServices;
 
-public interface IAdminPanelServices
+public interface IUserServices
 {
     public Task<List<User>> GetLimitUser(int limit);
     public List<User> GetIdUser(int id);
     public List<User> GetName(string name);
 }
 
-public class UserServices : IAdminPanelServices
+public class UserServices : IUserServices
 {
     private List<User> _users;
     private GetUser _user;
@@ -39,9 +40,7 @@ public class UserServices : IAdminPanelServices
                 bool saveMusic = reader.GetBoolean(0);
                 bool settingsScinaria = reader.GetBoolean(0);
                 bool turnOnSector = reader.GetBoolean(0);
-
-                _user = new GetUser(id, role, name, speak, settingsTime, settingsUser, turnOnMusic,
-                    createPlayList, saveMusic, settingsScinaria, turnOnSector);
+                
             }
         }
 

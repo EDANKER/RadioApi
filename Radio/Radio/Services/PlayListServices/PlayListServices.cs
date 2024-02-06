@@ -3,7 +3,6 @@ using Radio.Data.Repository;
 using Radio.Data.Repository.PlayList;
 using Radio.Model.Music;
 using Radio.Model.PlayList;
-using Radio.Model.User;
 
 namespace Radio.Services.PlayListServices;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Radio.Model.Music;
 using Radio.Model.PlayList;
-using Radio.Model.User;
+using Radio.Model.ResponseModel.User;
 
 namespace Radio.Data.ApplicationContext;
 

@@ -5,7 +5,7 @@ namespace Radio.Data.Repository.User;
 
 public interface IUserRepository
 {
-    public Task CreateOrSave(string item, Model.User.User user);
+    public Task<string> CreateOrSave(string item, Model.RequestModel.User.User user);
     public Task<DbDataReader> GetId(string item, int id);
     public Task<DbDataReader> GetLimit(string item, int limit);
     public Task<DbDataReader> GetName(string item, string name);
@@ -25,13 +25,11 @@ public class UserRepository : IUserRepository
         "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
 
 
-    public async Task CreateOrSave(string item, Model.User.User user)
+    public async Task<string> CreateOrSave(string item, Model.RequestModel.User.User user)
     {
-        const string command = "INSERT INTO @Item" +
-                               "(name, login, speak, settingsTime, " +
-                               "SettingsUser, TurnItOneMusic) " +
-                               "VALUES(@Name, @Login, @Speak, " +
-                               "@SettingsUser, @TurnItOneMusic)";
+        string command = $"INSERT INTO {item} " +
+                         "(name, login, Role) " +
+                         "VALUES(@Name, @Login, @Role)";
 
         _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
@@ -39,13 +37,19 @@ public class UserRepository : IUserRepository
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
         _mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = user.Name;
-        _mySqlCommand.Parameters.Add("@Login", MySqlDbType.VarChar).Value = user.Login;
-        _mySqlCommand.Parameters.Add("@Speak", MySqlDbType.Bit).Value = user.Settings.Speak;
-        _mySqlCommand.Parameters.Add("@SettingsUser", MySqlDbType.Bit).Value = user.Settings.SettingsUser;
-        _mySqlCommand.Parameters.Add("@TurnItOneMusic", MySqlDbType.Bit).Value = user.Settings.TurnOnMusic;
+        _mySqlCommand.Parameters.Add("@Login", MySqlDbType.VarChar).Value = user.Role;
 
-        await _mySqlCommand.ExecuteNonQueryAsync();
-        await _mySqlConnection.CloseAsync();
+        try
+        {
+            await _mySqlCommand.ExecuteNonQueryAsync();
+            await _mySqlConnection.CloseAsync();
+        }
+        catch (MySqlException e)
+        {
+            return e.ToString();
+        }
+
+        return "Good";
     }
 
     public async Task<DbDataReader> GetId(string item, int id)

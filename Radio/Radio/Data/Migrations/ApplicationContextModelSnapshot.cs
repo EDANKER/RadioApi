@@ -69,37 +69,13 @@ namespace Radio.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<bool>("CreatePlayList")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("SaveMusic")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("SettingsScinaria")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("SettingsTime")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("SettingsUser")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Speak")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Tag")
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<bool>("TurnItOnMusic")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("TurnOnSector")
-                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 

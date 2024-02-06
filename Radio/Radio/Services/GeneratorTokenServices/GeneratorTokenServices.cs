@@ -55,7 +55,7 @@ public class GeneratorTokenServices : IGeneratorTokenServices
         AdminPanelServices.UserServices userServices = new AdminPanelServices.UserServices();
         foreach (var data in userServices.GetIdUser(id))
         {
-            return data.Tag;
+            
         }
 
         return null;

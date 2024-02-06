@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Radio.Services.GeneratorTokenServices;
 using Radio.Services.LdapConnectService;
 
@@ -12,19 +13,19 @@ public interface ILoginUserController
 [ApiController]
 public class LoginUserController : ControllerBase, ILoginUserController
 {
-    private ILdapConnectService _connectService;
+    private ILdapConnectService _ldapConnectService;
     private IGeneratorTokenServices _generatorTokenServices;
 
-    public LoginUserController(ILdapConnectService connectService, IGeneratorTokenServices generatorTokenServices)
+    public LoginUserController(ILdapConnectService ldapConnectService, IGeneratorTokenServices generatorTokenServices)
     {
-        _connectService = connectService;
+        _ldapConnectService = ldapConnectService;
         _generatorTokenServices = generatorTokenServices;
     }
 
     [HttpPost("[action]")]
     public async Task<IActionResult> Login([FromBody]Model.Authorization.Authorization authorization)
     {
-        if (!await _connectService.Validation(authorization.Login, authorization.Password))
+        if (!await _ldapConnectService.Validation(authorization.Login, authorization.Password))
             return BadRequest();
 
         return Ok(_generatorTokenServices.Generator(authorization.Login));

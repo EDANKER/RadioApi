@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Radio.Data.Repository;
 using Radio.Data.Repository.User;
-using Radio.Model.User;
+using Radio.Model.RequestModel.User;
+using Radio.Services.AdminPanelServices;
 
 
 namespace Radio.Controller.AdminPanel.AdminPanelSettings;
@@ -20,17 +21,18 @@ public interface IAdminPanelSettingsController
 [ApiController]
 public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsController
 {
-    private IUserRepository _repository;
+    private IUserRepository _userRepository;
+    private IUserServices _userServices;
 
-    public AdminPanelSettingsController(IUserRepository repository)
+    public AdminPanelSettingsController(IUserRepository userRepository)
     {
-        _repository = repository;
+        _userRepository = userRepository;
     }
 
     [HttpPost("[action]")]
     public async Task<IActionResult> CreateNewUser(User user)
     {
-        return Ok();
+        return Ok(await _userRepository.CreateOrSave("User", user));
     }
 
     [HttpDelete("[action]")]

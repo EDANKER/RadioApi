@@ -26,7 +26,7 @@ public class LdapConnectServiceService : ILdapConnectService
         
             return Task.FromResult(true);
         }
-        catch (Exception e)
+        catch (LdapException e)
         {
             Console.WriteLine(e);
             return Task.FromResult(false);

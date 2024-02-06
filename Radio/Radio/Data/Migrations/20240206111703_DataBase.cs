@@ -20,7 +20,7 @@ namespace Radio.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false),
+                    Name = table.Column<string>(type: "varchar(30)", nullable: false),
                     Path = table.Column<string>(type: "longtext", nullable: false),
                     IdPlayList = table.Column<int>(type: "int", nullable: false)
                 },
@@ -36,8 +36,8 @@ namespace Radio.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false),
-                    Description = table.Column<string>(type: "longtext", nullable: false),
+                    Name = table.Column<string>(type: "varchar(10)", nullable: false),
+                    Description = table.Column<string>(type: "varchar(50)", nullable: false),
                     ImgPath = table.Column<string>(type: "longtext", nullable: false)
                 },
                 constraints: table =>
@@ -52,16 +52,8 @@ namespace Radio.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Tag = table.Column<string>(type: "longtext", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: false),
-                    Speak = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    SettingsTime = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    SettingsUser = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    TurnItOnMusic = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    CreatePlayList = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    SaveMusic = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    SettingsScinaria = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    TurnOnSector = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    Name = table.Column<string>(type: "varchar(20)", nullable: false),
+                    Role = table.Column<string>(type: "json", nullable: false)
                 },
                 constraints: table =>
                 {

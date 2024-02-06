@@ -1,17 +1,13 @@
-﻿namespace Radio.Model.User;
+﻿namespace Radio.Model.RequestModel.User;
 
 public class User
 {
-    public User(string tag, string name,string login, Settings.Settings settings)
+    public User(string name,string login, string[] role)
     {
-        Tag = tag;
         Name = name;
-        Login = login;
-        Settings = settings;
+        Role = role;
     }
 
-    public string Tag { get; set; }
     public string Name { get; set; }
-    public string Login { get; set; }
-    public Settings.Settings Settings { get; set; }
+    public string[] Role { get; set; }
 }

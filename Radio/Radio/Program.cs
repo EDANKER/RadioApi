@@ -1,9 +1,12 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Radio.Controller.AdminPanel.AdminPanelSettings;
 using Radio.Data.Repository;
 using Radio.Data.Repository.PlayList;
+using Radio.Data.Repository.User;
 using Radio.Model.JwtTokenConfig;
+using Radio.Services.AdminPanelServices;
 using Radio.Services.GeneratorTokenServices;
 using Radio.Services.LdapConnectService;
 using Radio.Services.MusicServices;
@@ -11,7 +14,15 @@ using Radio.Services.PlayListServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("User", policyBuilder =>
+    {
+        policyBuilder.AllowAnyHeader();
+        policyBuilder.AllowAnyMethod();
+        policyBuilder.AllowAnyOrigin();
+    });
+});
 
 JwtTokenConfig jwtTokenConfig = new JwtTokenConfig();
 builder.Services.AddSingleton(jwtTokenConfig);
@@ -32,7 +43,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)),
     };
 });
+builder.Services.AddScoped<IAdminPanelSettingsController, AdminPanelSettingsController>();
+
 builder.Services.AddScoped<IMusicServices, MusicServices>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IMusicRepository, MusicRepository>();
 builder.Services.AddScoped<IPlayListRepository, PlayListRepository>();
 builder.Services.AddScoped<IPlayListServices, PlayListServices>();
@@ -54,5 +69,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
+
+app.UseCors("User");
 
 app.Run();
