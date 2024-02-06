@@ -19,15 +19,13 @@ public interface IMusicRepository
 
 public class MusicRepository : IMusicRepository
 {
-    private string _connect =
-        "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
-
     private MySqlConnection _mySqlConnection;
     private MySqlCommand _mySqlCommand;
     private DbDataReader _dataReader;
     private List<GetMusic> _musicsList;
     private GetMusic _music;
 
+    private const string Connect = "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
 
     public async Task<bool> CreateOrSave(string item, Music music)
     {
@@ -35,14 +33,14 @@ public class MusicRepository : IMusicRepository
                          $"(name, path, idPlayList) " +
                          $"VALUES(@Name, @Path, @IdPlayList)";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
         _mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = music.Name;
         _mySqlCommand.Parameters.Add("@Path", MySqlDbType.LongText).Value = music.Path;
-        _mySqlCommand.Parameters.Add("@IdPlayList", MySqlDbType.Int64).Value = music.IdPlayList;
+        _mySqlCommand.Parameters.Add("@IdPlayList", MySqlDbType.Int32).Value = music.IdPlayList;
 
         try
         {
@@ -64,7 +62,7 @@ public class MusicRepository : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -96,7 +94,7 @@ public class MusicRepository : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT  @Limit";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -130,7 +128,7 @@ public class MusicRepository : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          $"WHERE IdPlayList = @IdPlayList";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -161,7 +159,7 @@ public class MusicRepository : IMusicRepository
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -186,7 +184,7 @@ public class MusicRepository : IMusicRepository
         string command = $"UPDATE {item} " +
                          $"SET {field} = @Purpose";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -211,7 +209,7 @@ public class MusicRepository : IMusicRepository
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                          $"WHERE name = @Name)";
 
-        _mySqlConnection = new MySqlConnection(_connect);
+        _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Radio.Model.JwtTokenConfig;
+using Radio.Model.ResponseModel.User;
 
 namespace Radio.Services.GeneratorTokenServices;
 
@@ -30,10 +31,14 @@ public class GeneratorTokenServices : IGeneratorTokenServices
         );
 
         string jwtSecurityTokenHandler = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+
+
         var response = new
         {
-            access_token = jwtSecurityTokenHandler,
-            loginUser = login,
+            // token = jwtSecurityTokenHandler,
+            // loginUser = data.Login,
+            // FullName = data.FullName,
+            // role = data.Role
         };
 
         return response.ToString();
@@ -44,20 +49,18 @@ public class GeneratorTokenServices : IGeneratorTokenServices
         List<Claim> claims = new List<Claim>
         {
             new Claim(ClaimsIdentity.DefaultNameClaimType, login),
-            // new Claim(ClaimsIdentity.DefaultRoleClaimType, Roles(id)),
+            // new Claim(ClaimsIdentity.DefaultRoleClaimType, Roles()),
         };
-        
+
         return claims;
     }
 
-    private static string Roles(int id)
-    {
-        AdminPanelServices.UserServices userServices = new AdminPanelServices.UserServices();
-        foreach (var data in userServices.GetIdUser(id))
-        {
-            
-        }
-
-        return null;
-    }
+    // private static GetUser Roles(string name)
+    // {
+    //     AdminPanelServices.UserServices userServices = new AdminPanelServices.UserServices();
+    //     foreach (var data in userServices.GetName(name))
+    //     {
+    //         
+    //     }
+    // }
 }

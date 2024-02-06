@@ -25,7 +25,7 @@ public class LoginUserController : ControllerBase, ILoginUserController
     [HttpPost("[action]")]
     public async Task<IActionResult> Login([FromBody]Model.Authorization.Authorization authorization)
     {
-        if (!await _ldapConnectService.Validation(authorization.Login, authorization.Password))
+        if (await _ldapConnectService.Validation(authorization.Login, authorization.Password))
             return BadRequest();
 
         return Ok(_generatorTokenServices.Generator(authorization.Login));

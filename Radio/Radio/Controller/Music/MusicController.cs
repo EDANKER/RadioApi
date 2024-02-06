@@ -51,6 +51,11 @@ public class MusicController : ControllerBase, IMusicController
         {
             return BadRequest("Такие данные уже есть или данные пусты");
         }
+        
+        if (formFile.ContentType != "audio/mpeg")
+        {
+            return BadRequest("Только audio/mpeg");
+        }
 
         string uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Data/Uploads/Music");
         string filePath = Path.Combine(uploadsPath, formFile.FileName);

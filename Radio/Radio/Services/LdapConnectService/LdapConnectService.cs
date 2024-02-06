@@ -1,7 +1,5 @@
 ﻿using System.DirectoryServices.Protocols;
 using System.Net;
-using LdapConnection = System.DirectoryServices.Protocols.LdapConnection;
-
 namespace Radio.Services.LdapConnectService;
 
 public interface ILdapConnectService
@@ -13,17 +11,17 @@ public class LdapConnectServiceService : ILdapConnectService
 {
     public Task<bool> Validation(string id, string password)
     {
+        LdapDirectoryIdentifier directoryIdentifier = new LdapDirectoryIdentifier("10.3.0.9:389", false, false);
+        NetworkCredential networkCredential =
+            new NetworkCredential("uid=" + id + ",ou=people,ou=Students,dc=it-college,dc=ru", password);
+
+        LdapConnection ldapConnection = new LdapConnection(directoryIdentifier, networkCredential, AuthType.Basic);
+        ldapConnection.SessionOptions.SecureSocketLayer = false;
+        ldapConnection.SessionOptions.ProtocolVersion = 3;
+        
         try
         {
-            LdapDirectoryIdentifier directoryIdentifier = new LdapDirectoryIdentifier("10.3.0.9:389", false, false);
-            NetworkCredential networkCredential = new NetworkCredential("uid=" + id + ",ou=people,ou=Students,dc=it-college,dc=ru", password);
-
-            LdapConnection ldapConnection = new LdapConnection(directoryIdentifier, networkCredential, AuthType.Basic);
-            ldapConnection.SessionOptions.SecureSocketLayer = false;
-            ldapConnection.SessionOptions.ProtocolVersion = 3;
-
             ldapConnection.Bind();
-        
             return Task.FromResult(true);
         }
         catch (LdapException e)

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Radio.Data.Repository;
+﻿using Microsoft.AspNetCore.Mvc;
 using Radio.Data.Repository.User;
 using Radio.Model.RequestModel.User;
 using Radio.Services.AdminPanelServices;
@@ -11,12 +9,11 @@ namespace Radio.Controller.AdminPanel.AdminPanelSettings;
 public interface IAdminPanelSettingsController
 {
     public Task<IActionResult> CreateNewUser(User user);
-    public Task<IActionResult> DeleteUser(string name);
-    public Task<IActionResult> UpdateUser(User user);
+    public Task<IActionResult> DeleteUserId(int id);
+    public Task<IActionResult> UpdateUser(User user, int id);
     public Task<IActionResult> GetUser(int limit);
-    public Task<IActionResult> GetNameUser(string name);
+    public Task<IActionResult> GetIdUser(int id);
 }
-[Authorize(Roles = "Admin")]
 [Route("api/v1/[controller]")]
 [ApiController]
 public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsController
@@ -24,38 +21,44 @@ public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsC
     private IUserRepository _userRepository;
     private IUserServices _userServices;
 
-    public AdminPanelSettingsController(IUserRepository userRepository)
+    public AdminPanelSettingsController(IUserRepository userRepository, IUserServices userServices)
     {
         _userRepository = userRepository;
+        _userServices = userServices;
     }
 
     [HttpPost("[action]")]
     public async Task<IActionResult> CreateNewUser(User user)
     {
-        return Ok(await _userRepository.CreateOrSave("User", user));
+        if (await _userRepository.Search("Users",user.FullName, user.Login))
+        {
+            return BadRequest("Такие данные уже есть");
+        }
+        
+        return Ok(await _userRepository.CreateOrSave("Users", user));
     }
 
     [HttpDelete("[action]")]
-    public async Task<IActionResult> DeleteUser(string name)
+    public async Task<IActionResult> DeleteUserId(int id)
     {
-        return Ok();
+        return Ok(await _userRepository.DeleteId("Users", id));
     }
 
-    [HttpPut("[action]")]
-    public async Task<IActionResult> UpdateUser(User user)
+    [HttpPut("[action]{id:int}")]
+    public async Task<IActionResult> UpdateUser(User user, int id)
     {
-        return Ok();
+        return Ok(await _userRepository.Update("Users", user, id));
     }
 
-    [HttpGet("[action]/{limit:int}")]
-    public Task<IActionResult> GetUser(int limit)
+    [HttpGet("GetLimitUser/{limit:int}")]
+    public async Task<IActionResult> GetUser(int limit)
     {
-        throw new NotImplementedException();
+        return Ok(await _userServices.GetLimitUser("Users", limit));
     }
 
-    [HttpGet("[action]/{name}")]
-    public Task<IActionResult> GetNameUser(string name)
+    [HttpGet("[action]/{id:int}")]
+    public async Task<IActionResult> GetIdUser(int id)
     {
-        throw new NotImplementedException();
+        return Ok(await _userServices.GetIdUser("Users", id));
     }
 }

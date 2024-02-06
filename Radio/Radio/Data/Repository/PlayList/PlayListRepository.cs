@@ -29,7 +29,7 @@ public class PlayListRepository : IPlayListRepository
 
     public async Task<bool> CreateOrSave(string item, Model.PlayList.PlayList playList)
     {
-        string command = $"INSERT INTO {item}" +
+        string command = $"INSERT INTO {item} " +
                          "(name, description ,imgPath)" +
                          "VALUES(@Name, @Description,@ImgPath)";
 
