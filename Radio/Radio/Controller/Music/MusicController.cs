@@ -14,7 +14,7 @@ public interface IMusicController
     public Task<IActionResult> GetMusicLimit(int limit);
     public Task<IActionResult> GetMusic(int id);
     public Task<IActionResult> DeleteMusic(int id);
-    public Task<IActionResult> Update(string name);
+    public Task<IActionResult> Update(string name, string field);
     public Task<IActionResult> GetPlayListTag(int id);
 
 }
@@ -62,7 +62,7 @@ public class MusicController : ControllerBase, IMusicController
         return Ok(await _musicRepository.CreateOrSave("Musics", music));
     }
 
-    [HttpGet("[action]Limit/{limit:int}")]
+    [HttpGet("GetMusicLimit/{limit:int}")]
     public async Task<IActionResult> GetMusicLimit(int limit)
     {
         return Ok(await _musicServices.GetMusic("Musics",limit));
@@ -81,9 +81,9 @@ public class MusicController : ControllerBase, IMusicController
     }
 
     [HttpPut("[action]")]
-    public async Task<IActionResult> Update(string name)
+    public async Task<IActionResult> Update([FromBody]string name, [FromHeader]string field)
     {
-        return Ok(await _musicRepository.Update("Musics", name));
+        return Ok(await _musicRepository.Update("Musics", field, name));
     }
     
     [HttpGet("[action]")]

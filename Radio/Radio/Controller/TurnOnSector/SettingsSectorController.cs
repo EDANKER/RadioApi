@@ -5,9 +5,11 @@ namespace Radio.Controller.TurnOnSector;
 public interface ISettingsSectorController
 {
     public Task<IActionResult> GetData();
-    public Task<IActionResult> Broadcast();
+    public Task<IActionResult> BroadcastOn();
 }
 
+[ApiController]
+[Route("api/v1/[controller]")]
 public class SettingsSectorController : ControllerBase, ISettingsSectorController
 {
     [HttpGet("[action]")]
@@ -16,7 +18,8 @@ public class SettingsSectorController : ControllerBase, ISettingsSectorControlle
         return Ok();
     }
 
-    public Task<IActionResult> Broadcast()
+    [HttpPost("[action]{id:int}")]
+    public Task<IActionResult> BroadcastOn()
     {
         throw new NotImplementedException();
     }

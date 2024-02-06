@@ -38,7 +38,7 @@ public class PlayListController : ControllerBase, IPlayListController
     }
 
     [HttpPut("[action]/{id:int}")]
-    public async Task<IActionResult> UpdatePlayList([FromBody] string field,string purpose, int id)
+    public async Task<IActionResult> UpdatePlayList([FromHeader] string field, [FromBody] string purpose, int id)
     {
         return Ok(await _repository.Update("PlayList", purpose, field, id));
     }
