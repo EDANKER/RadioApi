@@ -45,7 +45,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)),
     };
 });
-builder.Services.AddScoped<IConfiguration,ConfigurationManager>();
 builder.Services.AddScoped<IAdminPanelSettingsController, AdminPanelSettingsController>();
 builder.Services.AddScoped<IMusicServices, MusicServices>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

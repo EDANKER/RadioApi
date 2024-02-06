@@ -24,13 +24,8 @@ public class UserRepository : IUserRepository
     private GetUser _user;
 
     private IConfiguration _configuration;
-
-    public UserRepository(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
     
-    private string Connect => _configuration.GetConnectionString("MySql");
+    private const string Connect = "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
 
     
     public async Task<string> CreateOrSave(string item, Model.RequestModel.User.User user)
