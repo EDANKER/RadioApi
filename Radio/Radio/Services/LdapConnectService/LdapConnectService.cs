@@ -19,7 +19,7 @@ public class LdapConnectServiceService : ILdapConnectService
             NetworkCredential networkCredential = new NetworkCredential("uid=" + id + ",ou=people,ou=Students,dc=it-college,dc=ru", password);
 
             LdapConnection ldapConnection = new LdapConnection(directoryIdentifier, networkCredential, AuthType.Basic);
-            ldapConnection.SessionOptions.SecureSocketLayer = true;
+            ldapConnection.SessionOptions.SecureSocketLayer = false;
             ldapConnection.SessionOptions.ProtocolVersion = 3;
 
             ldapConnection.Bind();
