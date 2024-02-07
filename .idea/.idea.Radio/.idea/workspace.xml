@@ -13,18 +13,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb8ca292-873c-42a7-91aa-fa8e0eaae2fb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/Api/Api.http" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.exe" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/apphost.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/ref/Api.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/ref/Api.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/refint/Api.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/refint/Api.dll" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,7 +203,7 @@
       <workItem from="1707326318614" duration="247000" />
       <workItem from="1707326578723" duration="493000" />
       <workItem from="1707327117702" duration="208000" />
-      <workItem from="1707327414405" duration="681000" />
+      <workItem from="1707327414405" duration="1041000" />
     </task>
     <servers />
   </component>
