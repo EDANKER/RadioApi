@@ -13,7 +13,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb8ca292-873c-42a7-91aa-fa8e0eaae2fb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Api/Api.http" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/appsettings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -203,7 +202,7 @@
       <workItem from="1707326318614" duration="247000" />
       <workItem from="1707326578723" duration="493000" />
       <workItem from="1707327117702" duration="208000" />
-      <workItem from="1707327414405" duration="1041000" />
+      <workItem from="1707327414405" duration="1445000" />
     </task>
     <servers />
   </component>
@@ -212,24 +211,5 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/Api/Program.cs</url>
-          <line>76</line>
-          <properties documentPath="C:\Users\edgar\Desktop\RadioApi\src\Api\Program.cs" initialLine="76" containingFunctionPresentation="">
-            <startOffsets>
-              <option value="2773" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2793" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
