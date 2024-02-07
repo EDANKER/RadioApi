@@ -1,0 +1,90 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AWSSDK.S3" Version="3.7.305.12" />
+        <PackageReference Include="LDAPconnection" Version="1.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="MySql.Data" Version="8.3.0" />
+        <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
+        <PackageReference Include="NAudio" Version="2.2.1" />
+        <PackageReference Include="Novell.Directory.Ldap.NETStandard2_0" Version="3.1.0" />
+        <PackageReference Include="NUnit" Version="4.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="System.DirectoryServices.Protocols" Version="8.0.0" />
+    </ItemGroup>
+    
+
+    <ItemGroup>
+      <Compile Update="**\*.cs">
+      <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Test\Test\AdminPanelSettingsControllerTest.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Test\Test\GetPlayListControllerTest.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Test\Test\GetUserControllerTest.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\Music\Music.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\PlayList\PlayList.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Services\MusicServices\MusicServices.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Controller\Authorization\LoginUserController\LoginUserController.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\OutPutModel\Music\GetMusic.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\OutPutModel\User\GetUser.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\OutPutModel\PlayList\GetPlayList.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Data\Repository\User\UserRepository.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Data\Repository\Music\MusicRepository.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Data\Repository\PlayList\PlayListRepository.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+      <Compile Update="Model\ResponseModel\Scenari\GetScenari.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Tests\Tests\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="Tests\Tests\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="Tests\Tests\obj\TestProject1.csproj.nuget.dgspec.json" />
+    </ItemGroup>
+
+</Project>
