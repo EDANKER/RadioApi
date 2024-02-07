@@ -13,93 +13,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb8ca292-873c-42a7-91aa-fa8e0eaae2fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Api/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/.dockerignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/.idea/.idea.Radio/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/.idea/.idea.Radio/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/.idea/.idea.Radio/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/.idea/.idea.Radio/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/.idea/.idea.Radio/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/.idea/.idea.Radio/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/.idea/.idea.Radio/.idea/projectSettingsUpdater.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/.idea/.idea.Radio/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/.idea/.idea.Radio/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Controller/AdminPanel/AdminPanelSettings/AdminPanelSettingsController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Controller/Authorization/LoginUserController/LoginUserController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Controller/LifeSessionAudio/LifeSessionAudioController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Controller/Music/MusicController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Controller/PlayList/PlayListController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Controller/SettingsScenari/SettingsScenariController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Controller/TurnOnSector/SettingsSectorController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/ApplicationContext/ApplicationContext.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Migrations/20240206175640_DataBase.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Migrations/20240206175640_DataBase.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Migrations/20240207132658_Scenari.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Migrations/20240207132658_Scenari.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Migrations/ApplicationContextModelSnapshot.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Repository/Music/MusicRepository.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Repository/PlayList/PlayListRepository.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Repository/Scenari/ScenariRepository.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Data/Repository/User/UserRepository.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/Authorization/Authorization.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/JwtTokenConfig/JwtTokenConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/RequestModel/Music/Music.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/RequestModel/PlayList/PlayList.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/RequestModel/Scenari/Scenari.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/RequestModel/User/User.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/ResponseModel/Music/GetMusic.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/ResponseModel/PlayList/GetPlayList.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/ResponseModel/Scenari/GetScenari.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Model/ResponseModel/User/GetUser.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Program.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Properties/launchSettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Radio.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Radio.sln" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Services/GeneratorTokenServices/GeneratorTokenServices.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Services/JsonServices/WorkingWithJsonServices.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Services/LdapConnectService/LdapConnectService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Services/MusicServices/MusicServices.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Services/PlayListServices/PlayListServices.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Services/SettingsScenariServices/ScenariServices.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/Services/UserServices/UserServices.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/appsettings.Development.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/appsettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Debug/net8.0/Radio.AssemblyInfo.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Debug/net8.0/Radio.AssemblyInfoInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Debug/net8.0/Radio.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Debug/net8.0/Radio.GlobalUsings.g.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Debug/net8.0/Radio.assets.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Debug/net8.0/Radio.csproj.AssemblyReference.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Radio.csproj.nuget.dgspec.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Radio.csproj.nuget.g.props" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/Radio.csproj.nuget.g.targets" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/project.assets.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/project.nuget.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/project.packagespec.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/Radio/obj/rider.project.restore.info" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/GlobalUsings.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/RadioTest.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/UnitTest1.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/Debug/net8.0/RadioTest.AssemblyInfo.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/Debug/net8.0/RadioTest.AssemblyInfoInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/Debug/net8.0/RadioTest.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/Debug/net8.0/RadioTest.GlobalUsings.g.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/Debug/net8.0/RadioTest.assets.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/Debug/net8.0/RadioTest.csproj.AssemblyReference.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/RadioTest.csproj.nuget.dgspec.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/RadioTest.csproj.nuget.g.props" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/RadioTest.csproj.nuget.g.targets" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/project.assets.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/project.nuget.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/project.packagespec.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Radio/RadioTest/obj/rider.project.restore.info" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Radio/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Radio/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Api/Api.http" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Api.http" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,28 +40,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.Radio.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;deploy&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.Api: http.executor": "Run",
+    ".NET Project.Radio.executor": "Run",
+    "HTTP Request.All in Api.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "deploy",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\edgar\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\edgar\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\edgar\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\edgar\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\edgar\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\edgar\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.Api: http">
+    <configuration name="All in Api" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$PROJECT_DIR$/src/Api/Api.http">
+      <method v="2" />
+    </configuration>
     <configuration name="Api: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/src/Api/Api.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net8.0" />
@@ -265,6 +185,11 @@
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="HTTP Request.All in Api" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -278,6 +203,7 @@
       <workItem from="1707326318614" duration="247000" />
       <workItem from="1707326578723" duration="493000" />
       <workItem from="1707327117702" duration="208000" />
+      <workItem from="1707327414405" duration="322000" />
     </task>
     <servers />
   </component>
@@ -286,5 +212,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/src/Api/Program.cs</url>
+          <line>76</line>
+          <properties documentPath="C:\Users\edgar\Desktop\RadioApi\src\Api\Program.cs" initialLine="76" containingFunctionPresentation="">
+            <startOffsets>
+              <option value="2773" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2793" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
