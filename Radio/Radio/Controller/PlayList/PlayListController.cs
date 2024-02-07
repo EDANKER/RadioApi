@@ -26,7 +26,7 @@ public class PlayListController : ControllerBase, IPlayListController
         _repository = repository;
     }
 
-    [HttpPost("[action]")]
+    [HttpPost("CreatePlayList")]
     public async Task<IActionResult> CreatePlayList([FromBody] Model.PlayList.PlayList playList)
     {
         if (await _repository.Search("PlayList", playList.Name))
@@ -37,13 +37,13 @@ public class PlayListController : ControllerBase, IPlayListController
         return Ok(await _repository.CreateOrSave("PlayList", playList));
     }
 
-    [HttpPut("[action]/{id:int}")]
+    [HttpPatch("UpdatePlayList/{id:int}")]
     public async Task<IActionResult> UpdatePlayList([FromHeader] string field, [FromBody] string purpose, int id)
     {
         return Ok(await _repository.Update("PlayList", purpose, field, id));
     }
 
-    [HttpDelete("[action]/{id:int}")]
+    [HttpDelete("DeletePlayList/{id:int}")]
     public async Task<IActionResult> DeletePlayList(int id)
     {
         return Ok(await _repository.DeleteId("PlayList", id));
@@ -55,7 +55,7 @@ public class PlayListController : ControllerBase, IPlayListController
         return Ok(await _playListServices.GetPlayListId(id));
     }
 
-    [HttpGet("[action]/{limit:int}")]
+    [HttpGet("GetPlayList/{limit:int}")]
     public async Task<IActionResult> GetPlayList(int limit)
     {
         return Ok(await _playListServices.GetPlayList(limit));

@@ -12,13 +12,13 @@ public interface ISettingsSectorController
 [Route("api/v1/[controller]")]
 public class SettingsSectorController : ControllerBase, ISettingsSectorController
 {
-    [HttpGet("[action]")]
+    [HttpGet("GetData")]
     public async Task<IActionResult> GetData()
     {
         return Ok();
     }
 
-    [HttpPost("[action]{id:int}")]
+    [HttpPost("BroadcastOn{id:int}")]
     public Task<IActionResult> BroadcastOn()
     {
         throw new NotImplementedException();

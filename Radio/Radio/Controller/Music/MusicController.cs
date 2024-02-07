@@ -33,7 +33,7 @@ public class MusicController : ControllerBase, IMusicController
     }
 
     [HttpPost("PlayMusic")]
-    public async Task<IActionResult> PlayMusic(string path)
+    public async Task<IActionResult> PlayMusic([FromBody]string path)
     {
         AudioFileReader audioFileReader = new AudioFileReader(path);
         WaveOutEvent waveOutEvent = new WaveOutEvent();
@@ -44,7 +44,7 @@ public class MusicController : ControllerBase, IMusicController
         return Ok();
     }
 
-    [HttpPost("[action]/{id:int}")]
+    [HttpPost("SaveMusic/{id:int}")]
     public async Task<IActionResult> SaveMusic(IFormFile formFile, int id)
     {
         if (formFile == null || await _musicRepository.Search("Musics", formFile.FileName))
@@ -73,25 +73,25 @@ public class MusicController : ControllerBase, IMusicController
         return Ok(await _musicServices.GetMusic("Musics",limit));
     }
 
-    [HttpGet("[action]/{id:int}")]
+    [HttpGet("GetMusic/{id:int}")]
     public async Task<IActionResult> GetMusic(int id)
     {
         return Ok(await _musicServices.GetMusicId("Musics", id));
     }
 
-    [HttpDelete("[action]/{id:int}")]
+    [HttpDelete("DeleteMusic/{id:int}")]
     public async Task<IActionResult> DeleteMusic(int id)
     {
         return Ok(await _musicRepository.DeleteId("Musics", id));
     }
 
-    [HttpPut("[action]")]
+    [HttpPatch("Update")]
     public async Task<IActionResult> Update([FromBody]string name, [FromHeader]string field)
     {
         return Ok(await _musicRepository.Update("Musics", field, name));
     }
     
-    [HttpGet("[action]")]
+    [HttpGet("GetPlayListTag/{id:int}")]
     public async Task<IActionResult> GetPlayListTag(int id)
     {
         return Ok(await _musicServices.GetMusicTagPlayList("Musics", id));

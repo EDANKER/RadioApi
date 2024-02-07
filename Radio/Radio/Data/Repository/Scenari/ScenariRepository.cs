@@ -1,30 +1,30 @@
 ﻿using System.Data.Common;
 using MySql.Data.MySqlClient;
+using Radio.Model.ResponseModel.Scenari;
 using Radio.Model.ResponseModel.User;
 
-namespace Radio.Data.Repository.User;
+namespace Radio.Data.Repository.Scenari;
 
-public interface IUserRepository
+public interface IScenariRepository
 {
     public Task<string> CreateOrSave(string item, Model.RequestModel.User.User user);
-    public Task<List<GetUser>> GetId(string item, int id);
-    public Task<List<GetUser>> GetLimit(string item, int limit);
-    public Task<List<GetUser>> GetName(string item, string name);
+    public Task<List<GetScenari>> GetId(string item, int id);
+    public Task<List<GetScenari>> GetLimit(string item, int limit);
+    public Task<List<GetScenari>> GetName(string item, string name);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, Model.RequestModel.User.User user, int id);
     public Task<bool> Search(string item, string name, string login);
 }
 
-public class UserRepository : IUserRepository
+public class ScenariRepository : IScenariRepository
 {
     private MySqlConnection _mySqlConnection;
     private MySqlCommand _mySqlCommand;
     private DbDataReader _dataReader;
-    private List<GetUser> _getUsers;
-    private GetUser _user;
+    private List<GetScenari> _getScenaris;
+    private GetScenari _getScenari;
 
     private IConfiguration _configuration;
-    
     private const string Connect = "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
 
     
@@ -56,9 +56,9 @@ public class UserRepository : IUserRepository
         return "Good";
     }
 
-    public async Task<List<GetUser>> GetId(string item, int id)
+    public async Task<List<GetScenari>> GetId(string item, int id)
     {
-        _getUsers = new List<GetUser>();
+        _getScenaris = new List<GetScenari>();
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
@@ -74,24 +74,23 @@ public class UserRepository : IUserRepository
         {
             while (await _dataReader.ReadAsync())
             {
-                string fullname = _dataReader.GetString(1);
-                string login = _dataReader.GetString(2);
-                string role = _dataReader.GetString(3);
+                string sector = _dataReader.GetString(1);
+                string time = _dataReader.GetString(2);
 
-                _user = new GetUser(id, fullname, login, role);
-                _getUsers.Add(_user);
+                _getScenari = new GetScenari(id, sector, time);
+                _getScenaris.Add(_getScenari);
             }
         }
 
         await _mySqlConnection.CloseAsync();
         await _dataReader.CloseAsync();
 
-        return _getUsers;
+        return _getScenaris;
     }
 
-    public async Task<List<GetUser>> GetLimit(string item, int limit)
+    public async Task<List<GetScenari>> GetLimit(string item, int limit)
     {
-        _getUsers = new List<GetUser>();
+        _getScenaris = new List<GetScenari>();
         string command = $"SELECT * FROM {item} " +
                          "LIMIT @Limit";
 
@@ -109,24 +108,22 @@ public class UserRepository : IUserRepository
             while (await _dataReader.ReadAsync())
             {
                 int id = _dataReader.GetInt32(0);
-                string fullname = _dataReader.GetString(1);
-                string login = _dataReader.GetString(2);
-                string role = _dataReader.GetString(3);
+                string sector = _dataReader.GetString(1);
+                string time = _dataReader.GetString(2);
 
-                _user = new GetUser(id, fullname, login, role);
-                _getUsers.Add(_user);
+                _getScenari = new GetScenari(id, sector, time);
+                _getScenaris.Add(_getScenari);
             }
         }
 
         await _mySqlConnection.CloseAsync();
         await _dataReader.CloseAsync();
 
-        return _getUsers;
+        return _getScenaris;
     }
 
-    public async Task<List<GetUser>> GetName(string item, string name)
+    public async Task<List<GetScenari>> GetName(string item, string name)
     {
-        _getUsers = new List<GetUser>();
         string command = $"SELECT * FROM  {item} " +
                          $"WHERE Name = @Name";
 
@@ -143,23 +140,23 @@ public class UserRepository : IUserRepository
             while (await _dataReader.ReadAsync())
             {
                 int id = _dataReader.GetInt32(0);
-                string fullname = _dataReader.GetString(1);
-                string login = _dataReader.GetString(2);
-                string role = _dataReader.GetString(3);
+                string sector = _dataReader.GetString(1);
+                string time = _dataReader.GetString(2);
 
-                _user = new GetUser(id, fullname, login, role);
-                _getUsers.Add(_user);
+                _getScenari = new GetScenari(id, sector, time);
+                _getScenaris.Add(_getScenari);
             }
         }
 
         await _dataReader.CloseAsync();
         await _mySqlConnection.CloseAsync();
 
-        return _getUsers;
+        return _getScenaris;
     }
 
     public async Task<bool> DeleteId(string item, int id)
     {
+        _getScenaris = new List<GetScenari>();
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 

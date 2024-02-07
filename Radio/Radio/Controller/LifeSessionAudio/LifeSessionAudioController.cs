@@ -14,7 +14,7 @@ public interface ILifeSessionAudioController
 [ApiController]
 public class LifeSessionAudioController : ControllerBase, ILifeSessionAudioController
 {
-    [HttpPost("[action]")]
+    [HttpPost("LifeSessionAudio")]
     public async Task<IActionResult> LifeSessionAudio(IFormFile formFile)
     {
         string uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Data/Uploads/Music");

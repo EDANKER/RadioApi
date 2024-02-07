@@ -5,14 +5,16 @@ using Microsoft.IdentityModel.Tokens;
 using Radio.Controller.AdminPanel.AdminPanelSettings;
 using Radio.Data.Repository;
 using Radio.Data.Repository.PlayList;
+using Radio.Data.Repository.Scenari;
 using Radio.Data.Repository.User;
 using Radio.Model.JwtTokenConfig;
+using Radio.Model.ResponseModel.Scenari;
 using Radio.Services.AdminPanelServices;
 using Radio.Services.GeneratorTokenServices;
 using Radio.Services.LdapConnectService;
 using Radio.Services.MusicServices;
 using Radio.Services.PlayListServices;
-using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
+using Radio.Services.SettingsScenariServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +47,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)),
     };
 });
+
+builder.Services.AddScoped<IScenariServices, ScenariServices>();
+builder.Services.AddScoped<IScenariRepository, ScenariRepository>();
 builder.Services.AddScoped<IAdminPanelSettingsController, AdminPanelSettingsController>();
 builder.Services.AddScoped<IMusicServices, MusicServices>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -53,7 +58,7 @@ builder.Services.AddScoped<IMusicRepository, MusicRepository>();
 builder.Services.AddScoped<IPlayListRepository, PlayListRepository>();
 builder.Services.AddScoped<IPlayListServices, PlayListServices>();
 builder.Services.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
-builder.Services.AddSingleton<ILdapConnectService, LdapConnectServiceService>();
+builder.Services.AddScoped<ILdapConnectService, LdapConnectServiceService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

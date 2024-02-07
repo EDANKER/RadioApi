@@ -38,13 +38,13 @@ public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsC
         return Ok(await _userRepository.CreateOrSave("Users", user));
     }
 
-    [HttpDelete("[action]")]
+    [HttpDelete("[action]/{id:int}")]
     public async Task<IActionResult> DeleteUserId(int id)
     {
         return Ok(await _userRepository.DeleteId("Users", id));
     }
 
-    [HttpPut("[action]{id:int}")]
+    [HttpPut("[action]/{id:int}")]
     public async Task<IActionResult> UpdateUser(User user, int id)
     {
         return Ok(await _userRepository.Update("Users", user, id));

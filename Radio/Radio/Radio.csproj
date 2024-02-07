@@ -69,6 +69,9 @@
       <Compile Update="Data\Repository\PlayList\PlayListRepository.cs">
         <Attributes>TestFixture</Attributes>
       </Compile>
+      <Compile Update="Model\ResponseModel\Scenari\GetScenari.cs">
+        <Attributes>TestFixture</Attributes>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -85,7 +88,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Uploads\Music\" />
-      <Folder Include="Model\RequestModel\" />
     </ItemGroup>
 
 </Project>

@@ -55,12 +55,12 @@ public class GeneratorTokenServices : IGeneratorTokenServices
         return claims;
     }
 
-    // private static GetUser Roles(string name)
-    // {
-    //     AdminPanelServices.UserServices userServices = new AdminPanelServices.UserServices();
-    //     foreach (var data in userServices.GetName(name))
-    //     {
-    //         
-    //     }
-    // }
+//     private static GetUser Roles(string name)
+//     {
+//         AdminPanelServices.UserServices userServices = new AdminPanelServices.UserServices();
+//         foreach (var data in userServices.GetName(name))
+//         {
+//             
+//         }
+//     }
 }
