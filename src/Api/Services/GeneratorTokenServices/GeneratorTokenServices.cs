@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Radio.Model.JwtTokenConfig;
-using Radio.Model.ResponseModel.User;
 
 namespace Radio.Services.GeneratorTokenServices;
 

@@ -1,4 +1,4 @@
-﻿namespace Radio.Model.RequestModel.User;
+﻿namespace Api.Model.RequestModel.User;
 
 public class User
 {

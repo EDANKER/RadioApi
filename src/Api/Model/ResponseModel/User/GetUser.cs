@@ -1,5 +1,5 @@
 ﻿
-namespace Radio.Model.ResponseModel.User;
+namespace Api.Model.ResponseModel.User;
 
 public class GetUser
 {

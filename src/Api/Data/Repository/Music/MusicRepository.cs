@@ -13,7 +13,7 @@ public interface IMusicRepository
     public Task<List<GetMusic>> GetLimit(string item, int limit);
     public Task<List<GetMusic>> GetPlayListTag(string item, int id);
     public Task<bool> DeleteId(string item, int id);
-    public Task<bool> Update(string item, string field, string name);
+    public Task<bool> Update(string item, string field, string name, int id);
     public Task<bool> Search(string item, string name);
 }
 
@@ -179,16 +179,18 @@ public class MusicRepository : IMusicRepository
         return true;
     }
 
-    public async Task<bool> Update(string item, string field, string name)
+    public async Task<bool> Update(string item, string field, string name, int id)
     {
         string command = $"UPDATE {item} " +
-                         $"SET {field} = @Purpose";
+                         $"SET {field} = @Purpose " +
+                         $"WHERE id = @Id";
 
         _mySqlConnection = new MySqlConnection(Connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
         _mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.LongText).Value = name;
+        _mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
         try
         {

@@ -1,17 +1,17 @@
 using System.Text;
+using Api.Controller.AdminPanel.AdminPanelSettings;
+using Api.Data.Repository.User;
+using Api.Services.MusicServices;
+using Api.Services.PlayListServices;
+using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Radio.Controller.AdminPanel.AdminPanelSettings;
 using Radio.Data.Repository;
 using Radio.Data.Repository.PlayList;
 using Radio.Data.Repository.Scenari;
-using Radio.Data.Repository.User;
 using Radio.Model.JwtTokenConfig;
-using Radio.Services.AdminPanelServices;
 using Radio.Services.GeneratorTokenServices;
 using Radio.Services.LdapConnectService;
-using Radio.Services.MusicServices;
-using Radio.Services.PlayListServices;
 using Radio.Services.SettingsScenariServices;
 
 var builder = WebApplication.CreateBuilder(args);

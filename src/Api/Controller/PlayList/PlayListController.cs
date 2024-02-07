@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Api.Services.PlayListServices;
+using Microsoft.AspNetCore.Mvc;
 using Radio.Data.Repository.PlayList;
-using Radio.Services.PlayListServices;
 
 namespace Radio.Controller.PlayList;
 
@@ -15,49 +15,40 @@ public interface IPlayListController
 [ApiController]
 [Route("api/v1/[controller]")]
 
-public class PlayListController : ControllerBase, IPlayListController
+public class PlayListController(IPlayListServices playListServices) : ControllerBase, IPlayListController
 {
-    private IPlayListServices _playListServices;
-    private IPlayListRepository _repository;
-
-    public PlayListController(IPlayListServices playListServices, IPlayListRepository repository)
-    {
-        _playListServices = playListServices;
-        _repository = repository;
-    }
-
     [HttpPost("CreatePlayList")]
     public async Task<IActionResult> CreatePlayList([FromBody] Model.PlayList.PlayList playList)
     {
-        if (await _repository.Search("PlayList", playList.Name))
+        if (await playListServices.Search("PlayLists", playList.Name))
         {
             return BadRequest("Такие данные уже есть или данные пусты");
         }
         
-        return Ok(await _repository.CreateOrSave("PlayList", playList));
+        return Ok(await playListServices.CreateOrSave("PlayLists", playList));
     }
 
     [HttpPatch("UpdatePlayList/{id:int}")]
     public async Task<IActionResult> UpdatePlayList([FromHeader] string field, [FromBody] string purpose, int id)
     {
-        return Ok(await _repository.Update("PlayList", purpose, field, id));
+        return Ok(await playListServices.Update("PlayLists", purpose, field, id));
     }
 
     [HttpDelete("DeletePlayList/{id:int}")]
     public async Task<IActionResult> DeletePlayList(int id)
     {
-        return Ok(await _repository.DeleteId("PlayList", id));
+        return Ok(await playListServices.DeleteId("PlayLists", id));
     }
 
     [HttpGet("GetPlayListId/{id:int}")]
     public async Task<IActionResult> GetPlayListId(int id)
     {
-        return Ok(await _playListServices.GetPlayListId(id));
+        return Ok(await playListServices.GetPlayListId("PlayLists", id));
     }
 
     [HttpGet("GetPlayList/{limit:int}")]
     public async Task<IActionResult> GetPlayList(int limit)
     {
-        return Ok(await _playListServices.GetPlayList(limit));
+        return Ok(await playListServices.GetPlayList("PlayLists", limit));
     }
 }

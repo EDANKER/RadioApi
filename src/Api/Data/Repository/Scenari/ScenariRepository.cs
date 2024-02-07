@@ -1,18 +1,17 @@
 ﻿using System.Data.Common;
 using MySql.Data.MySqlClient;
 using Radio.Model.ResponseModel.Scenari;
-using Radio.Model.ResponseModel.User;
 
 namespace Radio.Data.Repository.Scenari;
 
 public interface IScenariRepository
 {
-    public Task<string> CreateOrSave(string item, Model.RequestModel.User.User user);
+    public Task<bool> CreateOrSave(string item, Api.Model.RequestModel.User.User user);
     public Task<List<GetScenari>> GetId(string item, int id);
     public Task<List<GetScenari>> GetLimit(string item, int limit);
     public Task<List<GetScenari>> GetName(string item, string name);
     public Task<bool> DeleteId(string item, int id);
-    public Task<bool> Update(string item, Model.RequestModel.User.User user, int id);
+    public Task<bool> Update(string item, Api.Model.RequestModel.User.User user, int id);
     public Task<bool> Search(string item, string name, string login);
 }
 
@@ -27,8 +26,8 @@ public class ScenariRepository : IScenariRepository
     private IConfiguration _configuration;
     private const string Connect = "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
 
-    
-    public async Task<string> CreateOrSave(string item, Model.RequestModel.User.User user)
+
+    public async Task<bool> CreateOrSave(string item, Api.Model.RequestModel.User.User user)
     {
         string command = $"INSERT INTO {item} " +
                          "(FullName, Login, Role) " +
@@ -50,10 +49,10 @@ public class ScenariRepository : IScenariRepository
         }
         catch (MySqlException e)
         {
-            return e.ToString();
+            return false;
         }
 
-        return "Good";
+        return true;
     }
 
     public async Task<List<GetScenari>> GetId(string item, int id)
@@ -180,7 +179,7 @@ public class ScenariRepository : IScenariRepository
         return true;
     }
 
-    public async Task<bool> Update(string item, Model.RequestModel.User.User user, int id)
+    public async Task<bool> Update(string item, Api.Model.RequestModel.User.User user, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET " +

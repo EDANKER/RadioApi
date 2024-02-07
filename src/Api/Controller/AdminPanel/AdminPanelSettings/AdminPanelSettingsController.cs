@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Radio.Data.Repository.User;
-using Radio.Model.RequestModel.User;
-using Radio.Services.AdminPanelServices;
+﻿using Api.Model.RequestModel.User;
+using Api.Services.UserServices;
+using Microsoft.AspNetCore.Mvc;
 
-
-namespace Radio.Controller.AdminPanel.AdminPanelSettings;
+namespace Api.Controller.AdminPanel.AdminPanelSettings;
 
 public interface IAdminPanelSettingsController
 {
@@ -16,49 +14,40 @@ public interface IAdminPanelSettingsController
 }
 [Route("api/v1/[controller]")]
 [ApiController]
-public class AdminPanelSettingsController : ControllerBase, IAdminPanelSettingsController
+public class AdminPanelSettingsController(IUserServices userServices) : ControllerBase, IAdminPanelSettingsController
 {
-    private IUserRepository _userRepository;
-    private IUserServices _userServices;
-
-    public AdminPanelSettingsController(IUserRepository userRepository, IUserServices userServices)
-    {
-        _userRepository = userRepository;
-        _userServices = userServices;
-    }
-
-    [HttpPost("[action]")]
+    [HttpPost("CreateNewUser")]
     public async Task<IActionResult> CreateNewUser(User user)
     {
-        if (await _userRepository.Search("Users",user.FullName, user.Login))
+        if (await userServices.Search("Users",user.FullName, user.Login))
         {
             return BadRequest("Такие данные уже есть");
         }
         
-        return Ok(await _userRepository.CreateOrSave("Users", user));
+        return Ok(await userServices.CreateOrSave("Users", user));
     }
 
-    [HttpDelete("[action]/{id:int}")]
+    [HttpDelete("DeleteUserId/{id:int}")]
     public async Task<IActionResult> DeleteUserId(int id)
     {
-        return Ok(await _userRepository.DeleteId("Users", id));
+        return Ok(await userServices.DeleteId("Users", id));
     }
 
-    [HttpPut("[action]/{id:int}")]
+    [HttpPut("UpdateUser/{id:int}")]
     public async Task<IActionResult> UpdateUser(User user, int id)
     {
-        return Ok(await _userRepository.Update("Users", user, id));
+        return Ok(await userServices.Update("Users", user, id));
     }
 
     [HttpGet("GetLimitUser/{limit:int}")]
     public async Task<IActionResult> GetUser(int limit)
     {
-        return Ok(await _userServices.GetLimitUser("Users", limit));
+        return Ok(await userServices.GetLimitUser("Users", limit));
     }
 
-    [HttpGet("[action]/{id:int}")]
+    [HttpGet("GetIdUser/{id:int}")]
     public async Task<IActionResult> GetIdUser(int id)
     {
-        return Ok(await _userServices.GetIdUser("Users", id));
+        return Ok(await userServices.GetIdUser("Users", id));
     }
 }
