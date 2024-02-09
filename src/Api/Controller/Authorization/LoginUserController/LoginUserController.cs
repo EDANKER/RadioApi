@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Services.LdapConnectService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Radio.Services.GeneratorTokenServices;
-using Radio.Services.LdapConnectService;
 
 namespace Radio.Controller.Authorization.LoginUserController;
 

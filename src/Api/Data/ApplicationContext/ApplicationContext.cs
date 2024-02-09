@@ -4,22 +4,17 @@ using Radio.Model.Music;
 using Radio.Model.PlayList;
 using Radio.Model.ResponseModel.Scenari;
 
-namespace Radio.Data.ApplicationContext;
+namespace Api.Data.ApplicationContext;
 
-public class ApplicationContext : DbContext
+public class ApplicationContext(IConfiguration configuration) : DbContext
 {
     public DbSet<GetPlayList> PlayLists => Set<GetPlayList>();
     public DbSet<GetMusic> Musics => Set<GetMusic>();
     public DbSet<GetUser> Users => Set<GetUser>();
-    public DbSet<GetScenari> Scenaris => Set<GetScenari>();
-    private IConfiguration _configuration;
+    public DbSet<GetScenario> Scenario => Set<GetScenario>();
 
-    public ApplicationContext(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySQL(_configuration.GetConnectionString("MySql"));
+        optionsBuilder.UseMySQL(configuration.GetConnectionString("MySql"));
     }
 }

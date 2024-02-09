@@ -1,18 +1,19 @@
 using System.Text;
 using Api.Controller.AdminPanel.AdminPanelSettings;
+using Api.Data.Repository.Scenari;
 using Api.Data.Repository.User;
+using Api.Services.LdapConnectService;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
+using Api.Services.SaveMusicServices;
+using Api.Services.SettingsScenariServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Radio.Data.Repository;
 using Radio.Data.Repository.PlayList;
-using Radio.Data.Repository.Scenari;
 using Radio.Model.JwtTokenConfig;
 using Radio.Services.GeneratorTokenServices;
-using Radio.Services.LdapConnectService;
-using Radio.Services.SettingsScenariServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,9 +46,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)),
     };
 });
-
-builder.Services.AddScoped<IScenariServices, ScenariServices>();
-builder.Services.AddScoped<IScenariRepository, ScenariRepository>();
+builder.Services.AddScoped<ISaveMusicServices, SaveMusicServices>();
+builder.Services.AddScoped<IScenarioServices, ScenarioServices>();
+builder.Services.AddScoped<IScenarioRepository, ScenarioRepository>();
 builder.Services.AddScoped<IAdminPanelSettingsController, AdminPanelSettingsController>();
 builder.Services.AddScoped<IMusicServices, MusicServices>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

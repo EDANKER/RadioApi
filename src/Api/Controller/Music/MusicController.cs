@@ -1,4 +1,5 @@
 ﻿using Api.Services.MusicServices;
+using Api.Services.SaveMusicServices;
 using Microsoft.AspNetCore.Mvc;
 using NAudio.Wave;
 using Radio.Data.Repository;
@@ -19,7 +20,7 @@ public interface IMusicController
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class MusicController(IMusicServices musicServices)
+public class MusicController(IMusicServices musicServices, ISaveMusicServices saveMusicServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic")]
@@ -47,14 +48,8 @@ public class MusicController(IMusicServices musicServices)
             return BadRequest("Только audio/mpeg");
         }
 
-        string uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Data/Uploads/Music");
-        string filePath = Path.Combine(uploadsPath, formFile.FileName);
-        FileStream fileStream = new FileStream(filePath, FileMode.Create);
 
-        Radio.Model.RequestModel.Music.Music music = new Radio.Model.RequestModel.Music.Music(formFile.FileName, "Data/Uploads/Music/" + formFile.FileName, id);
-        await formFile.CopyToAsync(fileStream);
-
-        return Ok(await musicServices.CreateOrSave("Musics", music));
+        return Ok(await musicServices.CreateOrSave("Musics", await saveMusicServices.SaveMusic(formFile, id)));
     }
 
     [HttpGet("GetMusicLimit/{limit:int}")]

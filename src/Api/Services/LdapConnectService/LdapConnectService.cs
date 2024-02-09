@@ -1,19 +1,22 @@
 ﻿using System.DirectoryServices.Protocols;
 using System.Net;
-namespace Radio.Services.LdapConnectService;
+
+namespace Api.Services.LdapConnectService;
 
 public interface ILdapConnectService
 {
     public Task<bool> Validation(string id, string password);
 }
 
-public class LdapConnectServiceService : ILdapConnectService
+public class LdapConnectServiceService(IConfiguration configuration) : ILdapConnectService
 {
+    private IConfiguration _configuration = configuration;
+
     public Task<bool> Validation(string id, string password)
     {
-        LdapDirectoryIdentifier directoryIdentifier = new LdapDirectoryIdentifier("10.3.0.9:389", false, false);
+        LdapDirectoryIdentifier directoryIdentifier = new LdapDirectoryIdentifier(_configuration.GetSection("Ldap:url").Value, false, false);
         NetworkCredential networkCredential =
-            new NetworkCredential("uid=" + id + ",ou=people,ou=Students,dc=it-college,dc=ru", password);
+            new NetworkCredential("uid=" + id + _configuration.GetSection("Ldap:searchBase").Value, password);
 
         LdapConnection ldapConnection = new LdapConnection(directoryIdentifier, networkCredential, AuthType.Basic);
         ldapConnection.SessionOptions.SecureSocketLayer = false;
