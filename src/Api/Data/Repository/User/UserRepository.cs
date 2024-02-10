@@ -15,7 +15,7 @@ public interface IUserRepository
     public Task<bool> Search(string item, string name, string login);
 }
 
-public class UserRepository : IUserRepository
+public class UserRepository(IConfiguration configuration) : IUserRepository
 {
     private MySqlConnection _mySqlConnection;
     private MySqlCommand _mySqlCommand;
@@ -23,18 +23,15 @@ public class UserRepository : IUserRepository
     private List<GetUser> _getUsers;
     private GetUser _user;
 
-    private IConfiguration _configuration;
-    
-    private const string Connect = "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
+    private readonly string _connect = configuration.GetConnectionString("MySql");
 
-    
     public async Task<bool> CreateOrSave(string item, Api.Model.RequestModel.User.User user)
     {
         string command = $"INSERT INTO {item} " +
                          "(FullName, Login, Role) " +
                          "VALUES(@FullName, @Login, @Role)";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -62,7 +59,7 @@ public class UserRepository : IUserRepository
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -95,7 +92,7 @@ public class UserRepository : IUserRepository
         string command = $"SELECT * FROM {item} " +
                          "LIMIT @Limit";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -130,7 +127,7 @@ public class UserRepository : IUserRepository
         string command = $"SELECT * FROM  {item} " +
                          $"WHERE Name = @Name";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -163,7 +160,7 @@ public class UserRepository : IUserRepository
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -191,7 +188,7 @@ public class UserRepository : IUserRepository
                          $"@Login, Role = @Role " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -221,7 +218,7 @@ public class UserRepository : IUserRepository
                          $"WHERE FullName = @FullName " +
                          $"AND Login = @Login)";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);

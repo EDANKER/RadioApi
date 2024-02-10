@@ -1,4 +1,7 @@
-﻿using Radio.Data.Repository.PlayList;
+﻿using Api.Data.Repository.PlayList;
+using Api.DTO.PlayList;
+using Api.Model.ResponseModel.PlayList;
+using Api.Services.AutoMapperServices;
 using Radio.Model.PlayList;
 
 namespace Api.Services.PlayListServices;
@@ -13,7 +16,7 @@ public interface IPlayListServices
     public Task<bool> Search(string item, string name);
 }
 
-public class PlayListServices(IPlayListRepository playListRepository) : IPlayListServices
+public class PlayListServices(IPlayListRepository playListRepository, IAutoMapperServices<DtoPlayList, GetPlayList> autoMapperServices) : IPlayListServices
 {
     public async Task<bool> CreateOrSave(string item, PlayList playList)
     {
@@ -22,12 +25,12 @@ public class PlayListServices(IPlayListRepository playListRepository) : IPlayLis
 
     public async Task<List<GetPlayList>> GetPlayList(string item,int limit)
     {
-        return await playListRepository.GetLimit("PlayLists", limit);
+        return await playListRepository.GetLimit(item, limit);
     }
 
     public async Task<List<GetPlayList>> GetPlayListId(string item,int id)
     {
-        return await playListRepository.GetId("PlayLists", id);
+        return await playListRepository.GetId(item, id);
     }
 
     public async Task<bool> DeleteId(string item, int id)

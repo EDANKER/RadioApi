@@ -5,7 +5,7 @@ public interface IWorkingWithJson
     
 }
 
-public class WorkingWithJsonServices : IWorkingWithJson
+public class JsonServices : IWorkingWithJson
 {
     
 }

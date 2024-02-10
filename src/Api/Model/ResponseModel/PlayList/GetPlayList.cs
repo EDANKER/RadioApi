@@ -1,17 +1,9 @@
-﻿namespace Radio.Model.PlayList;
+﻿namespace Api.Model.ResponseModel.PlayList;
 
-public class GetPlayList
+public class GetPlayList(int id, string name, string description, string imgPath)
 {
-    public GetPlayList(int id,string name, string description, string imgPath)
-    {
-        Id = id;
-        Name = name;
-        Description = description;
-        ImgPath = imgPath;
-    }
-
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string ImgPath { get; set; }
+    public int Id { get; set; } = id;
+    public string Name { get; set; } = name;
+    public string Description { get; set; } = description;
+    public string ImgPath { get; set; } = imgPath;
 }

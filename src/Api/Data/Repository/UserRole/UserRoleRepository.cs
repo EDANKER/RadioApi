@@ -1,3 +1,5 @@
+using MongoDB.Driver;
+
 namespace Api.Data.Repository.UserRole;
 
 public interface IUserRoleRepository
@@ -8,24 +10,32 @@ public interface IUserRoleRepository
     public Task<bool> GetRoleUser();
 }
 
-public class UserRoleRepository : IUserRoleRepository
+public class UserRoleRepository(IConfiguration configuration) : IUserRoleRepository
 {
-    public Task<bool> CreateOrSave()
+    private string _connect = configuration.GetConnectionString("MongoDb");
+    private MongoClient _mongoClient;
+    
+    public async Task<bool> CreateOrSave()
+    {
+        _mongoClient = new MongoClient(_connect);
+        var data =_mongoClient.ListDatabaseNamesAsync();
+
+        Console.WriteLine(data.Result);
+
+        return true;
+    }
+
+    public async Task<bool> Update()
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> Update()
+    public async Task<bool> Delete()
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> Delete()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> GetRoleUser()
+    public async Task<bool> GetRoleUser()
     {
         throw new NotImplementedException();
     }

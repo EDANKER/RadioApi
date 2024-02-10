@@ -1,8 +1,6 @@
 ﻿using Api.Services.MusicServices;
-using Api.Services.SaveMusicServices;
 using Microsoft.AspNetCore.Mvc;
 using NAudio.Wave;
-using Radio.Data.Repository;
 
 namespace Api.Controller.Music;
 
@@ -20,7 +18,7 @@ public interface IMusicController
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class MusicController(IMusicServices musicServices, ISaveMusicServices saveMusicServices)
+public class MusicController(IMusicServices musicServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic")]
@@ -49,7 +47,7 @@ public class MusicController(IMusicServices musicServices, ISaveMusicServices sa
         }
 
 
-        return Ok(await musicServices.CreateOrSave("Musics", await saveMusicServices.SaveMusic(formFile, id)));
+        return Ok(await musicServices.CreateOrSave("Musics", formFile, id));
     }
 
     [HttpGet("GetMusicLimit/{limit:int}")]

@@ -9,9 +9,11 @@
       "Api/1.0.0": {
         "dependencies": {
           "AutoMapper": "13.0.1",
+          "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.1",
           "Microsoft.AspNetCore.OpenApi": "8.0.0",
           "Microsoft.EntityFrameworkCore.Tools": "8.0.1",
+          "MongoDB.Driver": "2.23.1",
           "MongoDB.Driver.Core": "2.23.1",
           "MySql.Data": "8.3.0",
           "MySql.EntityFrameworkCore": "8.0.0",
@@ -32,6 +34,18 @@
           "lib/net6.0/AutoMapper.dll": {
             "assemblyVersion": "13.0.0.0",
             "fileVersion": "13.0.1.0"
+          }
+        }
+      },
+      "AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1": {
+        "dependencies": {
+          "AutoMapper": "13.0.1",
+          "Microsoft.Extensions.Options": "8.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.1.0"
           }
         }
       },
@@ -593,6 +607,20 @@
           }
         }
       },
+      "MongoDB.Driver/2.23.1": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
+          "MongoDB.Bson": "2.23.1",
+          "MongoDB.Driver.Core": "2.23.1",
+          "MongoDB.Libmongocrypt": "1.8.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/MongoDB.Driver.dll": {
+            "assemblyVersion": "2.23.1.0",
+            "fileVersion": "2.23.1.0"
+          }
+        }
+      },
       "MongoDB.Driver.Core/2.23.1": {
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.100.14",
@@ -1136,6 +1164,13 @@
       "path": "automapper/13.0.1",
       "hashPath": "automapper.13.0.1.nupkg.sha512"
     },
+    "AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+g/K+Vpe3gGMKGzjslMOdqNlkikScDjWfVvmWTayrDHaG/n2pPmFBMa+jKX1r/h6BDGFdkyRjAuhFE3ykW+r1g==",
+      "path": "automapper.extensions.microsoft.dependencyinjection/12.0.1",
+      "hashPath": "automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512"
+    },
     "AWSSDK.Core/3.7.100.14": {
       "type": "package",
       "serviceable": true,
@@ -1457,6 +1492,13 @@
       "sha512": "sha512-IX9tycM35xK5hFwnU+rzharPJOtKYtON6E6Lp2nwOVjh40TUcS/HYToEEWZkLgqKNMCfYPK3Fz3QUCxzhkQRGA==",
       "path": "mongodb.bson/2.23.1",
       "hashPath": "mongodb.bson.2.23.1.nupkg.sha512"
+    },
+    "MongoDB.Driver/2.23.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kidqCwGBuLBx2IcW4os3J6zsp9yaUWm7Sp8G08Nm2RVRSAf0cJXfsynl2wRWpHh0HgfIzzwkevP/qhfsKfu8bQ==",
+      "path": "mongodb.driver/2.23.1",
+      "hashPath": "mongodb.driver.2.23.1.nupkg.sha512"
     },
     "MongoDB.Driver.Core/2.23.1": {
       "type": "package",

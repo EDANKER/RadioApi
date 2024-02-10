@@ -1,13 +1,14 @@
-﻿using System.Data;
-using System.Data.Common;
+﻿using System.Data.Common;
+using Api.DTO.PlayList;
+using Api.Model.ResponseModel.PlayList;
 using MySql.Data.MySqlClient;
 using Radio.Model.PlayList;
 
-namespace Radio.Data.Repository.PlayList;
+namespace Api.Data.Repository.PlayList;
 
 public interface IPlayListRepository
 {
-    public Task<bool> CreateOrSave(string item, Model.PlayList.PlayList playLis);
+    public Task<bool> CreateOrSave(string item, Radio.Model.PlayList.PlayList playLis);
     public Task<List<GetPlayList>> GetId(string item, int id);
     public Task<List<GetPlayList>> GetLimit(string item, int limit);
     public Task<bool> DeleteId(string item, int id);
@@ -15,7 +16,7 @@ public interface IPlayListRepository
     public Task<bool> Search(string item, string name);
 }
 
-public class PlayListRepository : IPlayListRepository
+public class PlayListRepository(IConfiguration configuration) : IPlayListRepository
 {
     private MySqlConnection _mySqlConnection;
     private MySqlCommand _mySqlCommand;
@@ -23,11 +24,9 @@ public class PlayListRepository : IPlayListRepository
     private List<GetPlayList> _playLists;
     private GetPlayList _playList;
 
-    private string _connect =
-        "Server=mysql.students.it-college.ru;Database=i22s0909;" +
-        "Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
+    private readonly string _connect = configuration.GetConnectionString("MySql");
 
-    public async Task<bool> CreateOrSave(string item, Model.PlayList.PlayList playList)
+    public async Task<bool> CreateOrSave(string item, Radio.Model.PlayList.PlayList playList)
     {
         string command = $"INSERT INTO {item} " +
                          "(name, description ,imgPath)" +

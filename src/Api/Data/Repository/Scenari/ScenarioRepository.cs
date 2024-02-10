@@ -15,7 +15,7 @@ namespace Api.Data.Repository.Scenari
         public Task<bool> Search(string item, string name);
     }
 
-    public class ScenarioRepository : IScenarioRepository
+    public class ScenarioRepository(IConfiguration configuration) : IScenarioRepository
     {
         private MySqlConnection _mySqlConnection;
         private MySqlCommand _mySqlCommand;
@@ -23,10 +23,7 @@ namespace Api.Data.Repository.Scenari
         private List<GetScenario> _getScenaris;
         private GetScenario _getScenario;
 
-        private IConfiguration _configuration;
-
-        private const string Connect =
-            "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
+        private readonly string _connect = configuration.GetConnectionString("MySql");
 
 
         public async Task<bool> CreateOrSave(string item, Scenario scenario)
@@ -35,7 +32,7 @@ namespace Api.Data.Repository.Scenari
                              "(Name, Sector, Time) " +
                              "VALUES(@Name, @Time, @Sector)";
 
-            _mySqlConnection = new MySqlConnection(Connect);
+            _mySqlConnection = new MySqlConnection(_connect);
             await _mySqlConnection.OpenAsync();
 
             _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -64,7 +61,7 @@ namespace Api.Data.Repository.Scenari
             string command = $"SELECT * FROM {item} " +
                              "WHERE id = @Id";
 
-            _mySqlConnection = new MySqlConnection(Connect);
+            _mySqlConnection = new MySqlConnection(_connect);
             await _mySqlConnection.OpenAsync();
 
             _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -96,7 +93,7 @@ namespace Api.Data.Repository.Scenari
             string command = $"SELECT * FROM {item} " +
                              "LIMIT @Limit";
 
-            _mySqlConnection = new MySqlConnection(Connect);
+            _mySqlConnection = new MySqlConnection(_connect);
             await _mySqlConnection.OpenAsync();
 
             _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -130,7 +127,7 @@ namespace Api.Data.Repository.Scenari
             string command = $"DELETE FROM {item} " +
                              $"WHERE id = @Id";
 
-            _mySqlConnection = new MySqlConnection(Connect);
+            _mySqlConnection = new MySqlConnection(_connect);
             await _mySqlConnection.OpenAsync();
 
             _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -158,7 +155,7 @@ namespace Api.Data.Repository.Scenari
                              $"@Sector, Time = @Time " +
                              $"WHERE id = @Id";
 
-            _mySqlConnection = new MySqlConnection(Connect);
+            _mySqlConnection = new MySqlConnection(_connect);
             await _mySqlConnection.OpenAsync();
 
             _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -187,7 +184,7 @@ namespace Api.Data.Repository.Scenari
             string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                              $"WHERE Name = @Name)";
 
-            _mySqlConnection = new MySqlConnection(Connect);
+            _mySqlConnection = new MySqlConnection(_connect);
             await _mySqlConnection.OpenAsync();
 
             _mySqlCommand = new MySqlCommand(command, _mySqlConnection);

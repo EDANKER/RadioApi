@@ -1,12 +1,13 @@
-﻿using Api.Services.PlayListServices;
+﻿using Api.Model.ResponseModel.PlayList;
+using Api.Services.PlayListServices;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Radio.Data.Repository.PlayList;
 
-namespace Radio.Controller.PlayList;
+namespace Api.Controller.PlayList;
 
 public interface IPlayListController
 {
-    public Task<IActionResult> CreatePlayList(Model.PlayList.PlayList playList);
+    public Task<IActionResult> CreatePlayList(Radio.Model.PlayList.PlayList playList);
     public Task<IActionResult> UpdatePlayList(string field, string purpose, int id);
     public Task<IActionResult> DeletePlayList(int id);
     public Task<IActionResult> GetPlayListId(int id);
@@ -18,7 +19,7 @@ public interface IPlayListController
 public class PlayListController(IPlayListServices playListServices) : ControllerBase, IPlayListController
 {
     [HttpPost("CreatePlayList")]
-    public async Task<IActionResult> CreatePlayList([FromBody] Model.PlayList.PlayList playList)
+    public async Task<IActionResult> CreatePlayList([FromBody] Radio.Model.PlayList.PlayList playList)
     {
         if (await playListServices.Search("PlayLists", playList.Name))
         {
@@ -49,6 +50,6 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     [HttpGet("GetPlayList/{limit:int}")]
     public async Task<IActionResult> GetPlayList(int limit)
     {
-        return Ok(await playListServices.GetPlayList("PlayLists", limit));
+        return Ok();
     }
 }

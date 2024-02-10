@@ -1,14 +1,12 @@
-﻿using System.Data;
-using System.Data.Common;
+﻿using System.Data.Common;
 using MySql.Data.MySqlClient;
 using Radio.Model.Music;
-using Radio.Model.RequestModel.Music;
 
-namespace Radio.Data.Repository;
+namespace Api.Data.Repository.Music;
 
 public interface IMusicRepository
 {
-    public Task<bool> CreateOrSave(string item, Music music);
+    public Task<bool> CreateOrSave(string item, Radio.Model.RequestModel.Music.Music music);
     public Task<List<GetMusic>> GetId(string item, int id);
     public Task<List<GetMusic>> GetLimit(string item, int limit);
     public Task<List<GetMusic>> GetPlayListTag(string item, int id);
@@ -17,7 +15,7 @@ public interface IMusicRepository
     public Task<bool> Search(string item, string name);
 }
 
-public class MusicRepository : IMusicRepository
+public class MusicRepository(IConfiguration configuration) : IMusicRepository
 {
     private MySqlConnection _mySqlConnection;
     private MySqlCommand _mySqlCommand;
@@ -25,15 +23,15 @@ public class MusicRepository : IMusicRepository
     private List<GetMusic> _musicsList;
     private GetMusic _music;
 
-    private const string Connect = "Server=mysql.students.it-college.ru;Database=i22s0909;Uid=i22s0909;pwd=5x9PVV83;charset=utf8";
+    private readonly string _connect =  configuration.GetConnectionString("MySql");
 
-    public async Task<bool> CreateOrSave(string item, Music music)
+    public async Task<bool> CreateOrSave(string item, Radio.Model.RequestModel.Music.Music music)
     {
         string command = $"INSERT INTO {item} " +
                          $"(name, path, idPlayList) " +
                          $"VALUES(@Name, @Path, @IdPlayList)";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -62,7 +60,7 @@ public class MusicRepository : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -94,7 +92,7 @@ public class MusicRepository : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT  @Limit";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -128,7 +126,7 @@ public class MusicRepository : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          $"WHERE IdPlayList = @IdPlayList";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -159,7 +157,7 @@ public class MusicRepository : IMusicRepository
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -185,7 +183,7 @@ public class MusicRepository : IMusicRepository
                          $"SET {field} = @Purpose " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
@@ -211,7 +209,7 @@ public class MusicRepository : IMusicRepository
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                          $"WHERE name = @Name)";
 
-        _mySqlConnection = new MySqlConnection(Connect);
+        _mySqlConnection = new MySqlConnection(_connect);
         await _mySqlConnection.OpenAsync();
 
         _mySqlCommand = new MySqlCommand(command, _mySqlConnection);

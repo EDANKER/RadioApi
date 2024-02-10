@@ -17,7 +17,7 @@ public interface IAdminPanelSettingsController
 public class AdminPanelSettingsController(IUserServices userServices) : ControllerBase, IAdminPanelSettingsController
 {
     [HttpPost("CreateNewUser")]
-    public async Task<IActionResult> CreateNewUser(User user)
+    public async Task<IActionResult> CreateNewUser([FromBody]User user)
     {
         if (await userServices.Search("Users",user.FullName, user.Login))
         {
@@ -34,7 +34,7 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
     }
 
     [HttpPut("UpdateUser/{id:int}")]
-    public async Task<IActionResult> UpdateUser(User user, int id)
+    public async Task<IActionResult> UpdateUser([FromBody]User user, int id)
     {
         return Ok(await userServices.Update("Users", user, id));
     }
