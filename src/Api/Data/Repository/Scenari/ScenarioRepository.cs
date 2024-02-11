@@ -15,10 +15,8 @@ namespace Api.Data.Repository.Scenari
         public Task<bool> Search(string item, string name);
     }
 
-    public class ScenarioRepository(IConfiguration configuration) : IScenarioRepository
+    public class ScenarioRepository(IConfiguration configuration, MySqlConnection mySqlConnection, MySqlCommand mySqlCommand) : IScenarioRepository
     {
-        private MySqlConnection _mySqlConnection;
-        private MySqlCommand _mySqlCommand;
         private DbDataReader _dataReader;
         private List<GetScenario> _getScenaris;
         private GetScenario _getScenario;
@@ -32,20 +30,20 @@ namespace Api.Data.Repository.Scenari
                              "(Name, Sector, Time) " +
                              "VALUES(@Name, @Time, @Sector)";
 
-            _mySqlConnection = new MySqlConnection(_connect);
-            await _mySqlConnection.OpenAsync();
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
 
-            _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
-            _mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
-            _mySqlCommand.Parameters.Add("@Time", MySqlDbType.DateTime).Value = scenario.Time;
-            _mySqlCommand.Parameters.Add("@Sector", MySqlDbType.LongText).Value = scenario.Sector;
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
+            mySqlCommand.Parameters.Add("@Time", MySqlDbType.DateTime).Value = scenario.Time;
+            mySqlCommand.Parameters.Add("@Sector", MySqlDbType.LongText).Value = scenario.Sector;
 
 
             try
             {
-                await _mySqlCommand.ExecuteNonQueryAsync();
-                await _mySqlConnection.CloseAsync();
+                await mySqlCommand.ExecuteNonQueryAsync();
+                await mySqlConnection.CloseAsync();
             }
             catch (MySqlException e)
             {
@@ -61,13 +59,13 @@ namespace Api.Data.Repository.Scenari
             string command = $"SELECT * FROM {item} " +
                              "WHERE id = @Id";
 
-            _mySqlConnection = new MySqlConnection(_connect);
-            await _mySqlConnection.OpenAsync();
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
 
-            _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-            _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
-            _dataReader = await _mySqlCommand.ExecuteReaderAsync();
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
             if (_dataReader.HasRows)
             {
@@ -81,7 +79,7 @@ namespace Api.Data.Repository.Scenari
                 }
             }
 
-            await _mySqlConnection.CloseAsync();
+            await mySqlConnection.CloseAsync();
             await _dataReader.CloseAsync();
 
             return _getScenaris;
@@ -93,14 +91,14 @@ namespace Api.Data.Repository.Scenari
             string command = $"SELECT * FROM {item} " +
                              "LIMIT @Limit";
 
-            _mySqlConnection = new MySqlConnection(_connect);
-            await _mySqlConnection.OpenAsync();
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
 
-            _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-            _mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
 
 
-            _dataReader = await _mySqlCommand.ExecuteReaderAsync();
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
             if (_dataReader.HasRows)
             {
@@ -115,7 +113,7 @@ namespace Api.Data.Repository.Scenari
                 }
             }
 
-            await _mySqlConnection.CloseAsync();
+            await mySqlConnection.CloseAsync();
             await _dataReader.CloseAsync();
 
             return _getScenaris;
@@ -127,16 +125,16 @@ namespace Api.Data.Repository.Scenari
             string command = $"DELETE FROM {item} " +
                              $"WHERE id = @Id";
 
-            _mySqlConnection = new MySqlConnection(_connect);
-            await _mySqlConnection.OpenAsync();
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
 
-            _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-            _mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             try
             {
-                await _mySqlCommand.ExecuteNonQueryAsync();
-                await _mySqlConnection.CloseAsync();
+                await mySqlCommand.ExecuteNonQueryAsync();
+                await mySqlConnection.CloseAsync();
             }
             catch (MySqlException e)
             {
@@ -155,20 +153,20 @@ namespace Api.Data.Repository.Scenari
                              $"@Sector, Time = @Time " +
                              $"WHERE id = @Id";
 
-            _mySqlConnection = new MySqlConnection(_connect);
-            await _mySqlConnection.OpenAsync();
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
 
-            _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
-            _mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
-            _mySqlCommand.Parameters.Add("@Sector", MySqlDbType.LongText).Value = scenario.Time;
-            _mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
-            _mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
+            mySqlCommand.Parameters.Add("@Sector", MySqlDbType.LongText).Value = scenario.Time;
+            mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
+            mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             try
             {
-                await _mySqlCommand.ExecuteNonQueryAsync();
-                await _mySqlConnection.CloseAsync();
+                await mySqlCommand.ExecuteNonQueryAsync();
+                await mySqlConnection.CloseAsync();
             }
             catch (MySqlException e)
             {
@@ -184,15 +182,15 @@ namespace Api.Data.Repository.Scenari
             string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                              $"WHERE Name = @Name)";
 
-            _mySqlConnection = new MySqlConnection(_connect);
-            await _mySqlConnection.OpenAsync();
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
 
-            _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-            _mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
 
-            object? exist = await _mySqlCommand.ExecuteScalarAsync();
+            object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);
-            await _mySqlConnection.CloseAsync();
+            await mySqlConnection.CloseAsync();
 
             return convertBool;
         }

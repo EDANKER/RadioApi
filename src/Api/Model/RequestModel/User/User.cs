@@ -1,15 +1,8 @@
 ﻿namespace Api.Model.RequestModel.User;
 
-public class User
+public class User(string fullName, string login, List<string> role)
 {
-    public User(string fullName,string login, string role)
-    {
-        FullName = fullName;
-        Login = login;
-        Role = role;
-    }
-
-    public string FullName { get; set; }
-    public string Login { get; set; }
-    public string Role { get; set; }
+    public string FullName { get; set; } = fullName;
+    public string Login { get; set; } = login;
+    public List<string> Role { get; set; } = role;
 }

@@ -2,7 +2,7 @@
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controller.AdminPanel.AdminPanelSettings;
+namespace Api.Controller.AdminPanelSettings;
 
 public interface IAdminPanelSettingsController
 {

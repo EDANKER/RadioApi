@@ -3,12 +3,12 @@ using System.Net;
 
 namespace Api.Services.LdapConnectService;
 
-public interface ILdapConnectService
+public interface ILdapService
 {
     public Task<bool> Validation(string id, string password);
 }
 
-public class LdapConnectService(ILogger<LdapConnectService> logger, IConfiguration configuration) : ILdapConnectService
+public class LdapService(ILogger<LdapService> logger, IConfiguration configuration) : ILdapService
 {
     public Task<bool> Validation(string id, string password)
     {

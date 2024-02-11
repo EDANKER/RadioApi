@@ -50,6 +50,6 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     [HttpGet("GetPlayList/{limit:int}")]
     public async Task<IActionResult> GetPlayList(int limit)
     {
-        return Ok();
+        return Ok(await playListServices.GetPlayList("PlayLists", limit));
     }
 }

@@ -15,10 +15,8 @@ public interface IMusicRepository
     public Task<bool> Search(string item, string name);
 }
 
-public class MusicRepository(IConfiguration configuration) : IMusicRepository
+public class MusicRepository(IConfiguration configuration, MySqlConnection mySqlConnection, MySqlCommand mySqlCommand) : IMusicRepository
 {
-    private MySqlConnection _mySqlConnection;
-    private MySqlCommand _mySqlCommand;
     private DbDataReader _dataReader;
     private List<GetMusic> _musicsList;
     private GetMusic _music;
@@ -31,19 +29,19 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
                          $"(name, path, idPlayList) " +
                          $"VALUES(@Name, @Path, @IdPlayList)";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
-        _mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = music.Name;
-        _mySqlCommand.Parameters.Add("@Path", MySqlDbType.LongText).Value = music.Path;
-        _mySqlCommand.Parameters.Add("@IdPlayList", MySqlDbType.Int32).Value = music.IdPlayList;
+        mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = music.Name;
+        mySqlCommand.Parameters.Add("@Path", MySqlDbType.LongText).Value = music.Path;
+        mySqlCommand.Parameters.Add("@IdPlayList", MySqlDbType.Int32).Value = music.IdPlayList;
 
         try
         {
-            await _mySqlCommand.ExecuteNonQueryAsync();
-            await _mySqlConnection.CloseAsync();
+            await mySqlCommand.ExecuteNonQueryAsync();
+            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
@@ -60,13 +58,13 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
-        _dataReader = await _mySqlCommand.ExecuteReaderAsync();
+        _dataReader = await mySqlCommand.ExecuteReaderAsync();
         if (_dataReader.HasRows)
         {
             while (await _dataReader.ReadAsync())
@@ -81,7 +79,7 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
         }
 
         await _dataReader.CloseAsync();
-        await _mySqlConnection.CloseAsync();
+        await mySqlConnection.CloseAsync();
 
         return _musicsList;
     }
@@ -92,14 +90,14 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT  @Limit";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
 
 
-        _dataReader = await _mySqlCommand.ExecuteReaderAsync();
+        _dataReader = await mySqlCommand.ExecuteReaderAsync();
         if (_dataReader.HasRows)
         {
             while (await _dataReader.ReadAsync())
@@ -115,7 +113,7 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
         }
 
         await _dataReader.CloseAsync();
-        await _mySqlConnection.CloseAsync();
+        await mySqlConnection.CloseAsync();
 
         return _musicsList;
     }
@@ -126,13 +124,13 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
         string command = $"SELECT * FROM {item} " +
                          $"WHERE IdPlayList = @IdPlayList";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@IdPlayList", MySqlDbType.Int32).Value = id;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("@IdPlayList", MySqlDbType.Int32).Value = id;
         
-        _dataReader = await _mySqlCommand.ExecuteReaderAsync();
+        _dataReader = await mySqlCommand.ExecuteReaderAsync();
         if (_dataReader.HasRows)
         {
             while (await _dataReader.ReadAsync())
@@ -147,7 +145,7 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
         }
 
         await _dataReader.CloseAsync();
-        await _mySqlConnection.CloseAsync();
+        await mySqlConnection.CloseAsync();
 
         return _musicsList;
     }
@@ -157,16 +155,16 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
         try
         {
-            await _mySqlCommand.ExecuteNonQueryAsync();
-            await _mySqlConnection.CloseAsync();
+            await mySqlCommand.ExecuteNonQueryAsync();
+            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
@@ -183,17 +181,17 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
                          $"SET {field} = @Purpose " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.LongText).Value = name;
-        _mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.LongText).Value = name;
+        mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
         try
         {
-            await _mySqlCommand.ExecuteNonQueryAsync();
-            await _mySqlConnection.CloseAsync();
+            await mySqlCommand.ExecuteNonQueryAsync();
+            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
@@ -209,15 +207,15 @@ public class MusicRepository(IConfiguration configuration) : IMusicRepository
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                          $"WHERE name = @Name)";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
 
-        object? exist = await _mySqlCommand.ExecuteScalarAsync();
+        object? exist = await mySqlCommand.ExecuteScalarAsync();
         bool convertBool = Convert.ToBoolean(exist);
-        await _mySqlConnection.CloseAsync();
+        await mySqlConnection.CloseAsync();
 
         return convertBool;
     }

@@ -16,7 +16,7 @@ public interface IPlayListServices
     public Task<bool> Search(string item, string name);
 }
 
-public class PlayListServices(IPlayListRepository playListRepository, IAutoMapperServices<DtoPlayList, GetPlayList> autoMapperServices) : IPlayListServices
+public class PlayListServices(IPlayListRepository playListRepository) : IPlayListServices
 {
     public async Task<bool> CreateOrSave(string item, PlayList playList)
     {

@@ -15,10 +15,8 @@ public interface IUserRepository
     public Task<bool> Search(string item, string name, string login);
 }
 
-public class UserRepository(IConfiguration configuration) : IUserRepository
+public class UserRepository(IConfiguration configuration, ILogger<IUserRepository> _logger, MySqlConnection mySqlConnection, MySqlCommand mySqlCommand) : IUserRepository
 {
-    private MySqlConnection _mySqlConnection;
-    private MySqlCommand _mySqlCommand;
     private DbDataReader _dataReader;
     private List<GetUser> _getUsers;
     private GetUser _user;
@@ -31,22 +29,23 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
                          "(FullName, Login, Role) " +
                          "VALUES(@FullName, @Login, @Role)";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
-        _mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
-        _mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
-        _mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
+        mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
+        mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
+        mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
 
         try
         {
-            await _mySqlCommand.ExecuteNonQueryAsync();
-            await _mySqlConnection.CloseAsync();
+            await mySqlCommand.ExecuteNonQueryAsync();
+            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
+            _logger.LogWarning(e.ToString());
             return false;
         }
 
@@ -59,13 +58,13 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
-        _dataReader = await _mySqlCommand.ExecuteReaderAsync();
+        _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
         if (_dataReader.HasRows)
         {
@@ -80,7 +79,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             }
         }
 
-        await _mySqlConnection.CloseAsync();
+        await mySqlConnection.CloseAsync();
         await _dataReader.CloseAsync();
 
         return _getUsers;
@@ -92,14 +91,14 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         string command = $"SELECT * FROM {item} " +
                          "LIMIT @Limit";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
 
 
-        _dataReader = await _mySqlCommand.ExecuteReaderAsync();
+        _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
         if (_dataReader.HasRows)
         {
@@ -115,7 +114,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
             }
         }
 
-        await _mySqlConnection.CloseAsync();
+        await mySqlConnection.CloseAsync();
         await _dataReader.CloseAsync();
 
         return _getUsers;
@@ -127,14 +126,14 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         string command = $"SELECT * FROM  {item} " +
                          $"WHERE Name = @Name";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
 
-        _dataReader = await _mySqlCommand.ExecuteReaderAsync();
-        
+        _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
         if (_dataReader.HasRows)
         {
             while (await _dataReader.ReadAsync())
@@ -150,7 +149,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         }
 
         await _dataReader.CloseAsync();
-        await _mySqlConnection.CloseAsync();
+        await mySqlConnection.CloseAsync();
 
         return _getUsers;
     }
@@ -160,20 +159,20 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
-
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-
         try
         {
-            await _mySqlCommand.ExecuteNonQueryAsync();
-            await _mySqlConnection.CloseAsync();
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+
+            await mySqlCommand.ExecuteNonQueryAsync();
+            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
+            _logger.LogWarning(e.ToString());
             return false;
         }
 
@@ -188,24 +187,24 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
                          $"@Login, Role = @Role " +
                          $"WHERE id = @Id";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        
-        _mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
-        _mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
-        _mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
-        _mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+        mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
+        mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
+        mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
+        mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
         try
         {
-            await _mySqlCommand.ExecuteNonQueryAsync();
-            await _mySqlConnection.CloseAsync();
+            await mySqlCommand.ExecuteNonQueryAsync();
+            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
+            _logger.LogWarning(e.ToString());
             return false;
         }
 
@@ -218,16 +217,16 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
                          $"WHERE FullName = @FullName " +
                          $"AND Login = @Login)";
 
-        _mySqlConnection = new MySqlConnection(_connect);
-        await _mySqlConnection.OpenAsync();
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
 
-        _mySqlCommand = new MySqlCommand(command, _mySqlConnection);
-        _mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = name;
-        _mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = login;
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = name;
+        mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = login;
 
-        object? exist = await _mySqlCommand.ExecuteScalarAsync();
+        object? exist = await mySqlCommand.ExecuteScalarAsync();
         bool convertBool = Convert.ToBoolean(exist);
-        await _mySqlConnection.CloseAsync();
+        await mySqlConnection.CloseAsync();
 
         return convertBool;
     }

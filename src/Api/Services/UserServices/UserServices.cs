@@ -1,4 +1,5 @@
 ﻿using Api.Data.Repository.User;
+using Api.Data.Repository.UserRole;
 using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.User;
 
@@ -15,7 +16,7 @@ public interface IUserServices
     public Task<bool> Search(string item, string name, string login);
 }
 
-public class UserServices(IUserRepository userRepository) : IUserServices
+public class UserServices(IUserRepository userRepository, IUserRoleRepository userRoleRepository) : IUserServices
 {
     public async Task<bool> CreateOrSave(string item, User user)
     {

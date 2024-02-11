@@ -11,13 +11,13 @@ public interface ILoginUserController
 }
 [Route("api/v1/[controller]")]
 [ApiController]
-public class LoginUserController(ILdapConnectService ldapConnectService, IGeneratorTokenServices generatorTokenServices)
+public class LoginUserController(ILdapService ldapService, IGeneratorTokenServices generatorTokenServices)
     : ControllerBase, ILoginUserController
 {
     [HttpPost("[action]")]
     public async Task<IActionResult> Login([FromBody]Model.Authorization.Authorization authorization)
     {
-        if (!await ldapConnectService.Validation(authorization.Login, authorization.Password))
+        if (!await ldapService.Validation(authorization.Login, authorization.Password))
             return BadRequest();
 
         return Ok(generatorTokenServices.Generator(authorization.Login));

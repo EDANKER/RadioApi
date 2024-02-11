@@ -13,69 +13,47 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fb8ca292-873c-42a7-91aa-fa8e0eaae2fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Api/Controller/MicroController/MicroControllersController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Data/Repository/MicroController/MicroControllerRepository.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/DTOs/MicroController/DtoMicroController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/DTOs/Music/DtoMusic.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/DTOs/PlayList/DtoPlayList.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/DTOs/Scenario/DtoScenario.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/DTOs/User/DtoUser.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/Migration/MicroController/MigrationMicroController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/Migration/Music/MigrationMusic.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/Migration/PlayList/MigrationPlayList.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/Migration/Scenario/MigrationScenario.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/Migration/User/MigrationUser.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/RequestModel/MicroController/MicroController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Model/ResponseModel/MicroController/GetMicroController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Services/AutoMaperServices/AutoMapperServices.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Services/MicroControllerServices/MicroControllerServices.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Api/Services/TransmissionToMicroController/TransmissionToMicroController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Api/Data/Repository/User/UserRole/UserRoleRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Api/Model/Role/Role.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Radio/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Radio/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Api.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Controller/AdminPanel/AdminPanelSettings/AdminPanelSettingsController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Controller/AdminPanel/AdminPanelSettings/AdminPanelSettingsController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/Radio.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/Radio.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/Radio.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/Radio.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/Radio.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/Radio.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Api/Controller/AdminPanel/AdminPanelSettings/AdminPanelSettingsController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Controller/AdminPanelSettings/AdminPanelSettingsController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/Controller/Authorization/LoginUserController/LoginUserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Controller/Authorization/LoginUserController/LoginUserController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Controller/Music/MusicController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Controller/Music/MusicController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Controller/PlayList/PlayListController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Controller/PlayList/PlayListController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Controller/TurnOnSector/SettingsSectorController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Controller/TurnOnSector/SettingsSectorController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/Data/ApplicationContext/ApplicationContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Data/ApplicationContext/ApplicationContext.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/Data/Repository/Music/MusicRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Data/Repository/Music/MusicRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/Data/Repository/PlayList/PlayListRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Data/Repository/PlayList/PlayListRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/Data/Repository/Scenari/ScenarioRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Data/Repository/Scenari/ScenarioRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/Data/Repository/User/UserRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Data/Repository/User/UserRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Data/Repository/UserRole/UserRoleRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Data/Repository/UserRole/UserRoleRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Model/ResponseModel/PlayList/GetPlayList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Model/ResponseModel/PlayList/GetPlayList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Model/ResponseModel/User/GetUser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Model/ResponseModel/User/GetUser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Api/Data/Repository/UserRole/UserRoleRepository.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Api/Model/RequestModel/User/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Model/RequestModel/User/User.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Services/Dto/PlayListDto/PlayListDto.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Services/JsonServices/WorkingWithJsonServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Services/JsonServices/JsonServices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Services/LdapConnectService/LdapConnectService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Services/LdapConnectService/LdapConnectService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Services/MusicServices/MusicServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Services/MusicServices/MusicServices.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Api/Services/LdapConnectService/LdapConnectService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Services/LdapService/LdapService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/Services/PlayListServices/PlayListServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Services/PlayListServices/PlayListServices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Services/RoleServices/RoleServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Services/UserRoleServices/UserRoleServices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/Services/SaveMusicServices/SaveMusicServices.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.deps.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Api/Services/UserRoleServices/UserRoleServices.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Api/Services/UserServices/UserServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/Services/UserServices/UserServices.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.exe" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/bin/Debug/net8.0/Api.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Api.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Api.csproj.nuget.dgspec.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.csproj.AssemblyReference.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.csproj.CoreCompileInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.csproj.FileListAbsolute.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/Api.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/apphost.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/ref/Api.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/ref/Api.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/refint/Api.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/Debug/net8.0/refint/Api.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/project.packagespec.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Api/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/rider.project.model.nuget.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Api/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/Api/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/RadioTest/bin/Debug/net8.0/RadioTest.dll" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/bin/Debug/net8.0/RadioTest.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/RadioTest/bin/Debug/net8.0/RadioTest.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/bin/Debug/net8.0/RadioTest.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/RadioTest.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/RadioTest.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/RadioTest.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/RadioTest.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/RadioTest.dll" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/RadioTest.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/RadioTest.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/RadioTest.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/ref/RadioTest.dll" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/ref/RadioTest.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/refint/RadioTest.dll" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/obj/Debug/net8.0/refint/RadioTest.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/RadioTest/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/obj/rider.project.model.nuget.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/RadioTest/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/test/RadioTest/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,9 +71,9 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="Toolset" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2c333r14TSAOXkJK5bMvQCYEBhQ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -271,12 +249,37 @@
       <workItem from="1707401415772" duration="125000" />
       <workItem from="1707401616354" duration="11184000" />
       <workItem from="1707435544567" duration="15004000" />
-      <workItem from="1707492267634" duration="17097000" />
+      <workItem from="1707492267634" duration="18772000" />
+      <workItem from="1707587014182" duration="1366000" />
+      <workItem from="1707642012713" duration="11167000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="deploy" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
@@ -289,10 +292,10 @@
           <line>19</line>
           <properties documentPath="C:\Users\edgar\Desktop\RadioApi\src\Api\Controller\Authorization\LoginUserController\LoginUserController.cs" initialLine="27" containingFunctionPresentation="Method 'Login'">
             <startOffsets>
-              <option value="707" />
+              <option value="693" />
             </startOffsets>
             <endOffsets>
-              <option value="793" />
+              <option value="772" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="1" />
