@@ -22,9 +22,7 @@ public class SettingsScenarioController(IScenarioServices scenarioServices) : Co
     public async Task<IActionResult> SettingsAll([FromBody]Scenario scenario)
     {
         if (await scenarioServices.Search("Scenario", scenario.Name))
-        {
             return BadRequest();
-        }
         
         return Ok(await scenarioServices.CreateOrSave("Scenario", scenario));
     }

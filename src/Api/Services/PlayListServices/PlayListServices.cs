@@ -1,8 +1,7 @@
 ﻿using Api.Data.Repository.PlayList;
 using Api.DTO.PlayList;
+using Api.Model.RequestModel.PlayList;
 using Api.Model.ResponseModel.PlayList;
-using Api.Services.AutoMapperServices;
-using Radio.Model.PlayList;
 
 namespace Api.Services.PlayListServices;
 

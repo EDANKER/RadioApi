@@ -2,13 +2,13 @@ namespace Api.Services.TransmissionToMicroController;
 
 public interface ITransmissionToMicroController
 {
-    public Task<bool> Transmission();
+    public Task<bool> Transmission(IFormFile formFile);
 }
 
 public class TransmissionToMicroController : ITransmissionToMicroController
 {
-    public async Task<bool> Transmission()
+    public async Task<bool> Transmission(IFormFile formFile)
     {
-        throw new NotImplementedException();
+        return true;
     }
 }

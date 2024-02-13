@@ -1,9 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Api.Services.LifeSessionAudioServices;
 using Microsoft.AspNetCore.Mvc;
-using NAudio.Wave;
 
-namespace Radio.Controller.LifeSessionAudio;
+namespace Api.Controller.LifeSessionAudio;
 
 public interface ILifeSessionAudioController
 {
@@ -12,22 +10,15 @@ public interface ILifeSessionAudioController
 
 [Route("/api/v1/[controller]")]
 [ApiController]
-public class LifeSessionAudioController : ControllerBase, ILifeSessionAudioController
+public class LifeSessionAudioController(ILifeSessionAudioServices lifeSessionAudioServices)
+    : ControllerBase, ILifeSessionAudioController
 {
     [HttpPost("LifeSessionAudio")]
     public async Task<IActionResult> LifeSessionAudio(IFormFile formFile)
     {
-        string uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Data/Uploads/Music");
-        string filePath = Path.Combine(uploadPath, formFile.FileName);
-        FileStream fileStream = new FileStream(filePath, FileMode.Create);
-        await formFile.CopyToAsync(fileStream);
-
-        AudioFileReader audioFileReader = new AudioFileReader("Data/Uploads/Music/" + formFile.FileName);
-        WaveOutEvent waveOutEvent = new WaveOutEvent();
+        if (formFile.ContentType != "audio/mpeg")
+            return BadRequest("Только audio/mpeg");
         
-        waveOutEvent.Init(audioFileReader);
-        waveOutEvent.Play();
-        
-        return Ok();
+        return Ok(await lifeSessionAudioServices.Start(formFile));
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Api.Data.Repository.User;
-using Api.Data.Repository.UserRole;
+using Api.Data.Repository.User.UserRole;
 using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.User;
 
@@ -20,6 +20,7 @@ public class UserServices(IUserRepository userRepository, IUserRoleRepository us
 {
     public async Task<bool> CreateOrSave(string item, User user)
     {
+        await userRoleRepository.CreateOrSave(user.FullName, user.Role);
         return await userRepository.CreateOrSave(item, user);
     }
 

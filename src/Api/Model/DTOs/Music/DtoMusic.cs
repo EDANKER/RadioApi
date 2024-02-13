@@ -1,4 +1,4 @@
-﻿namespace Api.DTO.Music;
+﻿namespace Api.Model.DTOs.Music;
 
 public class DtoMusic(int id, string name, string path, int idPlayList)
 {

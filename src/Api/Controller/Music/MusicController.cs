@@ -7,13 +7,13 @@ namespace Api.Controller.Music;
 public interface IMusicController
 {
     public Task<IActionResult> PlayMusic(string path);
+    public Task<IActionResult> StopMusic(string path);
     public Task<IActionResult> SaveMusic(IFormFile formFile, int id);
     public Task<IActionResult> GetMusicLimit(int limit);
     public Task<IActionResult> GetMusic(int id);
-    public Task<IActionResult> DeleteMusic(int id);
+    public Task<IActionResult> DeleteMusicId(int id);
     public Task<IActionResult> Update(string name, string field, int id);
     public Task<IActionResult> GetPlayListTag(int id);
-
 }
 
 [Route("api/v1/[controller]")]
@@ -22,30 +22,31 @@ public class MusicController(IMusicServices musicServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic")]
-    public async Task<IActionResult> PlayMusic([FromBody]string path)
+    public async Task<IActionResult> PlayMusic([FromBody] string path)
     {
         AudioFileReader audioFileReader = new AudioFileReader(path);
         WaveOutEvent waveOutEvent = new WaveOutEvent();
-        
+
         waveOutEvent.Init(audioFileReader);
         waveOutEvent.Play();
 
         return Ok();
     }
 
+    [HttpPost("StopMusic")]
+    public async Task<IActionResult> StopMusic(string path)
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpPost("SaveMusic/{id:int}")]
     public async Task<IActionResult> SaveMusic(IFormFile formFile, int id)
     {
         if (formFile == null || await musicServices.Search("Musics", formFile.FileName))
-        {
             return BadRequest("Такие данные уже есть или данные пусты");
-        }
-        
-        if (formFile.ContentType != "audio/mpeg")
-        {
-            return BadRequest("Только audio/mpeg");
-        }
 
+        if (formFile.ContentType != "audio/mpeg")
+            return BadRequest("Только audio/mpeg");
 
         return Ok(await musicServices.CreateOrSave("Musics", formFile, id));
     }
@@ -53,7 +54,7 @@ public class MusicController(IMusicServices musicServices)
     [HttpGet("GetMusicLimit/{limit:int}")]
     public async Task<IActionResult> GetMusicLimit(int limit)
     {
-        return Ok(await musicServices.GetMusic("Musics",limit));
+        return Ok(await musicServices.GetMusic("Musics", limit));
     }
 
     [HttpGet("GetMusic/{id:int}")]
@@ -62,18 +63,18 @@ public class MusicController(IMusicServices musicServices)
         return Ok(await musicServices.GetMusicId("Musics", id));
     }
 
-    [HttpDelete("DeleteMusic/{id:int}")]
-    public async Task<IActionResult> DeleteMusic(int id)
+    [HttpDelete("DeleteMusicId/{id:int}")]
+    public async Task<IActionResult> DeleteMusicId(int id)
     {
         return Ok(await musicServices.DeleteId("Musics", id));
     }
 
     [HttpPatch("Update")]
-    public async Task<IActionResult> Update([FromBody]string name, [FromHeader]string field, [FromHeader]int id)
+    public async Task<IActionResult> Update([FromBody] string name, [FromHeader] string field, [FromHeader] int id)
     {
         return Ok(await musicServices.Update("Musics", field, name, id));
     }
-    
+
     [HttpGet("GetPlayListTag/{id:int}")]
     public async Task<IActionResult> GetPlayListTag(int id)
     {

@@ -1,6 +1,7 @@
 ﻿using Api.Data.Repository.Music;
-using Radio.Model.Music;
-using Radio.Model.RequestModel.Music;
+using Api.Model.RequestModel.Music;
+using Api.Model.ResponseModel.Music;
+using Api.Services.SaveAudioFile;
 
 namespace Api.Services.MusicServices;
 
@@ -15,11 +16,11 @@ public interface IMusicServices
     public Task<bool> Search(string item, string name);
 }
 
-public class MusicServices(IMusicRepository musicRepository) : IMusicServices
+public class MusicServices(IMusicRepository musicRepository, ISaveAudioFileServices saveAudioFileServices) : IMusicServices
 {
     public async Task<bool> CreateOrSave(string item, IFormFile formFile, int id)
     {
-        return await musicRepository.CreateOrSave(item, await SaveMusic(formFile, id));
+        return await musicRepository.CreateOrSave(item, await saveAudioFileServices.SaveAudio(formFile, id));
     }
 
     public async Task<List<GetMusic>> GetMusic(string item,int limit)
@@ -50,15 +51,5 @@ public class MusicServices(IMusicRepository musicRepository) : IMusicServices
     public async Task<bool> Search(string item, string name)
     {
         return await musicRepository.Search(item, name);
-    }
-
-    private async Task<Music> SaveMusic(IFormFile formFile, int id)
-    {
-        string uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Data/Uploads/Music");
-        string filePath = Path.Combine(uploadsPath, formFile.FileName);
-        FileStream fileStream = new FileStream(filePath, FileMode.Create);
-        await formFile.CopyToAsync(fileStream);
-
-        return new Music(formFile.FileName, "Data/Uploads/Music/" + formFile.FileName, id);
     }
 }

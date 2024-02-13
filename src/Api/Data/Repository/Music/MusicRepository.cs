@@ -1,12 +1,12 @@
 ﻿using System.Data.Common;
+using Api.Model.ResponseModel.Music;
 using MySql.Data.MySqlClient;
-using Radio.Model.Music;
 
 namespace Api.Data.Repository.Music;
 
 public interface IMusicRepository
 {
-    public Task<bool> CreateOrSave(string item, Radio.Model.RequestModel.Music.Music music);
+    public Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music music);
     public Task<List<GetMusic>> GetId(string item, int id);
     public Task<List<GetMusic>> GetLimit(string item, int limit);
     public Task<List<GetMusic>> GetPlayListTag(string item, int id);
@@ -23,7 +23,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
 
     private readonly string _connect =  configuration.GetConnectionString("MySql");
 
-    public async Task<bool> CreateOrSave(string item, Radio.Model.RequestModel.Music.Music music)
+    public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music music)
     {
         string command = $"INSERT INTO {item} " +
                          $"(name, path, idPlayList) " +

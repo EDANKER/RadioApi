@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using Api.Model.RequestModel.Scenario;
+using Api.Model.ResponseModel.Scenario;
 using MySql.Data.MySqlClient;
-using Radio.Model.ResponseModel.Scenari;
 
 namespace Api.Data.Repository.Scenari
 {

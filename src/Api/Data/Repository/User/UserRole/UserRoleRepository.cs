@@ -1,11 +1,11 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Api.Data.Repository.UserRole;
+namespace Api.Data.Repository.User.UserRole;
 
 public interface IUserRoleRepository
 {
-    public Task<bool> CreateOrSave(string name);
+    public Task<bool> CreateOrSave(string name, List<string> role);
     public Task<bool> Update();
     public Task<bool> Delete();
     public Task<bool> GetRoleUser();
@@ -14,17 +14,17 @@ public interface IUserRoleRepository
 public class UserRoleRepository(IConfiguration configuration) : IUserRoleRepository
 {
     private readonly string _connect = configuration.GetConnectionString("MongoDb");
-    private MongoClient _mongoClient;
-
-    public async Task<bool> CreateOrSave(string name)
+    private MongoClient mongoClient;
+    public async Task<bool> CreateOrSave(string name, List<string> role)
     {
-        IMongoDatabase? db = _mongoClient.GetDatabase("Radio");
+        mongoClient = new MongoClient(_connect);
+        IMongoDatabase? db = mongoClient.GetDatabase("Radio");
         IMongoCollection<BsonDocument>? userRole = db.GetCollection<BsonDocument>("UserRole");
 
         BsonDocument bsonDocument = new BsonDocument
         {
             { "Name", $"{name}" },
-            { "Role", new BsonArray { "Admin" } }
+            { "Role", new BsonArray { $"{role}" } }
         };
 
         await userRole.InsertOneAsync(bsonDocument);

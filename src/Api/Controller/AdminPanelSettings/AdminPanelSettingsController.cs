@@ -1,5 +1,6 @@
 ﻿using Api.Model.RequestModel.User;
 using Api.Services.UserServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.AdminPanelSettings;
@@ -12,17 +13,16 @@ public interface IAdminPanelSettingsController
     public Task<IActionResult> GetUser(int limit);
     public Task<IActionResult> GetIdUser(int id);
 }
+
 [Route("api/v1/[controller]")]
 [ApiController]
 public class AdminPanelSettingsController(IUserServices userServices) : ControllerBase, IAdminPanelSettingsController
 {
     [HttpPost("CreateNewUser")]
-    public async Task<IActionResult> CreateNewUser([FromBody]User user)
+    public async Task<IActionResult> CreateNewUser([FromBody] User user)
     {
-        if (await userServices.Search("Users",user.FullName, user.Login))
-        {
+        if (await userServices.Search("Users", user.FullName, user.Login))
             return BadRequest("Такие данные уже есть");
-        }
         
         return Ok(await userServices.CreateOrSave("Users", user));
     }
@@ -34,7 +34,7 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
     }
 
     [HttpPut("UpdateUser/{id:int}")]
-    public async Task<IActionResult> UpdateUser([FromBody]User user, int id)
+    public async Task<IActionResult> UpdateUser([FromBody] User user, int id)
     {
         return Ok(await userServices.Update("Users", user, id));
     }

@@ -1,13 +1,7 @@
-﻿namespace Radio.Model.Authorization;
+﻿namespace Api.Model.Authorization;
 
-public class Authorization
+public class Authorization(string login, string password)
 {
-    public Authorization(string login, string password)
-    {
-        Login = login;
-        Password = password;
-    }
-
-    public string Login { get; set; }
-    public string Password { get; set; }
+    public string Login { get; set; } = login;
+    public string Password { get; set; } = password;
 }

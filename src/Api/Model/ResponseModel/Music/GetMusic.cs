@@ -1,17 +1,9 @@
-﻿namespace Radio.Model.Music;
+﻿namespace Api.Model.ResponseModel.Music;
 
-public class GetMusic
+public class GetMusic(int id, string name, string path, int idPlayList)
 {
-    public GetMusic(int id, string name, string path, int idPlayList)
-    {
-        Id = id;
-        Name = name;
-        Path = path;
-        IdPlayList = idPlayList;
-    }
-
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Path { get; set; }
-    public int IdPlayList { get; set; }
+    public int Id { get; set; } = id;
+    public string Name { get; set; } = name;
+    public string Path { get; set; } = path;
+    public int IdPlayList { get; set; } = idPlayList;
 }

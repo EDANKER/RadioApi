@@ -1,8 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
+using Api.Model.JwtTokenConfig;
+using Api.Model.ResponseModel.User;
 using Microsoft.IdentityModel.Tokens;
-using Radio.Model.JwtTokenConfig;
+using MongoDB.Bson.IO;
+using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace Radio.Services.GeneratorTokenServices;
 
@@ -15,51 +19,36 @@ public class GeneratorTokenServices : IGeneratorTokenServices
 {
     public string Generator(string login)
     {
-        var clams = Claims(login);
         JwtTokenConfig jwtTokenConfig = new JwtTokenConfig();
-        DateTime dateTime = DateTime.UtcNow;
+        DateTime dateTime = DateTime.Now;
 
         JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(
-            issuer: jwtTokenConfig.Issuer,
-            audience: jwtTokenConfig.Audience,
+            issuer: JwtTokenConfig.Issuer,
+            audience: JwtTokenConfig.Audience,
             notBefore: dateTime,
-            claims: clams,
-            expires: dateTime.Add(TimeSpan.FromDays(jwtTokenConfig.RefreshTokenExpiration)),
+            claims: Claims(login),
+            expires: dateTime.Add(TimeSpan.FromDays(JwtTokenConfig.RefreshTokenExpiration)),
             signingCredentials: new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenConfig.Secret)), SecurityAlgorithms.HmacSha256)
         );
 
         string jwtSecurityTokenHandler = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-
-
+        
         var response = new
         {
-            // token = jwtSecurityTokenHandler,
-            // loginUser = data.Login,
-            // FullName = data.FullName,
-            // role = data.Role
+            token = jwtSecurityTokenHandler,
         };
 
-        return response.ToString();
+        return JsonConvert.SerializeObject(response);
     }
 
     private static List<Claim> Claims(string login)
     {
-        List<Claim> claims = new List<Claim>
-        {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, login),
-            // new Claim(ClaimsIdentity.DefaultRoleClaimType, Roles()),
-        };
+        List<Claim> claims =
+        [
+            new Claim(ClaimsIdentity.DefaultNameClaimType, login)
+        ];
 
         return claims;
     }
-
-//     private static GetUser Roles(string name)
-//     {
-//         AdminPanelServices.UserServices userServices = new AdminPanelServices.UserServices();
-//         foreach (var data in userServices.GetName(name))
-//         {
-//             
-//         }
-//     }
 }

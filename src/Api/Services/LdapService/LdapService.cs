@@ -1,21 +1,22 @@
 ﻿using System.DirectoryServices.Protocols;
 using System.Net;
+using Authorization = Api.Model.Authorization.Authorization;
 
-namespace Api.Services.LdapConnectService;
+namespace Api.Services.LdapService;
 
 public interface ILdapService
 {
-    public Task<bool> Validation(string id, string password);
+    public Task<bool> Validation(Authorization authorization);
 }
 
 public class LdapService(ILogger<LdapService> logger, IConfiguration configuration) : ILdapService
 {
-    public Task<bool> Validation(string id, string password)
+    public Task<bool> Validation(Authorization authorization)
     {
         LdapDirectoryIdentifier directoryIdentifier =
             new LdapDirectoryIdentifier(configuration.GetSection("Ldap:url").Value, false, false);
         NetworkCredential networkCredential =
-            new NetworkCredential("uid=" + id + configuration.GetSection("Ldap:searchBase").Value, password);
+            new NetworkCredential("uid=" + authorization.Login + configuration.GetSection("Ldap:searchBase").Value, authorization.Password);
 
         LdapConnection ldapConnection = new LdapConnection(directoryIdentifier, networkCredential, AuthType.Basic);
         ldapConnection.SessionOptions.SecureSocketLayer = false;

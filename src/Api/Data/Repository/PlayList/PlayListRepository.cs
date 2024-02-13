@@ -2,13 +2,12 @@
 using Api.DTO.PlayList;
 using Api.Model.ResponseModel.PlayList;
 using MySql.Data.MySqlClient;
-using Radio.Model.PlayList;
 
 namespace Api.Data.Repository.PlayList;
 
 public interface IPlayListRepository
 {
-    public Task<bool> CreateOrSave(string item, Radio.Model.PlayList.PlayList playLis);
+    public Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.PlayList playLis);
     public Task<List<GetPlayList>> GetId(string item, int id);
     public Task<List<GetPlayList>> GetLimit(string item, int limit);
     public Task<bool> DeleteId(string item, int id);
@@ -24,7 +23,7 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
 
     private readonly string _connect = configuration.GetConnectionString("MySql");
 
-    public async Task<bool> CreateOrSave(string item, Radio.Model.PlayList.PlayList playList)
+    public async Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.PlayList playList)
     {
         string command = $"INSERT INTO {item} " +
                          "(name, description ,imgPath)" +

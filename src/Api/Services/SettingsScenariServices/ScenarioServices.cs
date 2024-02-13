@@ -1,7 +1,7 @@
 ﻿using Api.Data.Repository.Scenari;
 using Api.Model.RequestModel.Scenario;
 using Api.Model.RequestModel.User;
-using Radio.Model.ResponseModel.Scenari;
+using Api.Model.ResponseModel.Scenario;
 
 namespace Api.Services.SettingsScenariServices;
 
