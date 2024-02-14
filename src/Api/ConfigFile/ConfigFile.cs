@@ -11,6 +11,7 @@ using Api.Model.JwtTokenConfig;
 using Api.Model.ResponseModel.PlayList;
 using Api.Profile.AppMappingProfile;
 using Api.Services.LdapService;
+using Api.Services.LifeSessionAudioServices;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
@@ -33,7 +34,8 @@ public static class ConfigFile
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
         service.AddTransient<MongoClient>();
-        
+        service.AddScoped<ISaveAudioFileServices, SaveAudioFileServicesServices>();
+        service.AddScoped<ILifeSessionAudioServices, LifeSessionAudioServices>();
         service.AddScoped<ITransmissionToMicroController, TransmissionToMicroController>();
         service.AddScoped<ISaveAudioFileServices, SaveAudioFileServicesServices>();
         service.AddScoped<IMicroControllerServices, MicroControllerServices>();
