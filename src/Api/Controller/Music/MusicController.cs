@@ -1,4 +1,5 @@
 ﻿using Api.Services.MusicServices;
+using Api.Services.TransmissionToMicroController;
 using Microsoft.AspNetCore.Mvc;
 using NAudio.Wave;
 
@@ -7,7 +8,7 @@ namespace Api.Controller.Music;
 public interface IMusicController
 {
     public Task<IActionResult> PlayMusic(string path);
-    public Task<IActionResult> StopMusic(string path);
+    public Task<IActionResult> StopMusic();
     public Task<IActionResult> SaveMusic(IFormFile formFile, int id);
     public Task<IActionResult> GetMusicLimit(int limit);
     public Task<IActionResult> GetMusic(int id);
@@ -18,25 +19,19 @@ public interface IMusicController
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class MusicController(IMusicServices musicServices)
+public class MusicController(IMusicServices musicServices, IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic")]
     public async Task<IActionResult> PlayMusic([FromBody] string path)
     {
-        AudioFileReader audioFileReader = new AudioFileReader(path);
-        WaveOutEvent waveOutEvent = new WaveOutEvent();
-
-        waveOutEvent.Init(audioFileReader);
-        waveOutEvent.Play();
-
-        return Ok();
+        return Ok(await musicPlayerToMicroControllerServices.Play(path));
     }
 
     [HttpPost("StopMusic")]
-    public async Task<IActionResult> StopMusic(string path)
+    public async Task<IActionResult> StopMusic()
     {
-        throw new NotImplementedException();
+        return Ok(await musicPlayerToMicroControllerServices.Stop());
     }
 
     [HttpPost("SaveMusic/{id:int}")]

@@ -1,7 +1,7 @@
 ﻿using Api.Data.Repository.Music;
 using Api.Model.RequestModel.Music;
 using Api.Model.ResponseModel.Music;
-using Api.Services.SaveAudioFile;
+using Api.Services.AudioFileSaveToMicroControllerServices;
 
 namespace Api.Services.MusicServices;
 
@@ -16,11 +16,11 @@ public interface IMusicServices
     public Task<bool> Search(string item, string name);
 }
 
-public class MusicServices(IMusicRepository musicRepository, ISaveAudioFileServices saveAudioFileServices) : IMusicServices
+public class MusicServices(IMusicRepository musicRepository, IAudioFileSaveToMicroControllerServices audioFileSaveToMicroControllerServices) : IMusicServices
 {
     public async Task<bool> CreateOrSave(string item, IFormFile formFile, int id)
     {
-        return await musicRepository.CreateOrSave(item, await saveAudioFileServices.SaveAudio(formFile, id));
+        return await musicRepository.CreateOrSave(item, await audioFileSaveToMicroControllerServices.SaveAudio(formFile, id));
     }
 
     public async Task<List<GetMusic>> GetMusic(string item,int limit)

@@ -1,4 +1,4 @@
-﻿using Api.Services.SaveAudioFile;
+﻿using Api.Services.AudioFileSaveToMicroControllerServices;
 
 namespace Api.Services.LifeSessionAudioServices;
 
@@ -7,10 +7,10 @@ public interface ILifeSessionAudioServices
     public Task<bool> Start(IFormFile formFile);
 }
 
-public class LifeSessionAudioServices(ISaveAudioFileServices saveAudioFileServices) : ILifeSessionAudioServices
+public class LifeSessionAudioServices(IAudioFileSaveToMicroControllerServices audioFileSaveToMicroControllerServices) : ILifeSessionAudioServices
 {
     public async Task<bool> Start(IFormFile formFile)
     {
-        return await saveAudioFileServices.SaveThenPlay(formFile);
+        return await audioFileSaveToMicroControllerServices.SaveThenPlay(formFile);
     }
 }
