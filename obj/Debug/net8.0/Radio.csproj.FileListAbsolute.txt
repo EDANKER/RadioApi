@@ -1,0 +1,7 @@
+C:\Users\edgar\Desktop\RadioApi\obj\Debug\net8.0\Radio.csproj.AssemblyReference.cache
+C:\Users\edgar\Desktop\RadioApi\obj\Debug\net8.0\Radio.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\edgar\Desktop\RadioApi\obj\Debug\net8.0\Radio.AssemblyInfoInputs.cache
+C:\Users\edgar\Desktop\RadioApi\obj\Debug\net8.0\Radio.AssemblyInfo.cs
+C:\Users\edgar\Desktop\RadioApi\obj\Debug\net8.0\Radio.csproj.CoreCompileInputs.cache
+C:\Users\edgar\Desktop\RadioApi\obj\Debug\net8.0\Radio.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\edgar\Desktop\RadioApi\obj\Debug\net8.0\Radio.MvcApplicationPartsAssemblyInfo.cache

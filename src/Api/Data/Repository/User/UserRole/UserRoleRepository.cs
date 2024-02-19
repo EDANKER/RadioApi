@@ -6,9 +6,9 @@ namespace Api.Data.Repository.User.UserRole;
 public interface IUserRoleRepository
 {
     public Task<bool> CreateOrSave(string name, List<string> role);
-    public Task<bool> Update();
-    public Task<bool> Delete();
-    public Task<bool> GetRoleUser();
+    public Task<bool> Update(string name, List<string> role);
+    public Task<bool> Delete(string name);
+    public Task<bool> GetRoleUser(string name);
 }
 
 public class UserRoleRepository(IConfiguration configuration) : IUserRoleRepository
@@ -32,17 +32,17 @@ public class UserRoleRepository(IConfiguration configuration) : IUserRoleReposit
         return true;
     }
 
-    public async Task<bool> Update()
+    public async Task<bool> Update(string name, List<string> role)
     {
         return true;
     }
 
-    public async Task<bool> Delete()
+    public async Task<bool> Delete(string name)
     {
         return true;
     }
 
-    public async Task<bool> GetRoleUser()
+    public async Task<bool> GetRoleUser(string name)
     {
         return true;
     }

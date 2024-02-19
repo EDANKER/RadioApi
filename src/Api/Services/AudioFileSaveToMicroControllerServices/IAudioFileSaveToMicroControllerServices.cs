@@ -17,8 +17,7 @@ public class AudioFileSaveToMicroControllerServices(
 {
     public async Task<Music> SaveAudio(IFormFile formFile, int id)
     {
-        if (!await Save(formFile))
-            return default;
+        if (!await Save(formFile)) return default;
         return new Music(formFile.FileName, $"Data/Uploads/Music/{formFile.FileName}", id);
     }
 

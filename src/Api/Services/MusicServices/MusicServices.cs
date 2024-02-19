@@ -11,7 +11,7 @@ public interface IMusicServices
     public Task<List<GetMusic>> GetMusic(string item,int limit);
     public Task<List<GetMusic>> GetMusicId(string item,int id);
     public Task<List<GetMusic>> GetMusicTagPlayList(string item,int id);
-    public Task<bool> DeleteId(string item, int id);
+    public Task<bool> DeleteId(string item, int id, string path);
     public Task<bool> Update(string item, string field, string name, int id);
     public Task<bool> Search(string item, string name);
 }
@@ -38,13 +38,15 @@ public class MusicServices(IMusicRepository musicRepository, IAudioFileSaveToMic
         return await musicRepository.GetPlayListTag(item, id);
     }
 
-    public async Task<bool> DeleteId(string item, int id)
+    public async Task<bool> DeleteId(string item, int id, string path)
     {
+        await audioFileSaveToMicroControllerServices.DeleteMusic(path);
         return await musicRepository.DeleteId(item, id);
     }
 
     public async Task<bool> Update(string item, string field, string name, int id)
     {
+        await audioFileSaveToMicroControllerServices.UpdateName(name);
         return await musicRepository.Update(item, field, name, id);
     }
 
