@@ -2,15 +2,7 @@ using Api.ConfigFile;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("Radio", policyBuilder =>
-    {
-        policyBuilder.AllowAnyHeader();
-        policyBuilder.AllowAnyMethod();
-        policyBuilder.AllowAnyOrigin();
-    });
-});
+ConfigFile.Cors(builder.Services);
 ConfigFile.Jwt(builder.Services);
 ConfigFile.Registration(builder.Services);
 

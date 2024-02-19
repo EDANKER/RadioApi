@@ -86,13 +86,7 @@ public static class ConfigFile
 
     public static void Exception(WebApplication app)
     {
-        app.UseExceptionHandler(error =>
-        {
-            error.Run(async context =>
-            {
-                
-            }); 
-        });
+        
     }
 
     public static void AutoMapper(IServiceCollection service)
