@@ -1,4 +1,5 @@
 ﻿using Api.Data.Repository.User;
+using Api.Data.Repository.User.User;
 using Api.Data.Repository.User.UserRole;
 using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.User;

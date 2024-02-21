@@ -1,12 +1,13 @@
-﻿using Api.Services.MusicServices;
-using Api.Services.TransmissionToMicroController;
+﻿using Api.Services.MusicPlayerToMicroControllerServices;
+using Api.Services.MusicServices;
+using Api.Services.PlayListServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.Music;
 
 public interface IMusicController
 {
-    public Task<IActionResult> PlayMusic(string path);
+    public Task<IActionResult> PlayMusic(string path,  string[] florSector);
     public Task<IActionResult> StopMusic();
     public Task<IActionResult> SaveMusic(IFormFile formFile, string name);
     public Task<IActionResult> GetMusicLimit(int limit);
@@ -19,13 +20,13 @@ public interface IMusicController
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class MusicController(IMusicServices musicServices, IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices)
+public class MusicController(IPlayListServices playListServices,IMusicServices musicServices, IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic")]
-    public async Task<IActionResult> PlayMusic([FromBody] string path)
+    public async Task<IActionResult> PlayMusic([FromHeader] string path, [FromBody] string[] florSector)
     {
-        return Ok(await musicPlayerToMicroControllerServices.Play(path));
+        return Ok(await musicPlayerToMicroControllerServices.Play(path, florSector));
     }
 
     [HttpPost("StopMusic")]
@@ -42,6 +43,8 @@ public class MusicController(IMusicServices musicServices, IMusicPlayerToMicroCo
 
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");
+        if (!await playListServices.Search("PlayLists", name))
+            return BadRequest("Такого плей листа нет");
 
         return Ok(await musicServices.CreateOrSave("Musics", formFile, name));
     }
@@ -65,7 +68,7 @@ public class MusicController(IMusicServices musicServices, IMusicPlayerToMicroCo
     }
 
     [HttpPatch("Update")]
-    public async Task<IActionResult> Update([FromBody] string name, [FromHeader] string field, [FromHeader] int id)
+    public async Task<IActionResult> Update([FromBody] string name,[FromHeader] string field, [FromHeader] int id)
     {
         return Ok(await musicServices.Update("Musics", field, name, id));
     }

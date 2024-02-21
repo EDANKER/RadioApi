@@ -5,8 +5,6 @@ C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Api.deps.json
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Api.runtimeconfig.json
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Api.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Api.pdb
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\AutoMapper.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\AWSSDK.Core.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\AWSSDK.SecurityToken.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
@@ -42,13 +40,6 @@ C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MongoDB.Driver.Core.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MongoDB.Libmongocrypt.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Mono.TextTemplating.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MySql.Data.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MySql.EntityFrameworkCore.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Asio.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Core.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Midi.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Wasapi.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.WinMM.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\SharpCompress.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Snappier.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
@@ -158,3 +149,11 @@ C:\Users\edgar\Desktop\RadioApi\src\Api\obj\Debug\net8.0\Api.pdb
 C:\Users\edgar\Desktop\RadioApi\src\Api\obj\Debug\net8.0\Api.genruntimeconfig.cache
 C:\Users\edgar\Desktop\RadioApi\src\Api\obj\Debug\net8.0\ref\Api.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Newtonsoft.Json.dll
+c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MySql.Data.EntityFrameworkCore.dll
+c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.dll
+c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Asio.dll
+c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Core.dll
+c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Midi.dll
+c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Wasapi.dll
+c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.WinMM.dll
+c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\TagLibSharp.dll

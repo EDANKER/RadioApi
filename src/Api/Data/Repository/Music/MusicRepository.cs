@@ -26,8 +26,8 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
     public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music music)
     {
         string command = $"INSERT INTO {item} " +
-                         $"(name, path, NamePlayList) " +
-                         $"VALUES(@Name, @Path, @NamePlayList)";
+                         $"(name, path, namePlayList, timeMusic) " +
+                         $"VALUES(@Name, @Path, @NamePlayList, @TimeMusic)";
 
         mySqlConnection = new MySqlConnection(_connect);
         await mySqlConnection.OpenAsync();
@@ -37,6 +37,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
         mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = music.Name;
         mySqlCommand.Parameters.Add("@Path", MySqlDbType.LongText).Value = music.Path;
         mySqlCommand.Parameters.Add("@NamePlayList", MySqlDbType.VarChar).Value = music.NamePlayList;
+        mySqlCommand.Parameters.Add("@TimeMusic", MySqlDbType.VarChar).Value = music.TimeMusic.ToString();
 
         try
         {
@@ -72,8 +73,9 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
                 string name = _dataReader.GetString(1);
                 string path = _dataReader.GetString(2);
                 string namePlayList = _dataReader.GetString(3);
+                string timeMusic = _dataReader.GetString(4);
 
-                _music = new GetMusic(id, name, path, namePlayList);
+                _music = new GetMusic(id, name, path, namePlayList, timeMusic);
             }
         }
 
@@ -105,8 +107,9 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
                 string name = _dataReader.GetString(1);
                 string path = _dataReader.GetString(2);
                 string namePlayList = _dataReader.GetString(3);
+                string timeMusic = _dataReader.GetString(4);
 
-                _music = new GetMusic(id, name, path, namePlayList);
+                _music = new GetMusic(id, name, path, namePlayList, timeMusic);
                 _musicsList.Add(_music);
             }
         }
@@ -121,7 +124,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
     {
         _musicsList = new List<GetMusic>();
         string command = $"SELECT * FROM {item} " +
-                         $"WHERE NamePlayList = @NamePlayList";
+                         $"WHERE tamePlayList = @NamePlayList";
 
         mySqlConnection = new MySqlConnection(_connect);
         await mySqlConnection.OpenAsync();
@@ -137,8 +140,9 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
                 int id = _dataReader.GetInt32(0);
                 string path = _dataReader.GetString(2);
                 string namePlayList = _dataReader.GetString(3);
+                string timeMusic = _dataReader.GetString(4);
 
-                _music = new GetMusic(id, name, path, namePlayList);
+                _music = new GetMusic(id, name, path, namePlayList, timeMusic);
                 _musicsList.Add(_music);
             }
         }

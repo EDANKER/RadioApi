@@ -1,6 +1,5 @@
 ﻿using Api.Model.ResponseModel.PlayList;
 using Api.Services.PlayListServices;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.PlayList;

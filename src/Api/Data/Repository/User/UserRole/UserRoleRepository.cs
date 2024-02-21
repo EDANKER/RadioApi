@@ -7,7 +7,7 @@ public interface IUserRoleRepository
 {
     public Task<bool> CreateOrSave(string name, List<string> role);
     public Task<bool> Update(string name, List<string> role);
-    public Task<bool> Delete(string name);
+    public Task<bool> DeleteId(string name);
     public Task<bool> GetRoleUser(string name);
 }
 
@@ -37,7 +37,7 @@ public class UserRoleRepository(IConfiguration configuration) : IUserRoleReposit
         return true;
     }
 
-    public async Task<bool> Delete(string name)
+    public async Task<bool> DeleteId(string name)
     {
         return true;
     }
