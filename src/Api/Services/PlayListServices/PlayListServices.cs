@@ -1,5 +1,4 @@
 ﻿using Api.Data.Repository.PlayList;
-using Api.DTO.PlayList;
 using Api.Model.RequestModel.PlayList;
 using Api.Model.ResponseModel.PlayList;
 
@@ -9,7 +8,7 @@ public interface IPlayListServices
 {
     public Task<bool> CreateOrSave(string item, PlayList playList);
     public Task<List<GetPlayList>> GetPlayList(string item, int limit);
-    public Task<List<GetPlayList>> GetPlayListId(string item,int id);
+    public Task<GetPlayList> GetPlayListId(string item,int id);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, string field, string name, int id);
     public Task<bool> Search(string item, string name);
@@ -27,7 +26,7 @@ public class PlayListServices(IPlayListRepository playListRepository) : IPlayLis
         return await playListRepository.GetLimit(item, limit);
     }
 
-    public async Task<List<GetPlayList>> GetPlayListId(string item,int id)
+    public async Task<GetPlayList> GetPlayListId(string item,int id)
     {
         return await playListRepository.GetId(item, id);
     }

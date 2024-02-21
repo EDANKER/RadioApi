@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using Api.DTO.PlayList;
 using Api.Model.ResponseModel.PlayList;
 using MySql.Data.MySqlClient;
 
@@ -8,7 +7,7 @@ namespace Api.Data.Repository.PlayList;
 public interface IPlayListRepository
 {
     public Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.PlayList playLis);
-    public Task<List<GetPlayList>> GetId(string item, int id);
+    public Task<GetPlayList> GetId(string item, int id);
     public Task<List<GetPlayList>> GetLimit(string item, int limit);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, string name, string field, int id);
@@ -51,7 +50,7 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
         }
     }
 
-    public async Task<List<GetPlayList>> GetId(string item, int id)
+    public async Task<GetPlayList> GetId(string item, int id)
     {
         _playLists = new List<GetPlayList>();
         string command = $"SELECT * FROM {item} " +
@@ -74,14 +73,13 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
                 string imgPath = _dataReader.GetString(3);
 
                 _playList = new GetPlayList(id,name, description, imgPath);
-                _playLists.Add(_playList);
             }
         }
         
         await _dataReader.CloseAsync();
         await mySqlConnection.CloseAsync();
 
-        return _playLists;
+        return _playList;
     }
 
     public async Task<List<GetPlayList>> GetLimit(string item, int limit)

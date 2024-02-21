@@ -6,10 +6,7 @@ using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenari;
 using Api.Data.Repository.User;
 using Api.Data.Repository.User.UserRole;
-using Api.DTO.PlayList;
 using Api.Model.JwtTokenConfig;
-using Api.Model.ResponseModel.PlayList;
-using Api.Profile.AppMappingProfile;
 using Api.Services.AudioFileSaveToMicroControllerServices;
 using Api.Services.LdapService;
 using Api.Services.LifeSessionAudioServices;
@@ -85,11 +82,6 @@ public static class ConfigFile
     }
 
     public static void Exception(WebApplication app)
-    {
-        
-    }
-
-    public static void AutoMapper(IServiceCollection service)
     {
         
     }

@@ -5,7 +5,7 @@ namespace Api.Services.AudioFileSaveToMicroControllerServices;
 
 public interface IAudioFileSaveToMicroControllerServices
 {
-    public Task<Music> SaveAudio(IFormFile formFile, int id);
+    public Task<Music> SaveAudio(IFormFile formFile, string name);
     public Task<bool> SaveThenPlay(IFormFile formFile);
     public Task<bool> DeleteMusic(string path);
     public Task<bool> UpdateName(string name);
@@ -15,10 +15,10 @@ public class AudioFileSaveToMicroControllerServices(
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices)
     : IAudioFileSaveToMicroControllerServices
 {
-    public async Task<Music> SaveAudio(IFormFile formFile, int id)
+    public async Task<Music> SaveAudio(IFormFile formFile, string name)
     {
         if (!await Save(formFile)) return default;
-        return new Music(formFile.FileName, $"Data/Uploads/Music/{formFile.FileName}", id);
+        return new Music(formFile.FileName, $"Data/Uploads/Music/{formFile.FileName}", name);
     }
 
     public async Task<bool> SaveThenPlay(IFormFile formFile)

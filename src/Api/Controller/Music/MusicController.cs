@@ -8,13 +8,13 @@ public interface IMusicController
 {
     public Task<IActionResult> PlayMusic(string path);
     public Task<IActionResult> StopMusic();
-    public Task<IActionResult> SaveMusic(IFormFile formFile, int id);
+    public Task<IActionResult> SaveMusic(IFormFile formFile, string name);
     public Task<IActionResult> GetMusicLimit(int limit);
     
     public Task<IActionResult> GetMusic(int id);
     public Task<IActionResult> DeleteMusicId(int id, string path);
     public Task<IActionResult> Update(string name, string field, int id);
-    public Task<IActionResult> GetPlayListTag(int id);
+    public Task<IActionResult> GetMusicPlayListTag(string name);
 }
 
 [Route("api/v1/[controller]")]
@@ -34,8 +34,8 @@ public class MusicController(IMusicServices musicServices, IMusicPlayerToMicroCo
         return Ok(await musicPlayerToMicroControllerServices.Stop());
     }
 
-    [HttpPost("SaveMusic/{id:int}")]
-    public async Task<IActionResult> SaveMusic(IFormFile formFile, int id)
+    [HttpPost("SaveMusic")]
+    public async Task<IActionResult> SaveMusic(IFormFile formFile, [FromHeader]string name)
     {
         if (formFile == null || await musicServices.Search("Musics", formFile.FileName))
             return BadRequest("Такие данные уже есть или данные пусты");
@@ -43,7 +43,7 @@ public class MusicController(IMusicServices musicServices, IMusicPlayerToMicroCo
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");
 
-        return Ok(await musicServices.CreateOrSave("Musics", formFile, id));
+        return Ok(await musicServices.CreateOrSave("Musics", formFile, name));
     }
 
     [HttpGet("GetMusicLimit/{limit:int}")]
@@ -71,8 +71,8 @@ public class MusicController(IMusicServices musicServices, IMusicPlayerToMicroCo
     }
 
     [HttpGet("GetPlayListTag/{id:int}")]
-    public async Task<IActionResult> GetPlayListTag(int id)
+    public async Task<IActionResult> GetMusicPlayListTag(string name)
     {
-        return Ok(await musicServices.GetMusicTagPlayList("Musics", id));
+        return Ok(await musicServices.GetMusicPlayListTag("Musics", name));
     }
 }

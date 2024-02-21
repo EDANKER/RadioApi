@@ -7,10 +7,10 @@ namespace Api.Services.MusicServices;
 
 public interface IMusicServices
 {
-    public Task<bool> CreateOrSave(string item, IFormFile formFile, int id);
+    public Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
     public Task<List<GetMusic>> GetMusic(string item,int limit);
-    public Task<List<GetMusic>> GetMusicId(string item,int id);
-    public Task<List<GetMusic>> GetMusicTagPlayList(string item,int id);
+    public Task<GetMusic> GetMusicId(string item,int id);
+    public Task<List<GetMusic>> GetMusicPlayListTag(string item,string name);
     public Task<bool> DeleteId(string item, int id, string path);
     public Task<bool> Update(string item, string field, string name, int id);
     public Task<bool> Search(string item, string name);
@@ -18,9 +18,9 @@ public interface IMusicServices
 
 public class MusicServices(IMusicRepository musicRepository, IAudioFileSaveToMicroControllerServices audioFileSaveToMicroControllerServices) : IMusicServices
 {
-    public async Task<bool> CreateOrSave(string item, IFormFile formFile, int id)
+    public async Task<bool> CreateOrSave(string item, IFormFile formFile, string name)
     {
-        return await musicRepository.CreateOrSave(item, await audioFileSaveToMicroControllerServices.SaveAudio(formFile, id));
+        return await musicRepository.CreateOrSave(item, await audioFileSaveToMicroControllerServices.SaveAudio(formFile, name));
     }
 
     public async Task<List<GetMusic>> GetMusic(string item,int limit)
@@ -28,14 +28,14 @@ public class MusicServices(IMusicRepository musicRepository, IAudioFileSaveToMic
         return await musicRepository.GetLimit(item, limit);
     }
 
-    public async Task<List<GetMusic>> GetMusicId(string item, int id)
+    public async Task<GetMusic> GetMusicId(string item, int id)
     {
         return await musicRepository.GetId(item, id);
     }
 
-    public async Task<List<GetMusic>> GetMusicTagPlayList(string item, int id)
+    public async Task<List<GetMusic>> GetMusicPlayListTag(string item, string name)
     {
-        return await musicRepository.GetPlayListTag(item, id);
+        return await musicRepository.GetMusicPlayListTag(item, name);
     }
 
     public async Task<bool> DeleteId(string item, int id, string path)
