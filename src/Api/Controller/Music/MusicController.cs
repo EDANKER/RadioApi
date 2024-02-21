@@ -70,7 +70,7 @@ public class MusicController(IMusicServices musicServices, IMusicPlayerToMicroCo
         return Ok(await musicServices.Update("Musics", field, name, id));
     }
 
-    [HttpGet("GetPlayListTag/{id:int}")]
+    [HttpGet("GetPlayListTag")]
     public async Task<IActionResult> GetMusicPlayListTag(string name)
     {
         return Ok(await musicServices.GetMusicPlayListTag("Musics", name));
