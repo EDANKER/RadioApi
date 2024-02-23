@@ -1,6 +1,7 @@
 ﻿using Api.Model.RequestModel.Music;
 using Api.Services.MusicPlayerToMicroControllerServices;
 using NAudio.Wave;
+using Api.Data.Minio;
 
 namespace Api.Services.AudioFileSaveToMicroControllerServices;
 
@@ -13,7 +14,7 @@ public interface IAudioFileSaveToMicroControllerServices
 }
 
 public class AudioFileSaveToMicroControllerServices(
-    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices)
+    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices, IMinio minio)
     : IAudioFileSaveToMicroControllerServices
 {
     public async Task<Music> SaveAudio(IFormFile formFile, string name)
@@ -46,19 +47,7 @@ public class AudioFileSaveToMicroControllerServices(
 
     private static async Task<bool> Save(IFormFile formFile)
     {
-        string uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Data/Uploads/Music");
-        string filePath = Path.Combine(uploadsPath, formFile.FileName);
-        try
-        {
-            FileStream fileStream = new FileStream(filePath, FileMode.Create);
-            await formFile.CopyToAsync(fileStream);
-            fileStream.Close();
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    
+        // return await minio.Save();
         return true;
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System.Text;
 using Api.Controller.AdminPanelSettings;
+using Api.Data.Minio;
 using Api.Data.Repository.MicroController;
 using Api.Data.Repository.Music;
 using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenari;
-using Api.Data.Repository.User;
 using Api.Data.Repository.User.User;
 using Api.Data.Repository.User.UserRole;
 using Api.Model.JwtTokenConfig;
@@ -18,6 +18,7 @@ using Api.Services.SettingsScenariServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Minio;
 using MongoDB.Driver;
 using MySql.Data.MySqlClient;
 using Radio.Services.GeneratorTokenServices;
@@ -31,6 +32,8 @@ public static class ConfigFile
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
         service.AddTransient<MongoClient>();
+        service.AddTransient<IMinioClient, MinioClient>();
+        service.AddScoped<IMinio, Data.Minio.Minio>();
         service.AddScoped<IAudioFileSaveToMicroControllerServices, AudioFileSaveToMicroControllerServices>();
         service.AddScoped<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
         service.AddScoped<IMicroControllerServices, MicroControllerServices>();

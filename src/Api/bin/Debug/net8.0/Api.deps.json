@@ -12,6 +12,8 @@
           "Microsoft.AspNetCore.OpenApi": "8.0.0",
           "Microsoft.EntityFrameworkCore": "8.0.2",
           "Microsoft.EntityFrameworkCore.Tools": "8.0.2",
+          "Minio": "6.0.2",
+          "Minio.AspNetCore": "6.0.0",
           "MongoDB.Driver": "2.23.1",
           "MySql.Data": "8.3.0",
           "MySql.Data.EntityFrameworkCore": "8.0.22",
@@ -50,6 +52,14 @@
           "lib/net6.0/BouncyCastle.Cryptography.dll": {
             "assemblyVersion": "2.0.0.0",
             "fileVersion": "2.2.1.47552"
+          }
+        }
+      },
+      "CommunityToolkit.HighPerformance/8.2.2": {
+        "runtime": {
+          "lib/net7.0/CommunityToolkit.HighPerformance.dll": {
+            "assemblyVersion": "8.2.0.0",
+            "fileVersion": "8.2.2.1"
           }
         }
       },
@@ -435,6 +445,11 @@
           "Microsoft.Extensions.Primitives": "8.0.0"
         }
       },
+      "Microsoft.Extensions.Configuration.Binder/8.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0"
+        }
+      },
       "Microsoft.Extensions.DependencyInjection/8.0.0": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
@@ -468,6 +483,15 @@
       "Microsoft.Extensions.Options/8.0.0": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options.ConfigurationExtensions/8.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Configuration.Binder": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Options": "8.0.0",
           "Microsoft.Extensions.Primitives": "8.0.0"
         }
       },
@@ -569,6 +593,34 @@
             "assetType": "runtime",
             "assemblyVersion": "4.0.2.0",
             "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
+      "Minio/6.0.2": {
+        "dependencies": {
+          "CommunityToolkit.HighPerformance": "8.2.2",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Logging": "8.0.0",
+          "System.IO.Hashing": "8.0.0",
+          "System.Reactive": "6.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Minio.dll": {
+            "assemblyVersion": "6.0.2.0",
+            "fileVersion": "6.0.2.0"
+          }
+        }
+      },
+      "Minio.AspNetCore/6.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
+          "Minio": "6.0.2"
+        },
+        "runtime": {
+          "lib/net7.0/Minio.AspNetCore.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.0.0"
           }
         }
       },
@@ -1007,8 +1059,24 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
+      "System.IO.Hashing/8.0.0": {
+        "runtime": {
+          "lib/net8.0/System.IO.Hashing.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
       "System.IO.Pipelines/6.0.3": {},
       "System.Memory/4.5.5": {},
+      "System.Reactive/6.0.0": {
+        "runtime": {
+          "lib/net6.0/System.Reactive.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.0.1"
+          }
+        }
+      },
       "System.Reflection/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "5.0.0",
@@ -1169,6 +1237,13 @@
       "sha512": "sha512-A6Zr52zVqJKt18ZBsTnX0qhG0kwIQftVAjLmszmkiR/trSp8H+xj1gUOzk7XHwaKgyREMSV1v9XaKrBUeIOdvQ==",
       "path": "bouncycastle.cryptography/2.2.1",
       "hashPath": "bouncycastle.cryptography.2.2.1.nupkg.sha512"
+    },
+    "CommunityToolkit.HighPerformance/8.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+zIp8d3sbtYaRbM6hqDs4Ui/z34j7DcUmleruZlYLE4CVxXq+MO8XJyIs42vzeTYFX+k0Iq1dEbBUnQ4z/Gnrw==",
+      "path": "communitytoolkit.highperformance/8.2.2",
+      "hashPath": "communitytoolkit.highperformance.8.2.2.nupkg.sha512"
     },
     "DnsClient/1.6.1": {
       "type": "package",
@@ -1338,6 +1413,13 @@
       "path": "microsoft.extensions.configuration.abstractions/8.0.0",
       "hashPath": "microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512"
     },
+    "Microsoft.Extensions.Configuration.Binder/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mBMoXLsr5s1y2zOHWmKsE9veDcx8h1x/c3rz4baEdQKTeDcmQAPNbB54Pi/lhFO3K431eEq6PFbMgLaa6PHFfA==",
+      "path": "microsoft.extensions.configuration.binder/8.0.0",
+      "hashPath": "microsoft.extensions.configuration.binder.8.0.0.nupkg.sha512"
+    },
     "Microsoft.Extensions.DependencyInjection/8.0.0": {
       "type": "package",
       "serviceable": true,
@@ -1379,6 +1461,13 @@
       "sha512": "sha512-JOVOfqpnqlVLUzINQ2fox8evY2SKLYJ3BV8QDe/Jyp21u1T7r45x/R/5QdteURMR5r01GxeJSBBUOCOyaNXA3g==",
       "path": "microsoft.extensions.options/8.0.0",
       "hashPath": "microsoft.extensions.options.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options.ConfigurationExtensions/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0f4DMRqEd50zQh+UyJc+/HiBsZ3vhAQALgdkcQEalSH1L2isdC7Yj54M3cyo5e+BeO5fcBQ7Dxly8XiBBcvRgw==",
+      "path": "microsoft.extensions.options.configurationextensions/8.0.0",
+      "hashPath": "microsoft.extensions.options.configurationextensions.8.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Primitives/8.0.0": {
       "type": "package",
@@ -1463,6 +1552,20 @@
       "sha512": "sha512-mtVirZr++rq+XCDITMUdnETD59XoeMxSpLRIII7JRI6Yj0LEDiO1pPn0ktlnIj12Ix8bfvQqQDMMIF9wC98oCA==",
       "path": "microsoft.win32.systemevents/4.7.0",
       "hashPath": "microsoft.win32.systemevents.4.7.0.nupkg.sha512"
+    },
+    "Minio/6.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4Od4uGANX5X0AL90WV0viBNzpE2+jDHro6CGvR4//MVj5SiTTwR5SUikXgd/2G2PtYyXw4b/IBpo7Kt5cCCndA==",
+      "path": "minio/6.0.2",
+      "hashPath": "minio.6.0.2.nupkg.sha512"
+    },
+    "Minio.AspNetCore/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BWF13kSt4qUC3IHY7uJrVRScZ36Fz7PDBd5G9R/+Pf0w34efu2psLqysyl2KnZPetKdtHQGRdCbJYVgf+7hx3Q==",
+      "path": "minio.aspnetcore/6.0.0",
+      "hashPath": "minio.aspnetcore.6.0.0.nupkg.sha512"
     },
     "MongoDB.Bson/2.23.1": {
       "type": "package",
@@ -1709,6 +1812,13 @@
       "path": "system.io/4.3.0",
       "hashPath": "system.io.4.3.0.nupkg.sha512"
     },
+    "System.IO.Hashing/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ne1843evDugl0md7Fjzy6QjJrzsjh46ZKbhf8GwBXb5f/gw97J4bxMs0NQKifDuThh/f0bZ0e62NPl1jzTuRqA==",
+      "path": "system.io.hashing/8.0.0",
+      "hashPath": "system.io.hashing.8.0.0.nupkg.sha512"
+    },
     "System.IO.Pipelines/6.0.3": {
       "type": "package",
       "serviceable": true,
@@ -1722,6 +1832,13 @@
       "sha512": "sha512-XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw==",
       "path": "system.memory/4.5.5",
       "hashPath": "system.memory.4.5.5.nupkg.sha512"
+    },
+    "System.Reactive/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-31kfaW4ZupZzPsI5PVe77VhnvFF55qgma7KZr/E0iFTs6fmdhhG8j0mgEx620iLTey1EynOkEfnyTjtNEpJzGw==",
+      "path": "system.reactive/6.0.0",
+      "hashPath": "system.reactive.6.0.0.nupkg.sha512"
     },
     "System.Reflection/4.3.0": {
       "type": "package",

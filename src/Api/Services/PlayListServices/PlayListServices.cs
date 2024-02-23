@@ -1,4 +1,5 @@
-﻿using Api.Data.Repository.PlayList;
+﻿using Api.Data.Minio;
+using Api.Data.Repository.PlayList;
 using Api.Model.RequestModel.PlayList;
 using Api.Model.ResponseModel.PlayList;
 
@@ -6,7 +7,7 @@ namespace Api.Services.PlayListServices;
 
 public interface IPlayListServices
 {
-    public Task<bool> CreateOrSave(string item, PlayList playList);
+    public Task<bool> CreateOrSave(string item, PlayList playList, IFormFile formFile);
     public Task<List<GetPlayList>> GetPlayList(string item, int limit);
     public Task<GetPlayList> GetPlayListId(string item,int id);
     public Task<bool> DeleteId(string item, int id);
@@ -14,11 +15,11 @@ public interface IPlayListServices
     public Task<bool> Search(string item, string name);
 }
 
-public class PlayListServices(IPlayListRepository playListRepository) : IPlayListServices
+public class PlayListServices(IPlayListRepository playListRepository, IMinio minio) : IPlayListServices
 {
-    public async Task<bool> CreateOrSave(string item, PlayList playList)
+    public async Task<bool> CreateOrSave(string item, PlayList playList, IFormFile formFile)
     {
-        return await playListRepository.CreateOrSave(item, playList);
+        return await playListRepository.CreateOrSave(item, await minio.Save(formFile, playList, "photo", "/photos" + formFile.FileName, formFile.ContentType));
     }
 
     public async Task<List<GetPlayList>> GetPlayList(string item,int limit)

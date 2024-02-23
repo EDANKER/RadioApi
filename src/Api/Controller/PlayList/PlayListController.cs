@@ -6,7 +6,7 @@ namespace Api.Controller.PlayList;
 
 public interface IPlayListController
 {
-    public Task<IActionResult> CreatePlayList(Model.RequestModel.PlayList.PlayList playList);
+    public Task<IActionResult> CreatePlayList(Model.RequestModel.PlayList.PlayList playList, IFormFile formFile);
     public Task<IActionResult> UpdatePlayList(string field, string purpose, int id);
     public Task<IActionResult> DeletePlayList(int id);
     public Task<IActionResult> GetPlayListId(int id);
@@ -18,12 +18,12 @@ public interface IPlayListController
 public class PlayListController(IPlayListServices playListServices) : ControllerBase, IPlayListController
 {
     [HttpPost("CreatePlayList")]
-    public async Task<IActionResult> CreatePlayList([FromBody] Model.RequestModel.PlayList.PlayList playList)
+    public async Task<IActionResult> CreatePlayList([FromBody] Model.RequestModel.PlayList.PlayList playList, IFormFile formFile)
     {
         if (await playListServices.Search("PlayLists", playList.Name))
             return BadRequest("Такие данные уже есть или данные пусты");
         
-        return Ok(await playListServices.CreateOrSave("PlayLists", playList));
+        return Ok(await playListServices.CreateOrSave("PlayLists", playList, formFile));
     }
 
     [HttpPatch("UpdatePlayList/{id:int}")]

@@ -58,6 +58,14 @@
               "target": "Package",
               "version": "[8.0.2, )"
             },
+            "Minio": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "Minio.AspNetCore": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[2.23.1, )"

@@ -157,3 +157,8 @@ c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Midi.dll
 c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Wasapi.dll
 c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.WinMM.dll
 c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\TagLibSharp.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\CommunityToolkit.HighPerformance.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Minio.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Minio.AspNetCore.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\System.IO.Hashing.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\System.Reactive.dll
