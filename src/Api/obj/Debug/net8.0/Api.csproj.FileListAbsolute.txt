@@ -149,7 +149,6 @@ C:\Users\edgar\Desktop\RadioApi\src\Api\obj\Debug\net8.0\Api.pdb
 C:\Users\edgar\Desktop\RadioApi\src\Api\obj\Debug\net8.0\Api.genruntimeconfig.cache
 C:\Users\edgar\Desktop\RadioApi\src\Api\obj\Debug\net8.0\ref\Api.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Newtonsoft.Json.dll
-c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MySql.Data.EntityFrameworkCore.dll
 c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.dll
 c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Asio.dll
 c:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Core.dll
@@ -162,3 +161,6 @@ C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Minio.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Minio.AspNetCore.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\System.IO.Hashing.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\System.Reactive.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MySql.EntityFrameworkCore.dll

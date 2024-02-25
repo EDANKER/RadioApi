@@ -7,7 +7,7 @@ namespace Radio.Controller.Authorization.LoginUserController;
 
 public interface ILoginUserController
 {
-    public Task<IActionResult> Login(Api.Model.Authorization.Authorization authorization);
+    public Task<IActionResult> Login(Api.Model.RequestModel.Authorization.Authorization authorization);
 }
 [Route("api/v1/[controller]")]
 [ApiController]
@@ -15,7 +15,7 @@ public class LoginUserController(ILdapService ldapService, IGeneratorTokenServic
     : ControllerBase, ILoginUserController
 {
     [HttpPost("[action]")]
-    public async Task<IActionResult> Login([FromBody] Api.Model.Authorization.Authorization authorization)
+    public async Task<IActionResult> Login([FromBody] Api.Model.RequestModel.Authorization.Authorization authorization)
     {
         if (!await ldapService.Validation(authorization))
             return BadRequest();

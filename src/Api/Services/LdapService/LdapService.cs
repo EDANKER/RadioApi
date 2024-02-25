@@ -1,6 +1,6 @@
 ﻿using System.DirectoryServices.Protocols;
 using System.Net;
-using Authorization = Api.Model.Authorization.Authorization;
+using Authorization = Api.Model.RequestModel.Authorization.Authorization;
 
 namespace Api.Services.LdapService;
 

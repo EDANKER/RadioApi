@@ -1,5 +1,6 @@
 ﻿using Api.Data.Minio;
 using Api.Data.Repository.PlayList;
+using Api.Model.MinioModel;
 using Api.Model.RequestModel.PlayList;
 using Api.Model.ResponseModel.PlayList;
 
@@ -7,9 +8,9 @@ namespace Api.Services.PlayListServices;
 
 public interface IPlayListServices
 {
-    public Task<bool> CreateOrSave(string item, PlayList playList, IFormFile formFile);
+    public Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile);
     public Task<List<GetPlayList>> GetPlayList(string item, int limit);
-    public Task<GetPlayList> GetPlayListId(string item,int id);
+    public Task<GetPlayList> GetPlayListId(string item, int id);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, string field, string name, int id);
     public Task<bool> Search(string item, string name);
@@ -17,17 +18,19 @@ public interface IPlayListServices
 
 public class PlayListServices(IPlayListRepository playListRepository, IMinio minio) : IPlayListServices
 {
-    public async Task<bool> CreateOrSave(string item, PlayList playList, IFormFile formFile)
+    public async Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile)
     {
-        return await playListRepository.CreateOrSave(item, await minio.Save(formFile, playList, "photo", "/photos" + formFile.FileName, formFile.ContentType));
+        return await playListRepository.CreateOrSave(item,
+            await minio.Save(new MinioModel(formFile, name, description, "photo",
+                formFile.ContentType)));
     }
 
-    public async Task<List<GetPlayList>> GetPlayList(string item,int limit)
+    public async Task<List<GetPlayList>> GetPlayList(string item, int limit)
     {
         return await playListRepository.GetLimit(item, limit);
     }
 
-    public async Task<GetPlayList> GetPlayListId(string item,int id)
+    public async Task<GetPlayList> GetPlayListId(string item, int id)
     {
         return await playListRepository.GetId(item, id);
     }

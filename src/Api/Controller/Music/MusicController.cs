@@ -26,6 +26,11 @@ public class MusicController(IPlayListServices playListServices,IMusicServices m
     [HttpPost("PlayMusic")]
     public async Task<IActionResult> PlayMusic([FromHeader] string path, [FromBody] string[] florSector)
     {
+        if (path == null)
+            return BadRequest("Путь не должен быть пустой");
+        if (florSector == null)
+            return BadRequest("Запуск по секторам не должен быть пуст");
+        
         return Ok(await musicPlayerToMicroControllerServices.Play(path, florSector));
     }
 
@@ -38,7 +43,9 @@ public class MusicController(IPlayListServices playListServices,IMusicServices m
     [HttpPost("SaveMusic")]
     public async Task<IActionResult> SaveMusic(IFormFile formFile, [FromHeader]string name)
     {
-        if (formFile == null || await musicServices.Search("Musics", formFile.FileName))
+        if (formFile == null)
+            return BadRequest("Такие данные уже есть или данные пусты");
+        if (await musicServices.Search("Musics", formFile.FileName))
             return BadRequest("Такие данные уже есть или данные пусты");
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");
@@ -51,30 +58,51 @@ public class MusicController(IPlayListServices playListServices,IMusicServices m
     [HttpGet("GetMusicLimit/{limit:int}")]
     public async Task<IActionResult> GetMusicLimit(int limit)
     {
+        if (limit <= 0)
+            return BadRequest("Некорректное значение id");
+        
         return Ok(await musicServices.GetMusic("Musics", limit));
     }
 
     [HttpGet("GetMusic/{id:int}")]
     public async Task<IActionResult> GetMusic(int id)
     {
+        if (id <= 0)
+            return BadRequest("Некорректное значение id");
+        
         return Ok(await musicServices.GetMusicId("Musics", id));
     }
 
     [HttpDelete("DeleteMusicId/{id:int}")]
     public async Task<IActionResult> DeleteMusicId(int id, [FromBody] string path)
     {
+        if (path == null)
+            return BadRequest("Путь не должен быть пустой");
+        if (id <= 0)
+            return BadRequest("Некорректное значение id");
+        
         return Ok(await musicServices.DeleteId("Musics", id, path));
     }
 
     [HttpPatch("Update")]
     public async Task<IActionResult> Update([FromBody] string name,[FromHeader] string field, [FromHeader] int id)
     {
+        if (name == null)
+            return BadRequest("Данные пусты");
+        if (field == null)
+            return BadRequest("Данные пусты");
+        if (id <= 0)
+            return BadRequest("Некорректное значение id");
+        
         return Ok(await musicServices.Update("Musics", field, name, id));
     }
 
     [HttpGet("GetPlayListTag")]
     public async Task<IActionResult> GetMusicPlayListTag(string name)
     {
+        if (name == null)
+            return BadRequest("Путь не должен быть пустой");
+        
         return Ok(await musicServices.GetMusicPlayListTag("Musics", name));
     }
 }
