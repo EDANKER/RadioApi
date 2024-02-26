@@ -20,19 +20,34 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
 {
     public async Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile)
     {
-        return await playListRepository.CreateOrSave(item,
-            await minio.Save(new MinioModel(formFile, name, description, "photo",
-                formFile.ContentType)));
+        if (await minio.Save(new MinioModel(formFile.FileName, "photo",
+                formFile.ContentType), formFile))
+            return await playListRepository.CreateOrSave(item,
+                new PlayList(name, description, formFile.FileName));
+
+        return false;
     }
 
     public async Task<List<GetPlayList>> GetPlayList(string item, int limit)
     {
-        return await playListRepository.GetLimit(item, limit);
+        List<GetPlayList> getPlayLists = new List<GetPlayList>();
+        List<GetPlayList> getPlayListRepo = await playListRepository.GetLimit(item, limit);
+        foreach (var data in getPlayListRepo)
+        {
+            GetPlayList getPlayList = new GetPlayList(data.Id, data.Name,
+                data.Description,
+                await minio.Get(new MinioModel(data.ImgPath, "photo", "image/jpeg")) ?? string.Empty);
+            getPlayLists.Add(getPlayList);
+        }
+
+        return getPlayLists;
     }
 
     public async Task<GetPlayList> GetPlayListId(string item, int id)
     {
-        return await playListRepository.GetId(item, id);
+        GetPlayList getPlayListRepo = await playListRepository.GetId(item, id);
+        return new GetPlayList(getPlayListRepo.Id, getPlayListRepo.Name, getPlayListRepo.Description,
+            await minio.Get(new MinioModel(getPlayListRepo.ImgPath, "photo", "image/jpeg")) ?? string.Empty);
     }
 
     public async Task<bool> DeleteId(string item, int id)

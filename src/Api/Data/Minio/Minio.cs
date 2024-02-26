@@ -1,65 +1,71 @@
-using System.Runtime.Intrinsics.X86;
 using Api.Model.MinioModel;
 using Api.Model.RequestModel.PlayList;
 using Minio;
-using Minio.DataModel;
 using Minio.DataModel.Args;
-using Minio.DataModel.Encryption;
-using Aes = System.Security.Cryptography.Aes;
 
 namespace Api.Data.Minio;
 
 public interface IMinio
 {
-    public Task<PlayList> Save(MinioModel minioModel);
-
-    public Task<bool> Delete();
-    public Task<string> Get();
-    public Task<bool> Update();
+    public Task<bool> Save(MinioModel minioModel, IFormFile formFile);
+    public Task<bool> Delete(MinioModel minioModel);
+    public Task<string?> Get(MinioModel minioModel);
 }
 
-public class Minio : IMinio
+public class Minio(IConfiguration configuration) : IMinio
 {
-    private IMinioClient _minioClient;
-    private IConfiguration _configuration;
+    private readonly IMinioClient _minioClient = new MinioClient()
+        .WithEndpoint(configuration.GetSection("Minio:url").Value)
+        .WithCredentials(configuration.GetSection("Minio:user").Value,
+            configuration.GetSection("Minio:pass").Value)
+        .Build();
 
-    public Minio(IConfiguration configuration)
+    public async Task<bool> Save(MinioModel minioModel, IFormFile formFile)
     {
-        _configuration = configuration;
-        _minioClient = new MinioClient()
-            .WithEndpoint(_configuration.GetSection("Minio:url").Value)
-            .WithCredentials(_configuration.GetSection("Minio:user").Value,
-                _configuration.GetSection("Minio:pass").Value)
-            .Build();
+        try
+        {
+            if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(minioModel.BucketName)))
+                await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(minioModel.BucketName));
+
+            await _minioClient.PutObjectAsync(new PutObjectArgs()
+                .WithBucket(minioModel.BucketName)
+                .WithObject(formFile.FileName)
+                .WithStreamData(formFile.OpenReadStream())
+                .WithObjectSize(formFile.OpenReadStream().Length)
+                .WithContentType(minioModel.Type));
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
-    public async Task<PlayList> Save(MinioModel minioModel)
+    public async Task<bool> Delete(MinioModel minioModel)
     {
-        if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(minioModel.BucketName)))
-            await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(minioModel.BucketName));
-
-        await _minioClient.PutObjectAsync(new PutObjectArgs()
-            .WithBucket(minioModel.BucketName)
-            .WithObject(minioModel.FormFile.FileName)
-            .WithStreamData(minioModel.FormFile.OpenReadStream())
-            .WithObjectSize(minioModel.FormFile.OpenReadStream().Length)
-            .WithContentType(minioModel.Type));
-
-        return new PlayList(minioModel.Name, minioModel.Description, minioModel.FormFile.FileName);
+        try
+        {
+            await _minioClient.RemoveObjectAsync(new RemoveObjectArgs().WithBucket(minioModel.BucketName)
+                .WithObject(minioModel.Name));
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
-    public async Task<bool> Delete()
+    public async Task<string?> Get(MinioModel minioModel)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<string> Get()
-    {
-        return "";
-    }
-
-    public Task<bool> Update()
-    {
-        throw new NotImplementedException();
+        TimeSpan timeSpan = TimeSpan.FromMinutes(1);
+        try
+        {
+            return await _minioClient.PresignedGetObjectAsync(new PresignedGetObjectArgs().WithBucket(minioModel.BucketName)
+                .WithObject(minioModel.Name).WithExpiry((int)timeSpan.TotalSeconds));
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 }

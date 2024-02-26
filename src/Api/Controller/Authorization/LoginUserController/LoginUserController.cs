@@ -1,9 +1,8 @@
 ﻿using Api.Services.LdapService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Radio.Services.GeneratorTokenServices;
 
-namespace Radio.Controller.Authorization.LoginUserController;
+namespace Api.Controller.Authorization.LoginUserController;
 
 public interface ILoginUserController
 {
