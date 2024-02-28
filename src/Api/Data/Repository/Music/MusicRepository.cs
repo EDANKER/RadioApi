@@ -6,10 +6,10 @@ namespace Api.Data.Repository.Music;
 
 public interface IMusicRepository
 {
-    public Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music music);
-    public Task<GetMusic> GetId(string item, int id);
-    public Task<List<GetMusic>> GetLimit(string item, int limit);
-    public Task<List<GetMusic>> GetMusicPlayListTag(string item, string name);
+    public Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music? music);
+    public Task<DtoMusic> GetId(string item, int id);
+    public Task<List<DtoMusic>> GetLimit(string item, int limit);
+    public Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, string field, string name, int id);
     public Task<bool> Search(string item, string name);
@@ -18,12 +18,12 @@ public interface IMusicRepository
 public class MusicRepository(IConfiguration configuration, MySqlConnection mySqlConnection, MySqlCommand mySqlCommand) : IMusicRepository
 {
     private DbDataReader _dataReader;
-    private List<GetMusic> _musicsList;
-    private GetMusic _music;
+    private List<DtoMusic> _musicsList;
+    private DtoMusic _music;
 
     private readonly string _connect =  configuration.GetConnectionString("MySql");
 
-    public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music music)
+    public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music? music)
     {
         string command = $"INSERT INTO {item} " +
                          $"(name, path, namePlayList, timeMusic) " +
@@ -53,9 +53,9 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
         return true;
     }
 
-    public async Task<GetMusic> GetId(string item, int id)
+    public async Task<DtoMusic> GetId(string item, int id)
     {
-        _musicsList = new List<GetMusic>();
+        _musicsList = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
@@ -75,7 +75,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
                 string namePlayList = _dataReader.GetString(3);
                 string timeMusic = _dataReader.GetString(4);
 
-                _music = new GetMusic(id, name, path, namePlayList, timeMusic);
+                _music = new DtoMusic(id, name, path, namePlayList, timeMusic);
             }
         }
 
@@ -85,9 +85,9 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
         return _music;
     }
 
-    public async Task<List<GetMusic>> GetLimit(string item, int limit)
+    public async Task<List<DtoMusic>> GetLimit(string item, int limit)
     {
-        _musicsList = new List<GetMusic>();
+        _musicsList = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT  @Limit";
 
@@ -109,7 +109,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
                 string namePlayList = _dataReader.GetString(3);
                 string timeMusic = _dataReader.GetString(4);
 
-                _music = new GetMusic(id, name, path, namePlayList, timeMusic);
+                _music = new DtoMusic(id, name, path, namePlayList, timeMusic);
                 _musicsList.Add(_music);
             }
         }
@@ -120,9 +120,9 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
         return _musicsList;
     }
 
-    public async Task<List<GetMusic>> GetMusicPlayListTag(string item, string name)
+    public async Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name)
     {
-        _musicsList = new List<GetMusic>();
+        _musicsList = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE tamePlayList = @NamePlayList";
 
@@ -142,7 +142,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
                 string namePlayList = _dataReader.GetString(3);
                 string timeMusic = _dataReader.GetString(4);
 
-                _music = new GetMusic(id, name, path, namePlayList, timeMusic);
+                _music = new DtoMusic(id, name, path, namePlayList, timeMusic);
                 _musicsList.Add(_music);
             }
         }

@@ -1,6 +1,6 @@
 ﻿namespace Api.Model.ResponseModel.Music;
 
-public class GetMusic(int id, string name, string path, string namePlayList, string timeMusic)
+public class DtoMusic(int id, string name, string path, string namePlayList, string timeMusic)
 {
     public int Id { get; set; } = id;
     public string Name { get; set; } = name;

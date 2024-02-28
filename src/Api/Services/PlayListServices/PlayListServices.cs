@@ -36,7 +36,7 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
         {
             GetPlayList getPlayList = new GetPlayList(data.Id, data.Name,
                 data.Description,
-                await minio.Get(new MinioModel(data.ImgPath, "photo", "image/jpeg")) ?? string.Empty);
+                await minio.GetUrl(new MinioModel(data.ImgPath, "photo", "image/jpeg")));
             getPlayLists.Add(getPlayList);
         }
 
@@ -47,7 +47,7 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
     {
         GetPlayList getPlayListRepo = await playListRepository.GetId(item, id);
         return new GetPlayList(getPlayListRepo.Id, getPlayListRepo.Name, getPlayListRepo.Description,
-            await minio.Get(new MinioModel(getPlayListRepo.ImgPath, "photo", "image/jpeg")) ?? string.Empty);
+            await minio.GetUrl(new MinioModel(getPlayListRepo.ImgPath, "photo", "image/jpeg")));
     }
 
     public async Task<bool> DeleteId(string item, int id)

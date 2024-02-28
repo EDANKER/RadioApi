@@ -1,53 +1,49 @@
 ﻿using Api.Model.RequestModel.Music;
-using Api.Services.MusicPlayerToMicroControllerServices;
 using NAudio.Wave;
 using Api.Data.Minio;
+using Api.Model.MinioModel;
 
 namespace Api.Services.AudioFileSaveToMicroControllerServices;
 
 public interface IAudioFileSaveToMicroControllerServices
 {
-    public Task<Music> SaveAudio(IFormFile formFile, string name);
-    public Task<bool> SaveThenPlay(IFormFile formFile, string[] florSector);
+    public Task<Music?> SaveAudio(IFormFile formFile, string name);
     public Task<bool> DeleteMusic(string path);
     public Task<bool> UpdateName(string name);
 }
 
 public class AudioFileSaveToMicroControllerServices(
-    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices, IMinio minio)
+    IMinio minio)
     : IAudioFileSaveToMicroControllerServices
 {
-    public async Task<Music> SaveAudio(IFormFile formFile, string name)
+    public async Task<Music?> SaveAudio(IFormFile formFile, string name)
     {
-        if (!await Save(formFile)) return default;
-        return new Music(formFile.FileName, $"Data/Uploads/Music/{formFile.FileName}", name, TimeMusic($"Data/Uploads/Music/{formFile.FileName}"));
-    }
+        if (await Save(formFile))
+            return new Music(formFile.FileName, formFile.FileName, name,
+                TimeMusic(formFile));
 
-    public async Task<bool> SaveThenPlay(IFormFile formFile, string[] florSector)
-    {
-        if (!await Save(formFile)) return false;
-        return await musicPlayerToMicroControllerServices.Play($"Data/Uploads/Music/{formFile.FileName}", florSector);
+        return null;
     }
-
+    
     public async Task<bool> DeleteMusic(string path)
     {
-        return true;
+        return await minio.Delete(new MinioModel(path, "music", ""));
     }
 
-    public async Task<bool> UpdateName(string name)
+    public async Task<bool> UpdateName(string path)
     {
-        return true;
+        return await minio.Update(new MinioModel(path, "music", ""));
     }
 
-    private static TimeSpan TimeMusic(string path)
+    private static TimeSpan TimeMusic(IFormFile formFile)
     {
-        Mp3FileReader mp3FileReader = new Mp3FileReader(path);
+        Mp3FileReader mp3FileReader = new Mp3FileReader(formFile.OpenReadStream());
         return mp3FileReader.TotalTime;
     }
 
-    private static async Task<bool> Save(IFormFile formFile)
+    private async Task<bool> Save(IFormFile formFile)
     {
-        // return await minio.Save();
-        return true;
+        return await minio.Save(new MinioModel(formFile.FileName,
+            "music", formFile.ContentType), formFile);
     }
 }

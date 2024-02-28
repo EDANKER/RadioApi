@@ -7,7 +7,7 @@ namespace Api.Services.MicroControllerServices;
 public interface IMicroControllerServices
 {
     public Task<bool> CreateOrSave(string item, MicroController microController);
-    public Task<List<GetMicroController>> GetData(string item);
+    public Task<List<DtoMicroController>> GetData(string item);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, MicroController microController);
     public Task<bool> Search(string item, string name);
@@ -21,7 +21,7 @@ public class MicroControllerServices(IMicroControllerRepository controllerReposi
         return await controllerRepository.CreateOrSave(item, microController);
     }
 
-    public async Task<List<GetMicroController>> GetData(string item)
+    public async Task<List<DtoMicroController>> GetData(string item)
     {
         return await controllerRepository.GetData(item);
     }

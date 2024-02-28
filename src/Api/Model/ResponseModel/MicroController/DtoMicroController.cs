@@ -1,6 +1,6 @@
 namespace Api.Model.ResponseModel.MicroController;
 
-public class GetMicroController(int id, string name, string ip)
+public class DtoMicroController(int id, string name, string ip)
 {
     public int Id { get; set; } = id;
     public string Name { get; set; } = name;
