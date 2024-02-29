@@ -17,6 +17,6 @@ public class ApplicationContext(IConfiguration configuration) : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySQL(configuration.GetConnectionString("MySql"));
+        optionsBuilder.UseMySQL(configuration.GetConnectionString("MySql") ?? string.Empty);
     }
 }

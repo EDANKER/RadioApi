@@ -10,7 +10,7 @@ public interface IPlayListServices
 {
     public Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile);
     public Task<List<GetPlayList>> GetPlayList(string item, int limit);
-    public Task<GetPlayList> GetPlayListId(string item, int id);
+    public Task<GetPlayList?> GetPlayListId(string item, int id);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, string field, string name, int id);
     public Task<bool> Search(string item, string name);
@@ -43,11 +43,14 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
         return getPlayLists;
     }
 
-    public async Task<GetPlayList> GetPlayListId(string item, int id)
+    public async Task<GetPlayList?> GetPlayListId(string item, int id)
     {
         GetPlayList getPlayListRepo = await playListRepository.GetId(item, id);
-        return new GetPlayList(getPlayListRepo.Id, getPlayListRepo.Name, getPlayListRepo.Description,
-            await minio.GetUrl(new MinioModel(getPlayListRepo.ImgPath, "photo", "image/jpeg")));
+        if (getPlayListRepo != null)
+            return new GetPlayList(getPlayListRepo.Id, getPlayListRepo.Name, getPlayListRepo.Description,
+                await minio.GetUrl(new MinioModel(getPlayListRepo.ImgPath, "photo", "image/jpeg")));
+
+        return null;
     }
 
     public async Task<bool> DeleteId(string item, int id)

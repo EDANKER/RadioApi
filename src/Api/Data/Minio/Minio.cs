@@ -70,7 +70,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
 
     public async Task<string> GetUrl(MinioModel minioModel)
     {
-        TimeSpan timeSpan = TimeSpan.FromMinutes(1);
+        TimeSpan timeSpan = TimeSpan.FromMinutes(5);
         try
         {
             return await _minioClient.PresignedGetObjectAsync(new PresignedGetObjectArgs()

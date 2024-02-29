@@ -1,4 +1,4 @@
-@Api_HostAddress = http://+:8080
+@Api_HostAddress = https://+:8080
 
 GET {{Api_HostAddress}}/weatherforecast/
 Accept: application/json
