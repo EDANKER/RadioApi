@@ -11,7 +11,6 @@ public interface IMusicController
     public Task<IActionResult> StopMusic();
     public Task<IActionResult> SaveMusic(IFormFile formFile, string name);
     public Task<IActionResult> GetMusicLimit(int limit);
-    
     public Task<IActionResult> GetMusic(int id);
     public Task<IActionResult> DeleteMusicId(int id, string path);
     public Task<IActionResult> Update(string name, string field, int id);
@@ -101,7 +100,7 @@ public class MusicController(IPlayListServices playListServices,IMusicServices m
     public async Task<IActionResult> GetMusicPlayListTag(string name)
     {
         if (name == null)
-            return BadRequest("Путь не должен быть пустой");
+            return BadRequest("Название не должно быть пустой");
         
         return Ok(await musicServices.GetMusicPlayListTag("Musics", name));
     }

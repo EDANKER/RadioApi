@@ -15,14 +15,16 @@ namespace Api.Data.Repository.Scenari
         public Task<bool> Search(string item, string name);
     }
 
-    public class ScenarioRepository(IConfiguration configuration, MySqlConnection mySqlConnection, MySqlCommand mySqlCommand) : IScenarioRepository
+    public class ScenarioRepository(
+        ILogger<ScenarioRepository> logger,
+        IConfiguration configuration,
+        MySqlConnection mySqlConnection,
+        MySqlCommand mySqlCommand) : IScenarioRepository
     {
         private DbDataReader _dataReader;
         private List<GetScenario> _getScenaris;
         private GetScenario _getScenario;
-
-        private readonly string _connect = configuration.GetConnectionString("MySql");
-
+        private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
         public async Task<bool> CreateOrSave(string item, Scenario scenario)
         {
@@ -39,7 +41,6 @@ namespace Api.Data.Repository.Scenari
             mySqlCommand.Parameters.Add("@Time", MySqlDbType.DateTime).Value = scenario.Time;
             mySqlCommand.Parameters.Add("@Sector", MySqlDbType.LongText).Value = scenario.Sector;
 
-
             try
             {
                 await mySqlCommand.ExecuteNonQueryAsync();
@@ -47,6 +48,7 @@ namespace Api.Data.Repository.Scenari
             }
             catch (MySqlException e)
             {
+                logger.LogError(e.ToString());
                 return false;
             }
 
@@ -58,29 +60,36 @@ namespace Api.Data.Repository.Scenari
             _getScenaris = new List<GetScenario>();
             string command = $"SELECT * FROM {item} " +
                              "WHERE id = @Id";
-
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
-
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
-
-            _dataReader = await mySqlCommand.ExecuteReaderAsync();
-
-            if (_dataReader.HasRows)
+            try
             {
-                while (await _dataReader.ReadAsync())
+                mySqlConnection = new MySqlConnection(_connect);
+                await mySqlConnection.OpenAsync();
+
+                mySqlCommand = new MySqlCommand(command, mySqlConnection);
+                mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+
+                _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+                if (_dataReader.HasRows)
                 {
-                    string sector = _dataReader.GetString(1);
-                    string time = _dataReader.GetString(2);
+                    while (await _dataReader.ReadAsync())
+                    {
+                        string sector = _dataReader.GetString(1);
+                        string time = _dataReader.GetString(2);
 
-                    _getScenario = new GetScenario(id, sector, time);
-                    _getScenaris.Add(_getScenario);
+                        _getScenario = new GetScenario(id, sector, time);
+                        _getScenaris.Add(_getScenario);
+                    }
                 }
-            }
 
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
+                await mySqlConnection.CloseAsync();
+                await _dataReader.CloseAsync();
+            }
+            catch (MySqlException e)
+            {
+                logger.LogError(e.ToString());
+                throw;
+            }
 
             return _getScenaris;
         }
@@ -138,7 +147,7 @@ namespace Api.Data.Repository.Scenari
             }
             catch (MySqlException e)
             {
-                Console.WriteLine(e);
+                logger.LogError(e.ToString());
                 return false;
             }
 
@@ -170,7 +179,7 @@ namespace Api.Data.Repository.Scenari
             }
             catch (MySqlException e)
             {
-                Console.WriteLine(e);
+                logger.LogError(e.ToString());
                 return false;
             }
 

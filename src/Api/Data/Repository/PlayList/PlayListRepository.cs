@@ -14,12 +14,15 @@ public interface IPlayListRepository
     public Task<bool> Search(string item, string name);
 }
 
-public class PlayListRepository(IConfiguration configuration, MySqlConnection mySqlConnection, MySqlCommand mySqlCommand) : IPlayListRepository
+public class PlayListRepository(
+    ILogger<PlayListRepository> logger,
+    IConfiguration configuration,
+    MySqlConnection mySqlConnection,
+    MySqlCommand mySqlCommand) : IPlayListRepository
 {
     private DbDataReader _dataReader;
     private List<GetPlayList> _playLists;
     private GetPlayList _playList;
-
     private readonly string _connect = configuration.GetConnectionString("MySql");
 
     public async Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.PlayList playList)
@@ -45,7 +48,7 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e.ToString());
             return false;
         }
     }
@@ -63,7 +66,7 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
         mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
         _dataReader = await mySqlCommand.ExecuteReaderAsync();
-        
+
         if (_dataReader.HasRows)
         {
             while (await _dataReader.ReadAsync())
@@ -72,10 +75,10 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
                 string description = _dataReader.GetString(2);
                 string imgPath = _dataReader.GetString(3);
 
-                _playList = new GetPlayList(id,name, description, imgPath);
+                _playList = new GetPlayList(id, name, description, imgPath);
             }
         }
-        
+
         await _dataReader.CloseAsync();
         await mySqlConnection.CloseAsync();
 
@@ -94,7 +97,7 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
         mySqlCommand = new MySqlCommand(command, mySqlConnection);
         mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
 
-       _dataReader =  await mySqlCommand.ExecuteReaderAsync();
+        _dataReader = await mySqlCommand.ExecuteReaderAsync();
         if (_dataReader.HasRows)
         {
             while (await _dataReader.ReadAsync())
@@ -104,7 +107,7 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
                 string description = _dataReader.GetString(2);
                 string imgPath = _dataReader.GetString(3);
 
-                _playList = new GetPlayList(id,name, description, imgPath);
+                _playList = new GetPlayList(id, name, description, imgPath);
                 _playLists.Add(_playList);
             }
         }
@@ -133,7 +136,7 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e.ToString());
             return false;
         }
 
@@ -160,18 +163,18 @@ public class PlayListRepository(IConfiguration configuration, MySqlConnection my
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e.ToString());
             return false;
         }
 
         return true;
     }
-    
+
     public async Task<bool> Search(string item, string name)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                          $"WHERE name = @Name)";
-        
+
         mySqlConnection = new MySqlConnection(_connect);
         await mySqlConnection.OpenAsync();
 

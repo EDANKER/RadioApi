@@ -15,13 +15,18 @@ public interface IMusicRepository
     public Task<bool> Search(string item, string name);
 }
 
-public class MusicRepository(IConfiguration configuration, MySqlConnection mySqlConnection, MySqlCommand mySqlCommand) : IMusicRepository
+public class MusicRepository(
+    ILogger<MusicRepository> logger,
+    IConfiguration configuration,
+    MySqlConnection mySqlConnection,
+    MySqlCommand mySqlCommand)
+    : IMusicRepository
 {
     private DbDataReader _dataReader;
     private List<DtoMusic> _musicsList;
     private DtoMusic _music;
 
-    private readonly string _connect =  configuration.GetConnectionString("MySql");
+    private readonly string _connect = configuration.GetConnectionString("MySql");
 
     public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music? music)
     {
@@ -46,7 +51,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e.ToString());
             return false;
         }
 
@@ -124,14 +129,14 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
     {
         _musicsList = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
-                         $"WHERE tamePlayList = @NamePlayList";
+                         $"WHERE namePlayList = @NamePlayList";
 
         mySqlConnection = new MySqlConnection(_connect);
         await mySqlConnection.OpenAsync();
 
         mySqlCommand = new MySqlCommand(command, mySqlConnection);
         mySqlCommand.Parameters.Add("@NamePlayList", MySqlDbType.VarChar).Value = name;
-        
+
         _dataReader = await mySqlCommand.ExecuteReaderAsync();
         if (_dataReader.HasRows)
         {
@@ -152,7 +157,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
 
         return _musicsList;
     }
-    
+
     public async Task<bool> DeleteId(string item, int id)
     {
         string command = $"DELETE FROM {item} " +
@@ -171,7 +176,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e.ToString());
             return false;
         }
 
@@ -198,7 +203,7 @@ public class MusicRepository(IConfiguration configuration, MySqlConnection mySql
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e.ToString());
             return false;
         }
 

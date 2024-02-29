@@ -1,9 +1,8 @@
 ﻿using Api.Data.Repository.Scenari;
 using Api.Model.RequestModel.Scenario;
-using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.Scenario;
 
-namespace Api.Services.SettingsScenariServices;
+namespace Api.Services.ScenarioServices;
 
 public interface IScenarioServices
 {
@@ -32,7 +31,6 @@ public class ScenarioServices(IScenarioRepository scenarioRepository) : IScenari
         return await scenarioRepository.GetLimit(item, limit);
     }
     
-
     public async Task<bool> DeleteId(string item, int id)
     {
         return await scenarioRepository.DeleteId(item, id);

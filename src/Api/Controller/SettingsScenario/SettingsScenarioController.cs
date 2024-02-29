@@ -1,5 +1,5 @@
 ﻿using Api.Model.RequestModel.Scenario;
-using Api.Services.SettingsScenariServices;
+using Api.Services.ScenarioServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.SettingsScenari;
