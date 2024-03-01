@@ -6,12 +6,12 @@ namespace Api.Services.ScenarioServices;
 
 public interface IScenarioServices
 {
-    public Task<bool> CreateOrSave(string item, Scenario scenario);
-    public Task<List<DtoScenario>> GetId(string item, int id);
-    public Task<List<DtoScenario>> GetLimit(string item, int limit);
-    public Task<bool> DeleteId(string item, int id);
-    public Task<bool> Update(string item, Scenario scenario, int id);
-    public Task<bool> Search(string item, string name);
+    Task<bool> CreateOrSave(string item, Scenario scenario);
+    Task<List<DtoScenario>> GetId(string item, int id);
+    Task<List<DtoScenario>> GetLimit(string item, int limit);
+    Task<bool> DeleteId(string item, int id);
+    Task<bool> Update(string item, Scenario scenario, int id);
+    Task<bool> Search(string item, string name);
 }
 
 public class ScenarioServices(IScenarioRepository scenarioRepository) : IScenarioServices
@@ -30,7 +30,7 @@ public class ScenarioServices(IScenarioRepository scenarioRepository) : IScenari
     {
         return await scenarioRepository.GetLimit(item, limit);
     }
-    
+
     public async Task<bool> DeleteId(string item, int id)
     {
         return await scenarioRepository.DeleteId(item, id);

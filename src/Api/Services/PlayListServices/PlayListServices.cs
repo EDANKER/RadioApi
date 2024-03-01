@@ -8,12 +8,12 @@ namespace Api.Services.PlayListServices;
 
 public interface IPlayListServices
 {
-    public Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile);
-    public Task<List<DtoPlayList>> GetPlayList(string item, int limit);
-    public Task<DtoPlayList?> GetPlayListId(string item, int id);
-    public Task<bool> DeleteId(string item, int id);
-    public Task<bool> Update(string item, string field, string name, int id);
-    public Task<bool> Search(string item, string name);
+    Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile);
+    Task<List<DtoPlayList>> GetPlayList(string item, int limit);
+    Task<DtoPlayList?> GetPlayListId(string item, int id);
+    Task<bool> DeleteId(string item, int id);
+    Task<bool> Update(string item, string field, string name, int id);
+    Task<bool> Search(string item, string name);
 }
 
 public class PlayListServices(IPlayListRepository playListRepository, IMinio minio) : IPlayListServices

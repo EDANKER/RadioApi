@@ -7,9 +7,9 @@ namespace Api.Services.AudioFileSaveToMicroControllerServices;
 
 public interface IAudioFileSaveToMicroControllerServices
 {
-    public Task<Music?> SaveAudio(IFormFile formFile, string name);
-    public Task<bool> DeleteMusic(string path);
-    public Task<bool> UpdateName(string name);
+    Task<Music?> SaveAudio(IFormFile formFile, string name);
+    Task<bool> DeleteMusic(string path);
+    Task<bool> UpdateName(string name);
 }
 
 public class AudioFileSaveToMicroControllerServices(
@@ -24,7 +24,7 @@ public class AudioFileSaveToMicroControllerServices(
 
         return null;
     }
-    
+
     public async Task<bool> DeleteMusic(string path)
     {
         return await minio.Delete(new MinioModel(path, "music", ""));

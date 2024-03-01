@@ -6,13 +6,13 @@ namespace Api.Services.UserServices;
 
 public interface IUserServices
 {
-    public Task<bool> CreateOrSave(string item, User user);
-    public Task<List<DtoUser>> GetLimitUser(string item, int limit);
-    public Task<List<DtoUser>> GetIdUser(string item, int id);
-    public Task<List<DtoUser>> GetName(string item, string name);
-    public Task<bool> DeleteId(string item, int id);
-    public Task<bool> Update(string item, User user, int id);
-    public Task<bool> Search(string item, string name, string login);
+    Task<bool> CreateOrSave(string item, User user);
+    Task<List<DtoUser>> GetLimitUser(string item, int limit);
+    Task<List<DtoUser>> GetIdUser(string item, int id);
+    Task<List<DtoUser>> GetName(string item, string name);
+    Task<bool> DeleteId(string item, int id);
+    Task<bool> Update(string item, User user, int id);
+    Task<bool> Search(string item, string name, string login);
 }
 
 public class UserServices(IUserRepository userRepository) : IUserServices

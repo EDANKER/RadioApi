@@ -7,11 +7,11 @@ namespace Api.Data.Minio;
 
 public interface IMinio
 {
-    public Task<bool> Save(MinioModel minioModel, IFormFile formFile);
-    public Task<bool> Delete(MinioModel minioModel);
-    public Task<bool> Update(MinioModel minioModel);
-    public Task<string> GetUrl(MinioModel minioModel);
-    public Task<Stream> GetByteMusic(MinioModel minioModel);
+    Task<bool> Save(MinioModel minioModel, IFormFile formFile);
+    Task<bool> Delete(MinioModel minioModel);
+    Task<bool> Update(MinioModel minioModel);
+    Task<string> GetUrl(MinioModel minioModel);
+    Task<Stream> GetByteMusic(MinioModel minioModel);
 }
 
 public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio

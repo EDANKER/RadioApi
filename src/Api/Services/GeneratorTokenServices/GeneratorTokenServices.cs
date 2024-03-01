@@ -1,18 +1,15 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json.Serialization;
 using Api.Model.JwtTokenConfig;
-using Api.Model.ResponseModel.User;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson.IO;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 
-namespace Radio.Services.GeneratorTokenServices;
+namespace Api.Services.GeneratorTokenServices;
 
 public interface IGeneratorTokenServices
 {
-    public string Generator(string login);
+    string Generator(string login);
 }
 
 public class GeneratorTokenServices : IGeneratorTokenServices
@@ -33,7 +30,7 @@ public class GeneratorTokenServices : IGeneratorTokenServices
         );
 
         string jwtSecurityTokenHandler = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-        
+
         var response = new
         {
             token = jwtSecurityTokenHandler,

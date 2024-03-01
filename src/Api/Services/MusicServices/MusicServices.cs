@@ -10,16 +10,16 @@ namespace Api.Services.MusicServices;
 
 public interface IMusicServices
 {
-    public Task<bool> Play(string path, List<string> florSector);
-    public Task<bool> PlayLife(IFormFile formFile, List<string> florSector);
-    public Task<bool> Stop();
-    public Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
-    public Task<List<DtoMusic>> GetMusic(string item, int limit);
-    public Task<DtoMusic> GetMusicId(string item, int id);
-    public Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name);
-    public Task<bool> DeleteId(string item, int id, string path);
-    public Task<bool> Update(string item, string field, string name, int id);
-    public Task<bool> Search(string item, string name);
+    Task<bool> Play(string path, List<string> florSector);
+    Task<bool> PlayLife(IFormFile formFile, List<string> florSector);
+    Task<bool> Stop();
+    Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
+    Task<List<DtoMusic>> GetMusic(string item, int limit);
+    Task<DtoMusic> GetMusicId(string item, int id);
+    Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name);
+    Task<bool> DeleteId(string item, int id, string path);
+    Task<bool> Update(string item, string field, string name, int id);
+    Task<bool> Search(string item, string name);
 }
 
 public class MusicServices(

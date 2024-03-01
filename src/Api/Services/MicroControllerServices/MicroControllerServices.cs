@@ -6,12 +6,12 @@ namespace Api.Services.MicroControllerServices;
 
 public interface IMicroControllerServices
 {
-    public Task<bool> CreateOrSave(string item, MicroController microController);
-    public Task<List<DtoMicroController>> GetData(string item);
-    public Task<bool> DeleteId(string item, int id);
-    public Task<bool> Update(string item, MicroController microController);
-    public Task<bool> Search(string item, string name);
-    public Task<bool> CheckMicroController(string ip);
+    Task<bool> CreateOrSave(string item, MicroController microController);
+    Task<List<DtoMicroController>> GetData(string item);
+    Task<bool> DeleteId(string item, int id);
+    Task<bool> Update(string item, MicroController microController);
+    Task<bool> Search(string item, string name);
+    Task<bool> CheckMicroController(string ip);
 }
 
 public class MicroControllerServices(IMicroControllerRepository controllerRepository) : IMicroControllerServices
