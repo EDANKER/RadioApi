@@ -6,13 +6,13 @@ namespace Api.Data.Repository.Music;
 
 public interface IMusicRepository
 {
-    public Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music? music);
-    public Task<DtoMusic> GetId(string item, int id);
-    public Task<List<DtoMusic>> GetLimit(string item, int limit);
-    public Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name);
-    public Task<bool> DeleteId(string item, int id);
-    public Task<bool> Update(string item, string field, string name, int id);
-    public Task<bool> Search(string item, string name);
+    Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music? music);
+    Task<DtoMusic> GetId(string item, int id);
+    Task<List<DtoMusic>> GetLimit(string item, int limit);
+    Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name);
+    Task<bool> DeleteId(string item, int id);
+    Task<bool> Update(string item, string field, string name, int id);
+    Task<bool> Search(string item, string name);
 }
 
 public class MusicRepository(
@@ -31,8 +31,8 @@ public class MusicRepository(
     public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music? music)
     {
         string command = $"INSERT INTO {item} " +
-                         $"(name, path, namePlayList, timeMusic) " +
-                         $"VALUES(@Name, @Path, @NamePlayList, @TimeMusic)";
+                         $"(name, namePlayList, timeMusic) " +
+                         $"VALUES(@Name, @NamePlayList, @TimeMusic)";
 
         mySqlConnection = new MySqlConnection(_connect);
         await mySqlConnection.OpenAsync();
@@ -40,7 +40,6 @@ public class MusicRepository(
         mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
         mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = music.Name;
-        mySqlCommand.Parameters.Add("@Path", MySqlDbType.LongText).Value = music.Path;
         mySqlCommand.Parameters.Add("@NamePlayList", MySqlDbType.VarChar).Value = music.NamePlayList;
         mySqlCommand.Parameters.Add("@TimeMusic", MySqlDbType.VarChar).Value = music.TimeMusic.ToString();
 
@@ -64,30 +63,37 @@ public class MusicRepository(
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
-
-        _dataReader = await mySqlCommand.ExecuteReaderAsync();
-        if (_dataReader.HasRows)
+        try
         {
-            while (await _dataReader.ReadAsync())
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
             {
-                string name = _dataReader.GetString(1);
-                string path = _dataReader.GetString(2);
-                string namePlayList = _dataReader.GetString(3);
-                string timeMusic = _dataReader.GetString(4);
+                while (await _dataReader.ReadAsync())
+                {
+                    string name = _dataReader.GetString(1);
+                    string namePlayList = _dataReader.GetString(2);
+                    string timeMusic = _dataReader.GetString(3);
 
-                _music = new DtoMusic(id, name, path, namePlayList, timeMusic);
+                    _music = new DtoMusic(id, name, namePlayList, timeMusic);
+                }
             }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
+            return _music;
         }
-
-        await _dataReader.CloseAsync();
-        await mySqlConnection.CloseAsync();
-
-        return _music;
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            throw;
+        }
     }
 
     public async Task<List<DtoMusic>> GetLimit(string item, int limit)
@@ -96,33 +102,40 @@ public class MusicRepository(
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT  @Limit";
 
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
-
-
-        _dataReader = await mySqlCommand.ExecuteReaderAsync();
-        if (_dataReader.HasRows)
+        try
         {
-            while (await _dataReader.ReadAsync())
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
             {
-                int id = _dataReader.GetInt32(0);
-                string name = _dataReader.GetString(1);
-                string path = _dataReader.GetString(2);
-                string namePlayList = _dataReader.GetString(3);
-                string timeMusic = _dataReader.GetString(4);
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string namePlayList = _dataReader.GetString(2);
+                    string timeMusic = _dataReader.GetString(3);
 
-                _music = new DtoMusic(id, name, path, namePlayList, timeMusic);
-                _musicsList.Add(_music);
+                    _music = new DtoMusic(id, name, namePlayList, timeMusic);
+                    _musicsList.Add(_music);
+                }
             }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
+            return _musicsList;
         }
-
-        await _dataReader.CloseAsync();
-        await mySqlConnection.CloseAsync();
-
-        return _musicsList;
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            throw;
+        }
     }
 
     public async Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name)
@@ -130,32 +143,38 @@ public class MusicRepository(
         _musicsList = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE namePlayList = @NamePlayList";
-
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("@NamePlayList", MySqlDbType.VarChar).Value = name;
-
-        _dataReader = await mySqlCommand.ExecuteReaderAsync();
-        if (_dataReader.HasRows)
+        try
         {
-            while (await _dataReader.ReadAsync())
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@NamePlayList", MySqlDbType.VarChar).Value = name;
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
             {
-                int id = _dataReader.GetInt32(0);
-                string path = _dataReader.GetString(2);
-                string namePlayList = _dataReader.GetString(3);
-                string timeMusic = _dataReader.GetString(4);
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string namePlayList = _dataReader.GetString(1);
+                    string timeMusic = _dataReader.GetString(2);
 
-                _music = new DtoMusic(id, name, path, namePlayList, timeMusic);
-                _musicsList.Add(_music);
+                    _music = new DtoMusic(id, name, namePlayList, timeMusic);
+                    _musicsList.Add(_music);
+                }
             }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
+            return _musicsList;
         }
-
-        await _dataReader.CloseAsync();
-        await mySqlConnection.CloseAsync();
-
-        return _musicsList;
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            throw;
+        }
     }
 
     public async Task<bool> DeleteId(string item, int id)
@@ -214,17 +233,24 @@ public class MusicRepository(
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                          $"WHERE name = @Name)";
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
 
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
 
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
+            object? exist = await mySqlCommand.ExecuteScalarAsync();
+            bool convertBool = Convert.ToBoolean(exist);
+            await mySqlConnection.CloseAsync();
 
-        object? exist = await mySqlCommand.ExecuteScalarAsync();
-        bool convertBool = Convert.ToBoolean(exist);
-        await mySqlConnection.CloseAsync();
-
-        return convertBool;
+            return convertBool;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return false;
+        }
     }
 }

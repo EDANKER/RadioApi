@@ -1,6 +1,6 @@
 ﻿namespace Api.Model.ResponseModel.PlayList;
 
-public class GetPlayList(int id, string name, string description, string imgPath)
+public class DtoPlayList(int id, string name, string description, string imgPath)
 {
     public int Id { get; set; } = id;
     public string Name { get; set; } = name;

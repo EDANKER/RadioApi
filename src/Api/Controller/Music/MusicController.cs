@@ -49,7 +49,7 @@ public class MusicController(IPlayListServices playListServices,IMusicServices m
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");
         if (!await playListServices.Search("PlayLists", name))
-            return BadRequest("Такого плей листа нет");
+            return Ok(await musicServices.CreateOrSave("Musics", formFile, "All"));
 
         return Ok(await musicServices.CreateOrSave("Musics", formFile, name));
     }

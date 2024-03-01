@@ -2,24 +2,28 @@
 using Api.Model.ResponseModel.User;
 using MySql.Data.MySqlClient;
 
-namespace Api.Data.Repository.User.User;
+namespace Api.Data.Repository.User;
 
 public interface IUserRepository
 {
-    public Task<bool> CreateOrSave(string item, Model.RequestModel.User.User user);
-    public Task<List<GetUser>> GetId(string item, int id);
-    public Task<List<GetUser>> GetLimit(string item, int limit);
-    public Task<List<GetUser>> GetName(string item, string name);
-    public Task<bool> DeleteId(string item, int id);
-    public Task<bool> Update(string item, Api.Model.RequestModel.User.User user, int id);
-    public Task<bool> Search(string item, string name, string login);
+    Task<bool> CreateOrSave(string item, Model.RequestModel.User.User user);
+    Task<List<DtoUser>> GetId(string item, int id);
+    Task<List<DtoUser>> GetLimit(string item, int limit);
+    Task<List<DtoUser>> GetName(string item, string name);
+    Task<bool> DeleteId(string item, int id);
+    Task<bool> Update(string item, Api.Model.RequestModel.User.User user, int id);
+    Task<bool> Search(string item, string name, string login);
 }
 
-public class UserRepository(IConfiguration configuration, ILogger<IUserRepository> _logger, MySqlConnection mySqlConnection, MySqlCommand mySqlCommand) : IUserRepository
+public class UserRepository(
+    IConfiguration configuration,
+    ILogger<IUserRepository> _logger,
+    MySqlConnection mySqlConnection,
+    MySqlCommand mySqlCommand) : IUserRepository
 {
     private DbDataReader _dataReader;
-    private List<GetUser> _getUsers;
-    private GetUser _user;
+    private List<DtoUser> _getUsers;
+    private DtoUser _user;
 
     private readonly string _connect = configuration.GetConnectionString("MySql");
 
@@ -52,77 +56,91 @@ public class UserRepository(IConfiguration configuration, ILogger<IUserRepositor
         return true;
     }
 
-    public async Task<List<GetUser>> GetId(string item, int id)
+    public async Task<List<DtoUser>> GetId(string item, int id)
     {
-        _getUsers = new List<GetUser>();
+        _getUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
-
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
-
-        _dataReader = await mySqlCommand.ExecuteReaderAsync();
-
-        if (_dataReader.HasRows)
+        try
         {
-            while (await _dataReader.ReadAsync())
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
             {
-                string fullname = _dataReader.GetString(1);
-                string login = _dataReader.GetString(2);
-                string role = _dataReader.GetString(3);
+                while (await _dataReader.ReadAsync())
+                {
+                    string fullname = _dataReader.GetString(1);
+                    string login = _dataReader.GetString(2);
+                    string role = _dataReader.GetString(3);
 
-                _user = new GetUser(id, fullname, login, role);
-                _getUsers.Add(_user);
+                    _user = new DtoUser(id, fullname, login, role);
+                    _getUsers.Add(_user);
+                }
             }
+
+            await mySqlConnection.CloseAsync();
+            await _dataReader.CloseAsync();
+
+            return _getUsers;
         }
-
-        await mySqlConnection.CloseAsync();
-        await _dataReader.CloseAsync();
-
-        return _getUsers;
+        catch (MySqlException e)
+        {
+            _logger.LogError(e.ToString());
+            throw;
+        }
     }
 
-    public async Task<List<GetUser>> GetLimit(string item, int limit)
+    public async Task<List<DtoUser>> GetLimit(string item, int limit)
     {
-        _getUsers = new List<GetUser>();
+        _getUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          "LIMIT @Limit";
-
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
-
-
-        _dataReader = await mySqlCommand.ExecuteReaderAsync();
-
-        if (_dataReader.HasRows)
+        try
         {
-            while (await _dataReader.ReadAsync())
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
             {
-                int id = _dataReader.GetInt32(0);
-                string fullname = _dataReader.GetString(1);
-                string login = _dataReader.GetString(2);
-                string role = _dataReader.GetString(3);
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string fullname = _dataReader.GetString(1);
+                    string login = _dataReader.GetString(2);
+                    string role = _dataReader.GetString(3);
 
-                _user = new GetUser(id, fullname, login, role);
-                _getUsers.Add(_user);
+                    _user = new DtoUser(id, fullname, login, role);
+                    _getUsers.Add(_user);
+                }
             }
+
+            await mySqlConnection.CloseAsync();
+            await _dataReader.CloseAsync();
+
+            return _getUsers;
         }
-
-        await mySqlConnection.CloseAsync();
-        await _dataReader.CloseAsync();
-
-        return _getUsers;
+        catch (MySqlException e)
+        {
+            _logger.LogError(e.ToString());
+            throw;
+        }
     }
 
-    public async Task<List<GetUser>> GetName(string item, string name)
+    public async Task<List<DtoUser>> GetName(string item, string name)
     {
-        _getUsers = new List<GetUser>();
+        _getUsers = new List<DtoUser>();
         string command = $"SELECT * FROM  {item} " +
                          $"WHERE Name = @Name";
 
@@ -143,7 +161,7 @@ public class UserRepository(IConfiguration configuration, ILogger<IUserRepositor
                 string login = _dataReader.GetString(2);
                 string role = _dataReader.GetString(3);
 
-                _user = new GetUser(id, fullname, login, role);
+                _user = new DtoUser(id, fullname, login, role);
                 _getUsers.Add(_user);
             }
         }

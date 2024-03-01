@@ -1,18 +1,17 @@
 ﻿using System.Data.Common;
-using Api.Model.RequestModel.Scenario;
 using Api.Model.ResponseModel.Scenario;
 using MySql.Data.MySqlClient;
 
-namespace Api.Data.Repository.Scenari
+namespace Api.Data.Repository.Scenario
 {
     public interface IScenarioRepository
     {
-        public Task<bool> CreateOrSave(string item, Scenario scenario);
-        public Task<List<GetScenario>> GetId(string item, int id);
-        public Task<List<GetScenario>> GetLimit(string item, int limit);
-        public Task<bool> DeleteId(string item, int id);
-        public Task<bool> Update(string item, Scenario scenario, int id);
-        public Task<bool> Search(string item, string name);
+        Task<bool> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario);
+        Task<List<DtoScenario>> GetId(string item, int id);
+        Task<List<DtoScenario>> GetLimit(string item, int limit);
+        Task<bool> DeleteId(string item, int id);
+        Task<bool> Update(string item, Model.RequestModel.Scenario.Scenario scenario, int id);
+        Task<bool> Search(string item, string name);
     }
 
     public class ScenarioRepository(
@@ -22,11 +21,11 @@ namespace Api.Data.Repository.Scenari
         MySqlCommand mySqlCommand) : IScenarioRepository
     {
         private DbDataReader _dataReader;
-        private List<GetScenario> _getScenaris;
-        private GetScenario _getScenario;
+        private List<DtoScenario> _getScenaris;
+        private DtoScenario _dtoScenario;
         private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
-        public async Task<bool> CreateOrSave(string item, Scenario scenario)
+        public async Task<bool> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario)
         {
             string command = $"INSERT INTO {item} " +
                              "(Name, Sector, Time) " +
@@ -55,9 +54,9 @@ namespace Api.Data.Repository.Scenari
             return true;
         }
 
-        public async Task<List<GetScenario>> GetId(string item, int id)
+        public async Task<List<DtoScenario>> GetId(string item, int id)
         {
-            _getScenaris = new List<GetScenario>();
+            _getScenaris = new List<DtoScenario>();
             string command = $"SELECT * FROM {item} " +
                              "WHERE id = @Id";
             try
@@ -77,8 +76,8 @@ namespace Api.Data.Repository.Scenari
                         string sector = _dataReader.GetString(1);
                         string time = _dataReader.GetString(2);
 
-                        _getScenario = new GetScenario(id, sector, time);
-                        _getScenaris.Add(_getScenario);
+                        _dtoScenario = new DtoScenario(id, sector, time);
+                        _getScenaris.Add(_dtoScenario);
                     }
                 }
 
@@ -94,43 +93,50 @@ namespace Api.Data.Repository.Scenari
             return _getScenaris;
         }
 
-        public async Task<List<GetScenario>> GetLimit(string item, int limit)
+        public async Task<List<DtoScenario>> GetLimit(string item, int limit)
         {
-            _getScenaris = new List<GetScenario>();
+            _getScenaris = new List<DtoScenario>();
             string command = $"SELECT * FROM {item} " +
                              "LIMIT @Limit";
-
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
-
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
-
-
-            _dataReader = await mySqlCommand.ExecuteReaderAsync();
-
-            if (_dataReader.HasRows)
+            try
             {
-                while (await _dataReader.ReadAsync())
+                mySqlConnection = new MySqlConnection(_connect);
+                await mySqlConnection.OpenAsync();
+
+                mySqlCommand = new MySqlCommand(command, mySqlConnection);
+                mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+
+
+                _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+                if (_dataReader.HasRows)
                 {
-                    int id = _dataReader.GetInt32(0);
-                    string sector = _dataReader.GetString(1);
-                    string time = _dataReader.GetString(2);
+                    while (await _dataReader.ReadAsync())
+                    {
+                        int id = _dataReader.GetInt32(0);
+                        string sector = _dataReader.GetString(1);
+                        string time = _dataReader.GetString(2);
 
-                    _getScenario = new GetScenario(id, sector, time);
-                    _getScenaris.Add(_getScenario);
+                        _dtoScenario = new DtoScenario(id, sector, time);
+                        _getScenaris.Add(_dtoScenario);
+                    }
                 }
+
+                await mySqlConnection.CloseAsync();
+                await _dataReader.CloseAsync();
+
+                return _getScenaris;
             }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
-            return _getScenaris;
+            catch (MySqlException e)
+            {
+                logger.LogError(e.ToString());
+                throw;
+            }
         }
 
         public async Task<bool> DeleteId(string item, int id)
         {
-            _getScenaris = new List<GetScenario>();
+            _getScenaris = new List<DtoScenario>();
             string command = $"DELETE FROM {item} " +
                              $"WHERE id = @Id";
 
@@ -154,7 +160,7 @@ namespace Api.Data.Repository.Scenari
             return true;
         }
 
-        public async Task<bool> Update(string item, Scenario scenario, int id)
+        public async Task<bool> Update(string item, Model.RequestModel.Scenario.Scenario scenario, int id)
         {
             string command = $"UPDATE {item} " +
                              $"SET " +

@@ -9,8 +9,8 @@ namespace Api.Services.PlayListServices;
 public interface IPlayListServices
 {
     public Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile);
-    public Task<List<GetPlayList>> GetPlayList(string item, int limit);
-    public Task<GetPlayList?> GetPlayListId(string item, int id);
+    public Task<List<DtoPlayList>> GetPlayList(string item, int limit);
+    public Task<DtoPlayList?> GetPlayListId(string item, int id);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, string field, string name, int id);
     public Task<bool> Search(string item, string name);
@@ -28,27 +28,27 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
         return false;
     }
 
-    public async Task<List<GetPlayList>> GetPlayList(string item, int limit)
+    public async Task<List<DtoPlayList>> GetPlayList(string item, int limit)
     {
-        List<GetPlayList> getPlayLists = new List<GetPlayList>();
-        List<GetPlayList> getPlayListRepo = await playListRepository.GetLimit(item, limit);
+        List<DtoPlayList> getPlayLists = new List<DtoPlayList>();
+        List<DtoPlayList> getPlayListRepo = await playListRepository.GetLimit(item, limit);
         foreach (var data in getPlayListRepo)
         {
-            GetPlayList getPlayList = new GetPlayList(data.Id, data.Name,
+            DtoPlayList dtoPlayList = new DtoPlayList(data.Id, data.Name,
                 data.Description,
                 await minio.GetUrl(new MinioModel(data.ImgPath, "photo", "image/jpeg")));
-            getPlayLists.Add(getPlayList);
+            getPlayLists.Add(dtoPlayList);
         }
 
         return getPlayLists;
     }
 
-    public async Task<GetPlayList?> GetPlayListId(string item, int id)
+    public async Task<DtoPlayList?> GetPlayListId(string item, int id)
     {
-        GetPlayList getPlayListRepo = await playListRepository.GetId(item, id);
-        if (getPlayListRepo != null)
-            return new GetPlayList(getPlayListRepo.Id, getPlayListRepo.Name, getPlayListRepo.Description,
-                await minio.GetUrl(new MinioModel(getPlayListRepo.ImgPath, "photo", "image/jpeg")));
+        DtoPlayList dtoPlayListRepo = await playListRepository.GetId(item, id);
+        if (dtoPlayListRepo != null)
+            return new DtoPlayList(dtoPlayListRepo.Id, dtoPlayListRepo.Name, dtoPlayListRepo.Description,
+                await minio.GetUrl(new MinioModel(dtoPlayListRepo.ImgPath, "photo", "image/jpeg")));
 
         return null;
     }

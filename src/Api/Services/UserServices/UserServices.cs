@@ -1,6 +1,4 @@
 ﻿using Api.Data.Repository.User;
-using Api.Data.Repository.User.User;
-using Api.Data.Repository.User.UserRole;
 using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.User;
 
@@ -9,33 +7,32 @@ namespace Api.Services.UserServices;
 public interface IUserServices
 {
     public Task<bool> CreateOrSave(string item, User user);
-    public Task<List<GetUser>> GetLimitUser(string item, int limit);
-    public Task<List<GetUser>> GetIdUser(string item, int id);
-    public Task<List<GetUser>> GetName(string item, string name);
+    public Task<List<DtoUser>> GetLimitUser(string item, int limit);
+    public Task<List<DtoUser>> GetIdUser(string item, int id);
+    public Task<List<DtoUser>> GetName(string item, string name);
     public Task<bool> DeleteId(string item, int id);
     public Task<bool> Update(string item, User user, int id);
     public Task<bool> Search(string item, string name, string login);
 }
 
-public class UserServices(IUserRepository userRepository, IUserRoleRepository userRoleRepository) : IUserServices
+public class UserServices(IUserRepository userRepository) : IUserServices
 {
     public async Task<bool> CreateOrSave(string item, User user)
     {
-        await userRoleRepository.CreateOrSave(user.FullName, user.Role);
         return await userRepository.CreateOrSave(item, user);
     }
 
-    public async Task<List<GetUser>> GetLimitUser(string item, int limit)
+    public async Task<List<DtoUser>> GetLimitUser(string item, int limit)
     {
         return await userRepository.GetLimit(item, limit);
     }
 
-    public async Task<List<GetUser>> GetIdUser(string item, int id)
+    public async Task<List<DtoUser>> GetIdUser(string item, int id)
     {
         return await userRepository.GetId(item, id);
     }
 
-    public async Task<List<GetUser>> GetName(string item, string name)
+    public async Task<List<DtoUser>> GetName(string item, string name)
     {
         return await userRepository.GetName(item, name);
     }

@@ -1,7 +1,7 @@
 ﻿
 namespace Api.Model.ResponseModel.User;
 
-public class GetUser(int id, string fullName, string login, string role)
+public class DtoUser(int id, string fullName, string login, string role)
 {
     public int Id { get; set; } = id;
     public string FullName { get; set; } = fullName;
