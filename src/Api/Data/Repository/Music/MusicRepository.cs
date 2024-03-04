@@ -129,13 +129,13 @@ public class MusicRepository(
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
 
-            return _musicsList;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            throw;
         }
+        
+        return _musicsList;
     }
 
     public async Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name)
@@ -168,13 +168,13 @@ public class MusicRepository(
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
 
-            return _musicsList;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            throw;
         }
+        
+        return _musicsList;
     }
 
     public async Task<bool> DeleteId(string item, int id)

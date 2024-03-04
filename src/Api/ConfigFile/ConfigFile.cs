@@ -19,7 +19,6 @@ using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Minio;
-using MongoDB.Driver;
 using MySql.Data.MySqlClient;
 
 namespace Api.ConfigFile;
@@ -30,7 +29,6 @@ public static class ConfigFile
     {
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
-        service.AddTransient<MongoClient>();
         service.AddTransient<IMinioClient, MinioClient>();
         service.AddScoped<IMinio, Data.Minio.Minio>();
         service.AddScoped<IAudioFileSaveToMicroControllerServices, AudioFileSaveToMicroControllerServices>();
