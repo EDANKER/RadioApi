@@ -2,8 +2,6 @@
 using Api.Model.RequestModel.Music;
 using Api.Data.Minio;
 using Api.Model.MinioModel;
-using NAudio.Lame;
-using TagLib;
 
 namespace Api.Services.AudioFileSaveToMicroControllerServices;
 
@@ -11,7 +9,7 @@ public interface IAudioFileSaveToMicroControllerServices
 {
     Task<Music?> SaveAudio(IFormFile formFile, string name);
     Task<bool> DeleteMusic(string path);
-    Task<bool> UpdateName(string name);
+    Task<bool> UpdateName(string path, string newName);
 }
 
 public class AudioFileSaveToMicroControllerServices(
@@ -32,9 +30,9 @@ public class AudioFileSaveToMicroControllerServices(
         return await minio.Delete(new MinioModel(path, "music", ""));
     }
 
-    public async Task<bool> UpdateName(string path)
+    public async Task<bool> UpdateName(string path, string name)
     {
-        return await minio.Update(new MinioModel(path, "music", ""));
+        return await minio.Update(new MinioModel(path, "music", ""), name);
     }
 
     private static double TimeMusic(IFormFile formFile)

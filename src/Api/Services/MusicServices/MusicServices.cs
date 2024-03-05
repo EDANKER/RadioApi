@@ -70,7 +70,7 @@ public class MusicServices(
 
     public async Task<bool> DeleteId(string item, int id, string path)
     {
-        if (await minio.Delete(new MinioModel(path, "music", "audio/mpeg")))
+        if (await audioFileSaveToMicroControllerServices.DeleteMusic(path))
             return await musicRepository.DeleteId(item, id);
 
         return false;
@@ -78,7 +78,7 @@ public class MusicServices(
 
     public async Task<bool> Update(string item, string path, string field, string name, int id)
     {
-        if (await minio.Update(new MinioModel(path, "music", "audio/mpeg")))
+        if (await audioFileSaveToMicroControllerServices.UpdateName(path, name))
             return await musicRepository.Update(item, field, name, id);
 
         return false;

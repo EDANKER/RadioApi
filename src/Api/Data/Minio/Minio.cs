@@ -9,7 +9,7 @@ public interface IMinio
 {
     Task<bool> Save(MinioModel minioModel, IFormFile formFile);
     Task<bool> Delete(MinioModel minioModel);
-    Task<bool> Update(MinioModel minioModel);
+    Task<bool> Update(MinioModel minioModel, string newName);
     Task<string> GetUrl(MinioModel minioModel);
     Task<Stream> GetByteMusic(MinioModel minioModel);
 }
@@ -63,7 +63,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         }
     }
 
-    public async Task<bool> Update(MinioModel minioModel)
+    public async Task<bool> Update(MinioModel minioModel, string newName)
     {
         return true;
     }
