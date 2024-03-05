@@ -15,12 +15,12 @@ public class MusicPlayerToMicroControllerServices : IMusicPlayerToMicroControlle
         throw new NotImplementedException();
     }
 
-    public Task<bool> PlayMore(Stream memoryStream, List<string> florSector)
+    public async Task<bool> PlayMore(Stream memoryStream, List<string> florSector)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> PlayOne(Stream memoryStream, List<string> florSector)
+    public async Task<bool> PlayOne(Stream memoryStream, List<string> florSector)
     {
         throw new NotImplementedException();
     }

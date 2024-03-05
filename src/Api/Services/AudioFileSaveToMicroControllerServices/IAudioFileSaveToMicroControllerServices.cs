@@ -1,7 +1,7 @@
 ﻿using Api.Model.RequestModel.Music;
-using NAudio.Wave;
 using Api.Data.Minio;
 using Api.Model.MinioModel;
+using TagLib;
 
 namespace Api.Services.AudioFileSaveToMicroControllerServices;
 
@@ -35,10 +35,11 @@ public class AudioFileSaveToMicroControllerServices(
         return await minio.Update(new MinioModel(path, "music", ""));
     }
 
-    private static TimeSpan TimeMusic(IFormFile formFile)
+    private static double TimeMusic(IFormFile formFile)
     {
-        Mp3FileReader mp3FileReader = new Mp3FileReader(formFile.OpenReadStream());
-        return mp3FileReader.TotalTime;
+        TagLib.File file = TagLib.File.Create(new StreamFileAbstraction(formFile.FileName, formFile.OpenReadStream(),
+            formFile.OpenReadStream()));
+        return file.Properties.Duration.TotalSeconds;
     }
 
     private async Task<bool> Save(IFormFile formFile)
