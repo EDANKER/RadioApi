@@ -37,9 +37,7 @@ public class AudioFileSaveToMicroControllerServices(
 
     private static double TimeMusic(IFormFile formFile)
     {
-        TagLib.File file = TagLib.File.Create(new StreamFileAbstraction(formFile.FileName, formFile.OpenReadStream(),
-            formFile.OpenReadStream()));
-        return file.Properties.Duration.TotalSeconds;
+        return 10;
     }
 
     private async Task<bool> Save(IFormFile formFile)
