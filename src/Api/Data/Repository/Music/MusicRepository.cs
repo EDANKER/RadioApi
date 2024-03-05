@@ -180,7 +180,7 @@ public class MusicRepository(
     public async Task<bool> DeleteId(string item, int id)
     {
         string command = $"DELETE FROM {item} " +
-                         $"WHERE id = @Id";
+                         $"WHERE Id = @Id";
 
         mySqlConnection = new MySqlConnection(_connect);
         await mySqlConnection.OpenAsync();

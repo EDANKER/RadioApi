@@ -63,9 +63,9 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         }
     }
 
-    public Task<bool> Update(MinioModel minioModel)
+    public async Task<bool> Update(MinioModel minioModel)
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     public async Task<string> GetUrl(MinioModel minioModel)
