@@ -157,10 +157,11 @@ public class MusicRepository(
                 while (await _dataReader.ReadAsync())
                 {
                     int id = _dataReader.GetInt32(0);
-                    string namePlayList = _dataReader.GetString(1);
-                    string timeMusic = _dataReader.GetString(2);
+                    string nameMusic = _dataReader.GetString(1);
+                    string namePlayList = _dataReader.GetString(2);
+                    string timeMusic = _dataReader.GetString(3);
 
-                    _music = new DtoMusic(id, name, namePlayList, timeMusic);
+                    _music = new DtoMusic(id, nameMusic, namePlayList, timeMusic);
                     _musicsList.Add(_music);
                 }
             }
@@ -192,14 +193,13 @@ public class MusicRepository(
         {
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
+            return true;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return false;
         }
-
-        return true;
     }
 
     public async Task<bool> Update(string item, string field, string name, int id)

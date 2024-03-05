@@ -54,7 +54,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
                 .WithBucket(minioModel.BucketName)
                 .WithObject(minioModel.Name));
 
-            return false;
+            return true;
         }
         catch (MinioException e)
         {

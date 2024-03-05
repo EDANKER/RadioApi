@@ -48,7 +48,7 @@ public class MusicController(IPlayListServices playListServices,IMusicServices m
             return BadRequest("Такие данные уже есть или данные пусты");
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");
-        if (!await playListServices.Search("PlayLists", name))
+        if (name == "All")
             return Ok(await musicServices.CreateOrSave("Musics", formFile, "All"));
 
         return Ok(await musicServices.CreateOrSave("Musics", formFile, name));
