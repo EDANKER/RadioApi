@@ -19,7 +19,7 @@ public interface IMusicController
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class MusicController(IPlayListServices playListServices,IMusicServices musicServices)
+public class MusicController(IMusicServices musicServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic")]
