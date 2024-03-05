@@ -1,6 +1,8 @@
-﻿using Api.Model.RequestModel.Music;
+﻿using System.Media;
+using Api.Model.RequestModel.Music;
 using Api.Data.Minio;
 using Api.Model.MinioModel;
+using NAudio.Lame;
 using TagLib;
 
 namespace Api.Services.AudioFileSaveToMicroControllerServices;

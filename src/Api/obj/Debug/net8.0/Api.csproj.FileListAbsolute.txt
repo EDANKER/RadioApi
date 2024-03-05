@@ -177,3 +177,8 @@ C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\runtimes\win-x86\native
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\runtimes\win-x86\native\libcurl.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\runtimes\win-x86\native\libmediainfo.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\runtimes\win-x86\native\libssl-3.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\libmp3lame.32.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\libmp3lame.64.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Core.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Lame.dll
+C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.WaveFormRenderer.dll
