@@ -166,14 +166,14 @@ public class PlayListRepository(
     {
         string command = $"UPDATE {item} " +
                          $"SET {field} = @Purpose " +
-                         $"WHERE id = @Id";
+                         $"WHERE Id = @Id";
 
         mySqlConnection = new MySqlConnection(_connect);
         await mySqlConnection.OpenAsync();
 
         mySqlCommand = new MySqlCommand(command, mySqlConnection);
         mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.LongText).Value = purpose;
-        mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+        mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
         try
         {

@@ -34,7 +34,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     }
 
     [HttpPatch("UpdatePlayList/{id:int}")]
-    public async Task<IActionResult> UpdatePlayList([FromHeader] string field, [FromBody] string purpose, int id)
+    public async Task<IActionResult> UpdatePlayList([FromHeader] string field, [FromHeader] string purpose, int id)
     {
         if (purpose == null)
             return BadRequest("Данные пусты");
@@ -43,7 +43,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
         if (id <= 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await playListServices.Update("PlayLists", purpose, field, id));
+        return Ok(await playListServices.Update("PlayLists", field, purpose, id));
     }
 
     [HttpDelete("DeletePlayList/{id:int}")]
