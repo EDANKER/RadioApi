@@ -13,7 +13,7 @@ public interface IMusicController
     public Task<IActionResult> GetMusicLimit(int limit);
     public Task<IActionResult> GetMusic(int id);
     public Task<IActionResult> DeleteMusicId(int id, string path);
-    public Task<IActionResult> Update(string name, string field, int id);
+    public Task<IActionResult> Update(string name, string path, string field, int id);
     public Task<IActionResult> GetMusicPlayListTag(string name);
 }
 
@@ -84,7 +84,7 @@ public class MusicController(IPlayListServices playListServices,IMusicServices m
     }
 
     [HttpPatch("Update")]
-    public async Task<IActionResult> Update([FromBody] string name,[FromHeader] string field, [FromHeader] int id)
+    public async Task<IActionResult> Update([FromHeader] string path, [FromHeader] string name,[FromHeader] string field, [FromHeader] int id)
     {
         if (name == null)
             return BadRequest("Данные пусты");
@@ -93,7 +93,7 @@ public class MusicController(IPlayListServices playListServices,IMusicServices m
         if (id <= 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await musicServices.Update("Musics", field, name, id));
+        return Ok(await musicServices.Update("Musics", path, field, name + ".mp3", id));
     }
 
     [HttpGet("GetPlayListTag")]

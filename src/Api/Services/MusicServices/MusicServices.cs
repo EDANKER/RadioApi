@@ -18,7 +18,7 @@ public interface IMusicServices
     Task<DtoMusic> GetMusicId(string item, int id);
     Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name);
     Task<bool> DeleteId(string item, int id, string path);
-    Task<bool> Update(string item, string field, string name, int id);
+    Task<bool> Update(string item, string path, string field, string name, int id);
     Task<bool> Search(string item, string name);
 }
 
@@ -76,10 +76,12 @@ public class MusicServices(
         return false;
     }
 
-    public async Task<bool> Update(string item, string field, string name, int id)
+    public async Task<bool> Update(string item, string path, string field, string name, int id)
     {
-        await audioFileSaveToMicroControllerServices.UpdateName(name);
-        return await musicRepository.Update(item, field, name, id);
+        if (await minio.Update(new MinioModel(path, "music", "audio/mpeg")))
+            return await musicRepository.Update(item, field, name, id);
+
+        return false;
     }
 
     public async Task<bool> Search(string item, string name)
