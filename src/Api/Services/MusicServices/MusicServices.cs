@@ -78,6 +78,8 @@ public class MusicServices(
 
     public async Task<bool> Update(string item, string path, string field, string name, int id)
     {
+        if (field != "Name")
+            return await musicRepository.Update(item, field, name, id);
         if (await audioFileSaveToMicroControllerServices.UpdateName(path, name))
             return await musicRepository.Update(item, field, name, id);
 

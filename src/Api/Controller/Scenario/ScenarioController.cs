@@ -5,7 +5,7 @@ namespace Api.Controller.Scenario;
 
 public interface IScenarioController
 {
-    public Task<IActionResult> SettingsAll(Model.RequestModel.Scenario.Scenario scenario);
+    public Task<IActionResult> CreateOrSave(Model.RequestModel.Scenario.Scenario scenario);
     public Task<IActionResult> GetLimitScenario(int limit);
     public Task<IActionResult> GetScenarioId(int id);
     public Task<IActionResult> DeleteScenario(int id);
@@ -18,7 +18,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
 {
 
     [HttpPost("SettingsAll")]
-    public async Task<IActionResult> SettingsAll([FromBody]Model.RequestModel.Scenario.Scenario scenario)
+    public async Task<IActionResult> CreateOrSave([FromBody]Model.RequestModel.Scenario.Scenario scenario)
     {
         if (await scenarioServices.Search("Scenario", scenario.Name))
             return BadRequest();

@@ -89,6 +89,8 @@ public class MusicController(IMusicServices musicServices)
         if (name == null)
             return BadRequest("Данные пусты");
         if (field == null)
+            return BadRequest("Данные пусты");   
+        if (path == null)
             return BadRequest("Данные пусты");
         if (id <= 0)
             return BadRequest("Некорректное значение id");

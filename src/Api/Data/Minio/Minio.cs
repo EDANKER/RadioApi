@@ -2,6 +2,7 @@ using Api.Model.MinioModel;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
+using MySql.Data.MySqlClient;
 
 namespace Api.Data.Minio;
 
@@ -65,7 +66,23 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
 
     public async Task<bool> Update(MinioModel minioModel, string newName)
     {
-        return true;
+        try
+        {
+            await _minioClient.PutObjectAsync(new PutObjectArgs()
+                .WithBucket(minioModel.BucketName)
+                .WithObject(newName)
+                .WithStreamData(await GetByteMusic(minioModel))
+                .WithObjectSize(GetByteMusic(minioModel).Result.Length)
+                .WithContentType(minioModel.Type));
+            await Delete(minioModel);
+            
+            return true;
+        }
+        catch (MinioException e)
+        {
+           logger.LogError(e.ToString());
+           return false;
+        }
     }
 
     public async Task<string> GetUrl(MinioModel minioModel)

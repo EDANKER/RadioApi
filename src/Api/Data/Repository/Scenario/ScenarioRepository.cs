@@ -37,7 +37,7 @@ namespace Api.Data.Repository.Scenario
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
-            mySqlCommand.Parameters.Add("@Time", MySqlDbType.DateTime).Value = scenario.Time;
+            mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
             mySqlCommand.Parameters.Add("@Sector", MySqlDbType.LongText).Value = scenario.Sector;
 
             try
@@ -73,10 +73,11 @@ namespace Api.Data.Repository.Scenario
                 {
                     while (await _dataReader.ReadAsync())
                     {
-                        string sector = _dataReader.GetString(1);
-                        string time = _dataReader.GetString(2);
+                        string name = _dataReader.GetString(1);
+                        string sector = _dataReader.GetString(2);
+                        string time = _dataReader.GetString(3);
 
-                        _dtoScenario = new DtoScenario(id, sector, time);
+                        _dtoScenario = new DtoScenario(id, name,sector, time);
                         _getScenaris.Add(_dtoScenario);
                     }
                 }
@@ -114,10 +115,11 @@ namespace Api.Data.Repository.Scenario
                     while (await _dataReader.ReadAsync())
                     {
                         int id = _dataReader.GetInt32(0);
-                        string sector = _dataReader.GetString(1);
-                        string time = _dataReader.GetString(2);
+                        string name = _dataReader.GetString(1);
+                        string sector = _dataReader.GetString(2);
+                        string time = _dataReader.GetString(3);
 
-                        _dtoScenario = new DtoScenario(id, sector, time);
+                        _dtoScenario = new DtoScenario(id, name,sector, time);
                         _getScenaris.Add(_dtoScenario);
                     }
                 }

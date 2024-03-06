@@ -17,7 +17,7 @@ public interface IUserRepository
 
 public class UserRepository(
     IConfiguration configuration,
-    ILogger<IUserRepository> _logger,
+    ILogger<IUserRepository> logger,
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand) : IUserRepository
 {
@@ -49,7 +49,7 @@ public class UserRepository(
         }
         catch (MySqlException e)
         {
-            _logger.LogWarning(e.ToString());
+            logger.LogWarning(e.ToString());
             return false;
         }
 
@@ -91,7 +91,7 @@ public class UserRepository(
         }
         catch (MySqlException e)
         {
-            _logger.LogError(e.ToString());
+            logger.LogError(e.ToString());
             throw;
         }
     }
@@ -133,7 +133,7 @@ public class UserRepository(
         }
         catch (MySqlException e)
         {
-            _logger.LogError(e.ToString());
+            logger.LogError(e.ToString());
             throw;
         }
     }
@@ -190,7 +190,7 @@ public class UserRepository(
         }
         catch (MySqlException e)
         {
-            _logger.LogWarning(e.ToString());
+            logger.LogWarning(e.ToString());
             return false;
         }
 
@@ -222,7 +222,7 @@ public class UserRepository(
         }
         catch (MySqlException e)
         {
-            _logger.LogWarning(e.ToString());
+            logger.LogWarning(e.ToString());
             return false;
         }
 

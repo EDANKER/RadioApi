@@ -1255,6 +1255,22 @@
           "System.Xml.XDocument": "4.3.0"
         }
       },
+      "NetTopologySuite/2.5.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Memory": "4.5.4"
+        },
+        "compile": {
+          "lib/netstandard2.0/NetTopologySuite.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetTopologySuite.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Newtonsoft.Json/13.0.3": {
         "type": "package",
         "compile": {
@@ -1290,6 +1306,35 @@
         },
         "runtime": {
           "lib/netstandard2.0/NReco.VideoConverter.LT.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "NRedisStack/0.11.0": {
+        "type": "package",
+        "dependencies": {
+          "NetTopologySuite": "2.5.0",
+          "StackExchange.Redis": "2.6.122"
+        },
+        "compile": {
+          "lib/net7.0/NRedisStack.dll": {}
+        },
+        "runtime": {
+          "lib/net7.0/NRedisStack.dll": {}
+        }
+      },
+      "Pipelines.Sockets.Unofficial/2.2.8": {
+        "type": "package",
+        "dependencies": {
+          "System.IO.Pipelines": "5.0.1"
+        },
+        "compile": {
+          "lib/net5.0/Pipelines.Sockets.Unofficial.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net5.0/Pipelines.Sockets.Unofficial.dll": {
             "related": ".xml"
           }
         }
@@ -1462,6 +1507,22 @@
           "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "ubuntu.16.10-x64"
+          }
+        }
+      },
+      "StackExchange.Redis/2.6.122": {
+        "type": "package",
+        "dependencies": {
+          "Pipelines.Sockets.Unofficial": "2.2.8"
+        },
+        "compile": {
+          "lib/net6.0/StackExchange.Redis.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/StackExchange.Redis.dll": {
+            "related": ".xml"
           }
         }
       },
@@ -2125,6 +2186,15 @@
         },
         "runtime": {
           "lib/netstandard1.6/System.Linq.Expressions.dll": {}
+        }
+      },
+      "System.Memory/4.5.4": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.1/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/_._": {}
         }
       },
       "System.Net.Http/4.3.0": {
@@ -3055,16 +3125,13 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "TagLib.Portable/1.3.1": {
+      "TagLib.Audio/1.1.0": {
         "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.1"
-        },
         "compile": {
-          "lib/netstandard1.6/TagLib.Portable.dll": {}
+          "lib/net6.0/TagLib.Audio.dll": {}
         },
         "runtime": {
-          "lib/netstandard1.6/TagLib.Portable.dll": {}
+          "lib/net6.0/TagLib.Audio.dll": {}
         }
       },
       "ZstdSharp.Port/0.7.1": {
@@ -5029,6 +5096,20 @@
         "netstandard.library.nuspec"
       ]
     },
+    "NetTopologySuite/2.5.0": {
+      "sha512": "5/+2O2ADomEdUn09mlSigACdqvAf0m/pVPGtIPEPQWnyrVykYY0NlfXLIdkMgi41kvH9kNrPqYaFBTZtHYH7Xw==",
+      "type": "package",
+      "path": "nettopologysuite/2.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/netstandard2.0/NetTopologySuite.dll",
+        "lib/netstandard2.0/NetTopologySuite.xml",
+        "nettopologysuite.2.5.0.nupkg.sha512",
+        "nettopologysuite.nuspec"
+      ]
+    },
     "Newtonsoft.Json/13.0.3": {
       "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
       "type": "package",
@@ -5085,6 +5166,44 @@
         "lib/netstandard2.0/NReco.VideoConverter.LT.xml",
         "nreco.videoconverter.lt.1.2.1.nupkg.sha512",
         "nreco.videoconverter.lt.nuspec"
+      ]
+    },
+    "NRedisStack/0.11.0": {
+      "sha512": "v27MRxtH2pxQBPU1qleqpIi0VWDB0BR6IU+ozpHuNdjchGahZcK/XzQSpHK6AMCN4amQ+mIsH7Dh/Y+PxrZ/Qw==",
+      "type": "package",
+      "path": "nredisstack/0.11.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net6.0/NRedisStack.dll",
+        "lib/net7.0/NRedisStack.dll",
+        "lib/netstandard2.0/NRedisStack.dll",
+        "nredisstack.0.11.0.nupkg.sha512",
+        "nredisstack.nuspec"
+      ]
+    },
+    "Pipelines.Sockets.Unofficial/2.2.8": {
+      "sha512": "zG2FApP5zxSx6OcdJQLbZDk2AVlN2BNQD6MorwIfV6gVj0RRxWPEp2LXAxqDGZqeNV1Zp0BNPcNaey/GXmTdvQ==",
+      "type": "package",
+      "path": "pipelines.sockets.unofficial/2.2.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net461/Pipelines.Sockets.Unofficial.dll",
+        "lib/net461/Pipelines.Sockets.Unofficial.xml",
+        "lib/net472/Pipelines.Sockets.Unofficial.dll",
+        "lib/net472/Pipelines.Sockets.Unofficial.xml",
+        "lib/net5.0/Pipelines.Sockets.Unofficial.dll",
+        "lib/net5.0/Pipelines.Sockets.Unofficial.xml",
+        "lib/netcoreapp3.1/Pipelines.Sockets.Unofficial.dll",
+        "lib/netcoreapp3.1/Pipelines.Sockets.Unofficial.xml",
+        "lib/netstandard2.0/Pipelines.Sockets.Unofficial.dll",
+        "lib/netstandard2.0/Pipelines.Sockets.Unofficial.xml",
+        "lib/netstandard2.1/Pipelines.Sockets.Unofficial.dll",
+        "lib/netstandard2.1/Pipelines.Sockets.Unofficial.xml",
+        "pipelines.sockets.unofficial.2.2.8.nupkg.sha512",
+        "pipelines.sockets.unofficial.nuspec"
       ]
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -5309,6 +5428,27 @@
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.nuspec",
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
+      ]
+    },
+    "StackExchange.Redis/2.6.122": {
+      "sha512": "wp7mvGpFXaevfZ07/SDeh/6YHUJEgwJIGyjbDWKBYbPwKMJQYFz9zFEmBptqtVzqvSgft5nlewwutoaMaG0LPA==",
+      "type": "package",
+      "path": "stackexchange.redis/2.6.122",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net461/StackExchange.Redis.dll",
+        "lib/net461/StackExchange.Redis.xml",
+        "lib/net472/StackExchange.Redis.dll",
+        "lib/net472/StackExchange.Redis.xml",
+        "lib/net6.0/StackExchange.Redis.dll",
+        "lib/net6.0/StackExchange.Redis.xml",
+        "lib/netcoreapp3.1/StackExchange.Redis.dll",
+        "lib/netcoreapp3.1/StackExchange.Redis.xml",
+        "lib/netstandard2.0/StackExchange.Redis.dll",
+        "lib/netstandard2.0/StackExchange.Redis.xml",
+        "stackexchange.redis.2.6.122.nupkg.sha512",
+        "stackexchange.redis.nuspec"
       ]
     },
     "Swashbuckle.AspNetCore/6.4.0": {
@@ -6851,6 +6991,29 @@
         "runtimes/aot/lib/netcore50/System.Linq.Expressions.dll",
         "system.linq.expressions.4.3.0.nupkg.sha512",
         "system.linq.expressions.nuspec"
+      ]
+    },
+    "System.Memory/4.5.4": {
+      "sha512": "1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
+      "type": "package",
+      "path": "system.memory/4.5.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Memory.dll",
+        "lib/net461/System.Memory.xml",
+        "lib/netcoreapp2.1/_._",
+        "lib/netstandard1.1/System.Memory.dll",
+        "lib/netstandard1.1/System.Memory.xml",
+        "lib/netstandard2.0/System.Memory.dll",
+        "lib/netstandard2.0/System.Memory.xml",
+        "ref/netcoreapp2.1/_._",
+        "system.memory.4.5.4.nupkg.sha512",
+        "system.memory.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     },
     "System.Net.Http/4.3.0": {
@@ -9257,17 +9420,17 @@
         "system.xml.xdocument.nuspec"
       ]
     },
-    "TagLib.Portable/1.3.1": {
-      "sha512": "l+vllTwBdlEMASEcrmCqIKbPjR5kf2ISqIwCjy0QVCT8e1U5s6Z4QJ7OQDtoxw2O8pM70He4euAPgiSOH/bMoA==",
+    "TagLib.Audio/1.1.0": {
+      "sha512": "3Hd8n0iv2hKMyZcjHKheqb3JNCTYmYqQbmR6bf6ymgSJqCWdfvPCoGBj0HWXlfFDMF0/QATvSNQk4jIKjvtJPQ==",
       "type": "package",
-      "path": "taglib.portable/1.3.1",
+      "path": "taglib.audio/1.1.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "lib/netstandard1.6/TagLib.Portable.dll",
-        "taglib.png",
-        "taglib.portable.1.3.1.nupkg.sha512",
-        "taglib.portable.nuspec"
+        "README.md",
+        "lib/net6.0/TagLib.Audio.dll",
+        "taglib.audio.1.1.0.nupkg.sha512",
+        "taglib.audio.nuspec"
       ]
     },
     "ZstdSharp.Port/0.7.1": {
@@ -9304,11 +9467,12 @@
       "MySql.EntityFrameworkCore >= 8.0.0",
       "NReco >= 2.0.3",
       "NReco.VideoConverter.LT >= 1.2.1",
+      "NRedisStack >= 0.11.0",
       "Newtonsoft.Json >= 13.0.3",
       "Swashbuckle.AspNetCore >= 6.4.0",
       "System.DirectoryServices.Protocols >= 8.0.0",
       "System.IdentityModel.Tokens.Jwt >= 7.3.0",
-      "TagLib.Portable >= 1.3.1"
+      "TagLib.Audio >= 1.1.0"
     ]
   },
   "packageFolders": {
@@ -9404,6 +9568,10 @@
             "target": "Package",
             "version": "[1.2.1, )"
           },
+          "NRedisStack": {
+            "target": "Package",
+            "version": "[0.11.0, )"
+          },
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.3, )"
@@ -9420,9 +9588,9 @@
             "target": "Package",
             "version": "[7.3.0, )"
           },
-          "TagLib.Portable": {
+          "TagLib.Audio": {
             "target": "Package",
-            "version": "[1.3.1, )"
+            "version": "[1.1.0, )"
           }
         },
         "imports": [
