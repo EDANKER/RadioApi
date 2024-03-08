@@ -8,9 +8,9 @@ namespace Api.Data.Minio;
 
 public interface IMinio
 {
-    Task<bool> Save(MinioModel minioModel, IFormFile formFile);
+    Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type);
     Task<bool> Delete(MinioModel minioModel);
-    Task<bool> Update(MinioModel minioModel, string newName);
+    Task<bool> Update(MinioModel minioModel, string newName, string type);
     Task<string> GetUrl(MinioModel minioModel);
     Task<Stream> GetByteMusic(MinioModel minioModel);
 }
@@ -23,7 +23,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
             configuration.GetSection("Minio:pass").Value)
         .Build();
 
-    public async Task<bool> Save(MinioModel minioModel, IFormFile formFile)
+    public async Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type)
     {
         try
         {
@@ -37,7 +37,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
                 .WithObject(formFile.FileName)
                 .WithStreamData(formFile.OpenReadStream())
                 .WithObjectSize(formFile.OpenReadStream().Length)
-                .WithContentType(minioModel.Type));
+                .WithContentType(type));
             return true;
         }
         catch (MinioException e)
@@ -64,7 +64,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         }
     }
 
-    public async Task<bool> Update(MinioModel minioModel, string newName)
+    public async Task<bool> Update(MinioModel minioModel, string newName, string type)
     {
         try
         {
@@ -73,7 +73,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
                 .WithObject(newName)
                 .WithStreamData(await GetByteMusic(minioModel))
                 .WithObjectSize(GetByteMusic(minioModel).Result.Length)
-                .WithContentType(minioModel.Type));
+                .WithContentType(type));
             await Delete(minioModel);
             
             return true;

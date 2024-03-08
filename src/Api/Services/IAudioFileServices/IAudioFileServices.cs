@@ -1,20 +1,21 @@
-﻿using Api.Model.RequestModel.Music;
-using Api.Data.Minio;
+﻿using Api.Data.Minio;
 using Api.Model.MinioModel;
+using Api.Model.RequestModel.Music;
 using TagLib;
 
-namespace Api.Services.AudioFileSaveToMicroControllerServices;
+namespace Api.Services.IAudioFileServices;
 
-public interface IAudioFileSaveToMicroControllerServices
+public interface IAudioFileServices
 {
     Task<Music?> SaveAudio(IFormFile formFile, string name);
     Task<bool> DeleteMusic(string path);
     Task<bool> UpdateName(string path, string newName);
+    Task<Stream> GetByteMusic(string path);
 }
 
-public class AudioFileSaveToMicroControllerServices(
+public class AudioFileServices(
     IMinio minio)
-    : IAudioFileSaveToMicroControllerServices
+    : IAudioFileServices
 {
     public async Task<Music?> SaveAudio(IFormFile formFile, string name)
     {
@@ -27,12 +28,17 @@ public class AudioFileSaveToMicroControllerServices(
 
     public async Task<bool> DeleteMusic(string path)
     {
-        return await minio.Delete(new MinioModel(path, "music", ""));
+        return await minio.Delete(new MinioModel(path, "music"));
     }
 
     public async Task<bool> UpdateName(string path, string name)
     {
-        return await minio.Update(new MinioModel(path, "music", ""), name);
+        return await minio.Update(new MinioModel(path, "music"), name, "audio/mpeg");
+    }
+
+    public async Task<Stream> GetByteMusic(string path)
+    {
+        return await minio.GetByteMusic(new MinioModel(path, "music"));
     }
 
     private static double TimeMusic(IFormFile formFile)
@@ -45,6 +51,6 @@ public class AudioFileSaveToMicroControllerServices(
     private async Task<bool> Save(IFormFile formFile)
     {
         return await minio.Save(new MinioModel(formFile.FileName,
-            "music", formFile.ContentType), formFile);
+            "music"), formFile, "audio/mpeg");
     }
 }

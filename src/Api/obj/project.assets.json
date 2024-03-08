@@ -1284,32 +1284,6 @@
           }
         }
       },
-      "NReco/2.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net40/NReco.dll": {
-            "related": ".XML"
-          }
-        },
-        "runtime": {
-          "lib/net40/NReco.dll": {
-            "related": ".XML"
-          }
-        }
-      },
-      "NReco.VideoConverter.LT/1.2.1": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/NReco.VideoConverter.LT.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/NReco.VideoConverter.LT.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "NRedisStack/0.11.0": {
         "type": "package",
         "dependencies": {
@@ -5138,34 +5112,6 @@
         "newtonsoft.json.13.0.3.nupkg.sha512",
         "newtonsoft.json.nuspec",
         "packageIcon.png"
-      ]
-    },
-    "NReco/2.0.3": {
-      "sha512": "JNuKMEh/8LlbaZgknKKvhpY3Ws2zT3s25aqA1MpuT5kogGn0GYDEpYjA5rh7YY82SjWdOSL4yD16N6ljvRehMA==",
-      "type": "package",
-      "path": "nreco/2.0.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net40/NReco.XML",
-        "lib/net40/NReco.dll",
-        "nreco.2.0.3.nupkg.sha512",
-        "nreco.nuspec"
-      ]
-    },
-    "NReco.VideoConverter.LT/1.2.1": {
-      "sha512": "e5n5HGsCI6EMoaOdpzUQROkvhN8noY1PkLmYFaj+JcboGDaZGqkUaA7tTpdL/N4yzFIymmOpFpZkeveW+NiS2A==",
-      "type": "package",
-      "path": "nreco.videoconverter.lt/1.2.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net45/NReco.VideoConverter.LT.dll",
-        "lib/net45/NReco.VideoConverter.LT.xml",
-        "lib/netstandard2.0/NReco.VideoConverter.LT.dll",
-        "lib/netstandard2.0/NReco.VideoConverter.LT.xml",
-        "nreco.videoconverter.lt.1.2.1.nupkg.sha512",
-        "nreco.videoconverter.lt.nuspec"
       ]
     },
     "NRedisStack/0.11.0": {
@@ -9465,8 +9411,6 @@
       "Minio.AspNetCore >= 6.0.0",
       "MySql.Data >= 8.3.0",
       "MySql.EntityFrameworkCore >= 8.0.0",
-      "NReco >= 2.0.3",
-      "NReco.VideoConverter.LT >= 1.2.1",
       "NRedisStack >= 0.11.0",
       "Newtonsoft.Json >= 13.0.3",
       "Swashbuckle.AspNetCore >= 6.4.0",
@@ -9560,14 +9504,6 @@
             "target": "Package",
             "version": "[8.0.0, )"
           },
-          "NReco": {
-            "target": "Package",
-            "version": "[2.0.3, )"
-          },
-          "NReco.VideoConverter.LT": {
-            "target": "Package",
-            "version": "[1.2.1, )"
-          },
           "NRedisStack": {
             "target": "Package",
             "version": "[0.11.0, )"
@@ -9615,17 +9551,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'NReco 2.0.3' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
-      "libraryId": "NReco",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    }
-  ]
+  }
 }

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioTest", "test\RadioTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{9FA5AD5F-8596-4A91-8378-352B69E91A24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cache", "Cache\Cache.csproj", "{1BA91B87-5E11-4423-98BB-07D47DA31704}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{9FA5AD5F-8596-4A91-8378-352B69E91A24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FA5AD5F-8596-4A91-8378-352B69E91A24}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9FA5AD5F-8596-4A91-8378-352B69E91A24}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1BA91B87-5E11-4423-98BB-07D47DA31704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BA91B87-5E11-4423-98BB-07D47DA31704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BA91B87-5E11-4423-98BB-07D47DA31704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BA91B87-5E11-4423-98BB-07D47DA31704}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

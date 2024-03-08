@@ -7,14 +7,15 @@ using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenario;
 using Api.Data.Repository.User;
 using Api.Model.JwtTokenConfig;
-using Api.Services.AudioFileSaveToMicroControllerServices;
 using Api.Services.GeneratorTokenServices;
+using Api.Services.IAudioFileServices;
 using Api.Services.LdapService;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.ScenarioServices;
+using Api.Services.TimeCounterServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -31,12 +32,12 @@ public static class ConfigFile
         service.AddTransient<MySqlCommand>();
         service.AddTransient<IMinioClient, MinioClient>();
         service.AddScoped<IMinio, Data.Minio.Minio>();
-        service.AddScoped<IAudioFileSaveToMicroControllerServices, AudioFileSaveToMicroControllerServices>();
+        service.AddScoped<IAudioFileServices, AudioFileServices>();
         service.AddScoped<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
         service.AddScoped<IMicroControllerServices, MicroControllerServices>();
         service.AddScoped<IMicroControllerRepository, MicroControllerRepository>();
-        service.AddScoped<IScenarioServices, ScenarioServices>();
-        service.AddScoped<IScenarioRepository, ScenarioRepository>();
+        service.AddSingleton<IScenarioServices, ScenarioServices>();
+        service.AddSingleton<IScenarioRepository, ScenarioRepository>();
         service.AddScoped<IAdminPanelSettingsController, AdminPanelSettingsController>();
         service.AddScoped<IMusicServices, MusicServices>();
         service.AddScoped<IMusicRepository, MusicRepository>();
@@ -46,6 +47,8 @@ public static class ConfigFile
         service.AddScoped<IPlayListServices, PlayListServices>();
         service.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
         service.AddScoped<ILdapService, LdapService>();
+
+        service.AddHostedService<TimeCounterServices>();
     }
 
     public static void Jwt(IServiceCollection service)

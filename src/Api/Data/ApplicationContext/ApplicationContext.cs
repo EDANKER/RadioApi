@@ -1,19 +1,19 @@
-﻿using Api.Model.Migration.MicroController;
-using Api.Model.Migration.Music;
-using Api.Model.Migration.PlayList;
-using Api.Model.Migration.Scenario;
-using Api.Model.Migration.User;
+﻿using Api.Model.ResponseModel.MicroController;
+using Api.Model.ResponseModel.Music;
+using Api.Model.ResponseModel.PlayList;
+using Api.Model.ResponseModel.Scenario;
+using Api.Model.ResponseModel.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Data.ApplicationContext;
 
 public class ApplicationContext(IConfiguration configuration) : DbContext
 {
-    public DbSet<MigrationPlayList> PlayLists => Set<MigrationPlayList>();
-    public DbSet<MigrationMusic> Musics => Set<MigrationMusic>();
-    public DbSet<MigrationUser> Users => Set<MigrationUser>();
-    public DbSet<MigrationScenario> Scenario => Set<MigrationScenario>();
-    public DbSet<MigrationMicroController> MicroControllers => Set<MigrationMicroController>();
+    public DbSet<DtoPlayList> PlayLists => Set<DtoPlayList>();
+    public DbSet<DtoMusic> Musics => Set<DtoMusic>();
+    public DbSet<DtoUser> Users => Set<DtoUser>();
+    public DbSet<DtoScenario> Scenario => Set<DtoScenario>();
+    public DbSet<DtoMicroController> MicroControllers => Set<DtoMicroController>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

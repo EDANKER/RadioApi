@@ -20,8 +20,7 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
 {
     public async Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile)
     {
-        if (await minio.Save(new MinioModel(formFile.FileName, "photo",
-                formFile.ContentType), formFile))
+        if (await minio.Save(new MinioModel(formFile.FileName, "photo"), formFile, ""))
             return await playListRepository.CreateOrSave(item,
                 new PlayList(name, description, formFile.FileName));
 
@@ -36,7 +35,7 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
         {
             DtoPlayList dtoPlayList = new DtoPlayList(data.Id, data.Name,
                 data.Description,
-                await minio.GetUrl(new MinioModel(data.ImgPath, "photo", "image/jpeg")));
+                await minio.GetUrl(new MinioModel(data.ImgPath, "photo")));
             getPlayLists.Add(dtoPlayList);
         }
 
@@ -48,7 +47,7 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
         DtoPlayList dtoPlayListRepo = await playListRepository.GetId(item, id);
         if (dtoPlayListRepo != null)
             return new DtoPlayList(dtoPlayListRepo.Id, dtoPlayListRepo.Name, dtoPlayListRepo.Description,
-                await minio.GetUrl(new MinioModel(dtoPlayListRepo.ImgPath, "photo", "image/jpeg")));
+                await minio.GetUrl(new MinioModel(dtoPlayListRepo.ImgPath, "photo")));
 
         return null;
     }

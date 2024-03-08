@@ -29,6 +29,9 @@ public class PlayListController(IPlayListServices playListServices) : Controller
             return BadRequest("Данные пусты");
         if (await playListServices.Search("PlayLists", name))
             return BadRequest("Такие данные уже есть");
+        if (formFile.ContentType != "image/jpeg" || 
+            formFile.ContentType != "image/png")
+            return BadRequest("Это не фото");
         
         return Ok(await playListServices.CreateOrSave("PlayLists", name, description, formFile));
     }

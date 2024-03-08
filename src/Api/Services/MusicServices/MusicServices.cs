@@ -3,7 +3,6 @@ using Api.Data.Repository.Music;
 using Api.Model.MinioModel;
 using Api.Model.RequestModel.Music;
 using Api.Model.ResponseModel.Music;
-using Api.Services.AudioFileSaveToMicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
 
 namespace Api.Services.MusicServices;
@@ -24,14 +23,13 @@ public interface IMusicServices
 
 public class MusicServices(
     IMusicRepository musicRepository,
-    IAudioFileSaveToMicroControllerServices audioFileSaveToMicroControllerServices,
-    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
-    IMinio minio) : IMusicServices
+    IAudioFileServices.IAudioFileServices audioFileServices,
+    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices) : IMusicServices
 {
     public async Task<bool> Play(string path, List<string> florSector)
     {
         return await musicPlayerToMicroControllerServices.PlayOne(
-            await minio.GetByteMusic(new MinioModel(path, "music", "audio/mpeg")), florSector);
+            await audioFileServices.GetByteMusic(path), florSector);
     }
 
     public async Task<bool> PlayLife(IFormFile formFile, List<string> florSector)
@@ -46,7 +44,7 @@ public class MusicServices(
 
     public async Task<bool> CreateOrSave(string item, IFormFile formFile, string name)
     {
-        Music? music = await audioFileSaveToMicroControllerServices.SaveAudio(formFile, name);
+        Music? music = await audioFileServices.SaveAudio(formFile, name);
         if (music != null)
             return await musicRepository.CreateOrSave(item, music);
 
@@ -70,7 +68,7 @@ public class MusicServices(
 
     public async Task<bool> DeleteId(string item, int id, string path)
     {
-        if (await audioFileSaveToMicroControllerServices.DeleteMusic(path))
+        if (await audioFileServices.DeleteMusic(path))
             return await musicRepository.DeleteId(item, id);
 
         return false;
@@ -80,7 +78,7 @@ public class MusicServices(
     {
         if (field != "Name")
             return await musicRepository.Update(item, field, name, id);
-        if (await audioFileSaveToMicroControllerServices.UpdateName(path, name))
+        if (await audioFileServices.UpdateName(path, name))
             return await musicRepository.Update(item, field, name, id);
 
         return false;

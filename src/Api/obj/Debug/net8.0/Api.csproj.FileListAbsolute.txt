@@ -148,8 +148,6 @@ C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MySql.EntityFrameworkCo
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\FFMpegCore.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\Instances.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\MediaInfo.DotNetWrapper.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NReco.dll
-C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NReco.VideoConverter.LT.dll
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\runtimes\centos.7-x64\native\libmediainfo.so
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\runtimes\centos.8-x64\native\libmediainfo.so
 C:\Users\edgar\Desktop\RadioApi\src\Api\bin\Debug\net8.0\runtimes\debian.10-x64\native\libmediainfo.so

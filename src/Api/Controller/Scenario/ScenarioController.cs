@@ -21,7 +21,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
     public async Task<IActionResult> CreateOrSave([FromBody]Model.RequestModel.Scenario.Scenario scenario)
     {
         if (await scenarioServices.Search("Scenario", scenario.Name))
-            return BadRequest();
+            return BadRequest("Имя уже занято");
         
         return Ok(await scenarioServices.CreateOrSave("Scenario", scenario));
     }
