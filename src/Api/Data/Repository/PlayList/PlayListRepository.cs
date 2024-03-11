@@ -32,16 +32,17 @@ public class PlayListRepository(
                          "VALUES(@Name, @Description,@ImgPath)";
 
         mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-
-        mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = playList.Name;
-        mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = playList.Description;
-        mySqlCommand.Parameters.Add("@ImgPath", MySqlDbType.LongText).Value = playList.ImgPath;
 
         try
         {
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = playList.Name;
+            mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = playList.Description;
+            mySqlCommand.Parameters.Add("@ImgPath", MySqlDbType.LongText).Value = playList.ImgPath;
+            
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
             return true;
@@ -58,9 +59,10 @@ public class PlayListRepository(
         _playLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE Id = @Id";
+        mySqlConnection = new MySqlConnection(_connect);
+        
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
@@ -136,13 +138,14 @@ public class PlayListRepository(
                          $"WHERE Id = @Id";
 
         mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
         try
         {
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+            
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
         }
@@ -162,14 +165,15 @@ public class PlayListRepository(
                          $"WHERE Id = @Id";
 
         mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.LongText).Value = purpose;
-        mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
         try
         {
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Purpose", MySqlDbType.LongText).Value = purpose;
+            mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+            
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
         }
@@ -186,17 +190,25 @@ public class PlayListRepository(
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                          $"WHERE name = @Name)";
-
         mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
 
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
+        try
+        {
+            await mySqlConnection.OpenAsync();
 
-        object? exist = await mySqlCommand.ExecuteScalarAsync();
-        bool convertBool = Convert.ToBoolean(exist);
-        await mySqlConnection.CloseAsync();
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
 
-        return convertBool;
+            object? exist = await mySqlCommand.ExecuteScalarAsync();
+            bool convertBool = Convert.ToBoolean(exist);
+            await mySqlConnection.CloseAsync();
+            
+            return convertBool;
+        }
+        catch (MySqlException e)
+        {
+           logger.LogError(e.ToString());
+           return false;
+        }
     }
 }

@@ -25,7 +25,6 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
 
     public async Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type)
     {
-        
         try
         {
             if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs()

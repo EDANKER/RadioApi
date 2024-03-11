@@ -34,16 +34,16 @@ public class UserRepository(
                          "VALUES(@FullName, @Login, @Role)";
 
         mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-
-        mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
-        mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
-        mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
 
         try
-        {
+        { await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
+            mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
+            mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
+            
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
         }
@@ -101,9 +101,10 @@ public class UserRepository(
         _getUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          "LIMIT @Limit";
+        mySqlConnection = new MySqlConnection(_connect);
+        
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
@@ -145,30 +146,38 @@ public class UserRepository(
                          $"WHERE Name = @Name";
 
         mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
 
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
-
-        _dataReader = await mySqlCommand.ExecuteReaderAsync();
-
-        if (_dataReader.HasRows)
+        try
         {
-            while (await _dataReader.ReadAsync())
+            await mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
             {
-                int id = _dataReader.GetInt32(0);
-                string fullname = _dataReader.GetString(1);
-                string login = _dataReader.GetString(2);
-                string role = _dataReader.GetString(3);
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string fullname = _dataReader.GetString(1);
+                    string login = _dataReader.GetString(2);
+                    string role = _dataReader.GetString(3);
 
-                _user = new DtoUser(id, fullname, login, role);
-                _getUsers.Add(_user);
+                    _user = new DtoUser(id, fullname, login, role);
+                    _getUsers.Add(_user);
+                }
             }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
         }
-
-        await _dataReader.CloseAsync();
-        await mySqlConnection.CloseAsync();
-
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+        }
+        
         return _getUsers;
     }
 
@@ -206,17 +215,18 @@ public class UserRepository(
                          $"WHERE id = @Id";
 
         mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-
-        mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
-        mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
-        mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
-        mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-
+        
         try
         {
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
+            mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
+            mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
+            mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+            
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
         }
@@ -236,16 +246,25 @@ public class UserRepository(
                          $"AND Login = @Login)";
 
         mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
 
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = name;
-        mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = login;
+        try
+        {
+            await mySqlConnection.OpenAsync();
 
-        object? exist = await mySqlCommand.ExecuteScalarAsync();
-        bool convertBool = Convert.ToBoolean(exist);
-        await mySqlConnection.CloseAsync();
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = name;
+            mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = login;
 
-        return convertBool;
+            object? exist = await mySqlCommand.ExecuteScalarAsync();
+            bool convertBool = Convert.ToBoolean(exist);
+            await mySqlConnection.CloseAsync();
+            
+            return convertBool;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return false;
+        }
     }
 }
