@@ -19,8 +19,6 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     [HttpPost("CreatePlayList")]
     public async Task<IActionResult> CreatePlayList([FromHeader] string name,  [FromHeader] string description, IFormFile formFile)
     {
-        if (formFile.FileName.Length == 0)
-            return BadRequest("Данные пусты");
         if (formFile == null)
             return BadRequest("Данные пусты");
         if (name == null)
@@ -29,8 +27,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
             return BadRequest("Данные пусты");
         if (await playListServices.Search("PlayLists", name))
             return BadRequest("Такие данные уже есть");
-        if (formFile.ContentType != "image/jpeg" || 
-            formFile.ContentType != "image/png")
+        if (formFile.ContentType != "image/jpeg")
             return BadRequest("Это не фото");
         
         return Ok(await playListServices.CreateOrSave("PlayLists", name, description, formFile));

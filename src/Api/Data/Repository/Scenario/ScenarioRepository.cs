@@ -92,7 +92,6 @@ namespace Api.Data.Repository.Scenario
             catch (MySqlException e)
             {
                 logger.LogError(e.ToString());
-                throw;
             }
 
             return _getScenaris;
@@ -132,13 +131,13 @@ namespace Api.Data.Repository.Scenario
                 await mySqlConnection.CloseAsync();
                 await _dataReader.CloseAsync();
 
-                return _getScenaris;
             }
             catch (MySqlException e)
             {
                 logger.LogError(e.ToString());
-                throw;
             }
+            
+            return _getScenaris;
         }
 
         public async Task<List<DtoScenario>> GetHour(string item, string timeScenario)

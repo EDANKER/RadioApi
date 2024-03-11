@@ -2,7 +2,6 @@ using Api.Model.MinioModel;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
-using MySql.Data.MySqlClient;
 
 namespace Api.Data.Minio;
 
@@ -22,9 +21,11 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         .WithCredentials(configuration.GetSection("Minio:user").Value,
             configuration.GetSection("Minio:pass").Value)
         .Build();
+    
 
     public async Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type)
     {
+        
         try
         {
             if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs()

@@ -58,38 +58,35 @@ public class PlayListRepository(
         _playLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE Id = @Id";
-
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    string name = _dataReader.GetString(1);
+                    string description = _dataReader.GetString(2);
+                    string imgPath = _dataReader.GetString(3);
+
+                    _playList = new DtoPlayList(id, name, description, imgPath);
+                }
+            }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
-            throw;
+            logger.LogError(e.ToString());
         }
-
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
-
-        _dataReader = await mySqlCommand.ExecuteReaderAsync();
-
-        if (_dataReader.HasRows)
-        {
-            while (await _dataReader.ReadAsync())
-            {
-                string name = _dataReader.GetString(1);
-                string description = _dataReader.GetString(2);
-                string imgPath = _dataReader.GetString(3);
-
-                _playList = new DtoPlayList(id, name, description, imgPath);
-            }
-        }
-
-        await _dataReader.CloseAsync();
-        await mySqlConnection.CloseAsync();
 
         return _playList;
     }
@@ -99,40 +96,36 @@ public class PlayListRepository(
         _playLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit";
-
-
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string description = _dataReader.GetString(2);
+                    string imgPath = _dataReader.GetString(3);
+
+                    _playList = new DtoPlayList(id, name, description, imgPath);
+                    _playLists.Add(_playList);
+                }
+            }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
-            Console.WriteLine(e);
-            throw;
+            logger.LogError(e.ToString());
         }
-
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
-
-        _dataReader = await mySqlCommand.ExecuteReaderAsync();
-        if (_dataReader.HasRows)
-        {
-            while (await _dataReader.ReadAsync())
-            {
-                int id = _dataReader.GetInt32(0);
-                string name = _dataReader.GetString(1);
-                string description = _dataReader.GetString(2);
-                string imgPath = _dataReader.GetString(3);
-
-                _playList = new DtoPlayList(id, name, description, imgPath);
-                _playLists.Add(_playList);
-            }
-        }
-
-        await _dataReader.CloseAsync();
-        await mySqlConnection.CloseAsync();
 
         return _playLists;
     }

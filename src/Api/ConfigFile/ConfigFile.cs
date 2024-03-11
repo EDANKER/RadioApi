@@ -8,6 +8,7 @@ using Api.Data.Repository.Scenario;
 using Api.Data.Repository.User;
 using Api.Model.JwtTokenConfig;
 using Api.Services.GeneratorTokenServices;
+using Api.Services.HebrideanCacheServices;
 using Api.Services.IAudioFileServices;
 using Api.Services.LdapService;
 using Api.Services.MicroControllerServices;
@@ -21,6 +22,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Minio;
 using MySql.Data.MySqlClient;
+using StackExchange.Redis;
 
 namespace Api.ConfigFile;
 
@@ -28,6 +30,23 @@ public static class ConfigFile
 {
     public static void Registration(IServiceCollection service)
     {
+        service.AddSingleton<IConnectionMultiplexer,ConnectionMultiplexer>(provider =>
+        {
+            ConfigurationOptions configurationOptions = new()
+            {
+                EndPoints = { "10.3.15.204:6379" },
+                AbortOnConnectFail = true
+            };
+            try
+            {
+                return ConnectionMultiplexer.Connect(configurationOptions);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e + "Erorr conn");
+                throw;
+            }
+        });
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
         service.AddTransient<IMinioClient, MinioClient>();
@@ -47,8 +66,14 @@ public static class ConfigFile
         service.AddScoped<IPlayListServices, PlayListServices>();
         service.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
         service.AddScoped<ILdapService, LdapService>();
-
+        service.AddMemoryCache();
+        service.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = "http://10.3.11.209";
+            options.InstanceName = "Redis";
+        });
         service.AddHostedService<TimeCounterServices>();
+        service.AddSingleton<IHebrideanCacheServices, HebrideanCacheServices>();
     }
 
     public static void Jwt(IServiceCollection service)
@@ -84,6 +109,5 @@ public static class ConfigFile
 
     public static void Exception(WebApplication app)
     {
-        
     }
 }
