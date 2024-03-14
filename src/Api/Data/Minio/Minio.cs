@@ -104,19 +104,23 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
 
     public async Task<Stream> GetByteMusic(MinioModel minioModel)
     {
-        Stream stream = new MemoryStream();
+        MemoryStream stream = new MemoryStream();
         try
         {
             await _minioClient.GetObjectAsync(new GetObjectArgs()
                 .WithBucket(minioModel.BucketName)
                 .WithObject(minioModel.Name)
-                .WithCallbackStream(stream.CopyTo));
-            return stream;
+                .WithCallbackStream((stream1 =>
+                {
+                    stream1.CopyTo(stream);
+                })));
         }
         catch (MinioException e)
         {
             logger.LogError(e.ToString());
-            throw;
         }
+
+        stream.Seek(0, SeekOrigin.Begin);
+        return stream;
     }
 }

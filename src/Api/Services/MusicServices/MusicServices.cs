@@ -28,8 +28,7 @@ public class MusicServices(
 {
     public async Task<bool> Play(string path, List<string> florSector)
     {
-        return await musicPlayerToMicroControllerServices.PlayOne(
-            await audioFileServices.GetByteMusic(path), florSector);
+        return await musicPlayerToMicroControllerServices.PlayOne(await audioFileServices.GetByteMusic(path), florSector);
     }
 
     public async Task<bool> PlayLife(IFormFile formFile, List<string> florSector)
