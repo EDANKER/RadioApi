@@ -235,7 +235,7 @@ public class MusicRepository(
     public async Task<bool> Search(string item, string name)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
-                         $"WHERE name = @Name)";
+                         $"WHERE Name = @Name)";
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -244,8 +244,7 @@ public class MusicRepository(
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
 
-            object? exist = await mySqlCommand.ExecuteScalarAsync();
-            bool convertBool = Convert.ToBoolean(exist);
+            bool convertBool = Convert.ToBoolean(await mySqlCommand.ExecuteScalarAsync());
             await mySqlConnection.CloseAsync();
 
             return convertBool;

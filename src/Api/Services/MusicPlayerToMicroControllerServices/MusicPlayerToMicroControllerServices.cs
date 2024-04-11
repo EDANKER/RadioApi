@@ -1,56 +1,28 @@
-using System.Net;
-using System.Net.Sockets;
+using Api.Services.MicroControllerServices;
+using Api.Services.TcpServices;
 
 namespace Api.Services.MusicPlayerToMicroControllerServices;
 
 public interface IMusicPlayerToMicroControllerServices
 {
     Task<bool> SoundVol(int vol);
-    Task<bool> PlayMore(Stream memoryStream, List<string> florSector);
-    Task<bool> PlayOne(Stream memoryStream, List<string> florSector);
+    Task<bool> Play(string cabinet, string flor, string nameMusic);
     Task<bool> Stop();
 }
 
-public class MusicPlayerToMicroControllerServices(ILogger<MusicPlayerToMicroControllerServices> logger, IAudioFileServices.IAudioFileServices audioFileServices)
+public class MusicPlayerToMicroControllerServices(
+    IHttpMicroControllerServices httpMicroControllerServices,
+    IMicroControllerServices microControllerServices)
     : IMusicPlayerToMicroControllerServices
 {
-
     public async Task<bool> SoundVol(int vol)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<bool> PlayMore(Stream memoryStream, List<string> florSector)
+    public async Task<bool> Play(string cabinet, string flor, string nameMusic)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<bool> PlayOne(Stream memoryStream, List<string> florSector)
-    {
-        try
-        {
-            byte[] buffer = new byte[1024];
-            TcpClient tcpClient = new TcpClient();
-            IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8060);
-            await tcpClient.ConnectAsync(ipEndPoint.Address, ipEndPoint.Port);
-            int readAsync;
-            do
-            {
-                readAsync = await memoryStream.ReadAsync(buffer, 0, buffer.Length);
-                if (readAsync > 0)
-                {
-                    await tcpClient.GetStream().WriteAsync(buffer, 0, buffer.Length);
-                }
-            } while (readAsync > 0);
-            memoryStream.Close();
-            tcpClient.Close();
-            return true;
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
-            return false;
-        }
+        return await httpMicroControllerServices.Post(cabinet, flor, nameMusic);
     }
 
     public async Task<bool> Stop()

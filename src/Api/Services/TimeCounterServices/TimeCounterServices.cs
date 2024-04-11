@@ -4,7 +4,6 @@ using Api.Services.ScenarioServices;
 namespace Api.Services.TimeCounterServices;
 
 public class TimeCounterServices(IScenarioServices scenarioServices, IHebrideanCacheServices hebrideanCacheServices)
-    : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -19,5 +18,6 @@ public class TimeCounterServices(IScenarioServices scenarioServices, IHebrideanC
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
+        
     }
 }

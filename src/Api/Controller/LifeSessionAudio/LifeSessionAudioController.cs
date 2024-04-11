@@ -5,7 +5,7 @@ namespace Api.Controller.LifeSessionAudio;
 
 public interface ILifeSessionAudioController
 {
-    public Task<IActionResult> LifeSessionAudio(IFormFile formFile, List<string> florSector);
+    public Task<IActionResult> LifeSessionAudio(IFormFile formFile, string[] florSector);
 }
 
 [Route("/api/v1/[controller]")]
@@ -14,7 +14,7 @@ public class LifeSessionAudioController(IMusicServices musicServices)
     : ControllerBase, ILifeSessionAudioController
 {
     [HttpPost("LifeSessionAudio")]
-    public async Task<IActionResult> LifeSessionAudio(IFormFile formFile, List<string> florSector)
+    public async Task<IActionResult> LifeSessionAudio(IFormFile formFile, string[] florSector)
     {
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");

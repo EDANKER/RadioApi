@@ -1,13 +1,11 @@
-﻿using Api.Services.MusicPlayerToMicroControllerServices;
-using Api.Services.MusicServices;
-using Api.Services.PlayListServices;
+﻿using Api.Services.MusicServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.Music;
 
 public interface IMusicController
 {
-    public Task<IActionResult> PlayMusic(string path,  List<string> florSector);
+    public Task<IActionResult> PlayMusic(string path,  string cabinet, string flor);
     public Task<IActionResult> StopMusic();
     public Task<IActionResult> SaveMusic(IFormFile formFile, string name);
     public Task<IActionResult> GetMusicLimit(int limit);
@@ -23,14 +21,16 @@ public class MusicController(IMusicServices musicServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic")]
-    public async Task<IActionResult> PlayMusic([FromHeader] string path, [FromBody] List<string> florSector)
+    public async Task<IActionResult> PlayMusic([FromHeader] string path, [FromHeader] string cabinet, [FromHeader] string flor)
     {
         if (path == null)
             return BadRequest("Путь не должен быть пустой");
-        if (florSector == null)
+        if (flor == null)
+            return BadRequest("Запуск по секторам не должен быть пуст");
+        if (cabinet == null)
             return BadRequest("Запуск по секторам не должен быть пуст");
         
-        return Ok(await musicServices.Play(path, florSector));
+        return Ok(await musicServices.Play(path, cabinet, flor));
     }
 
     [HttpPost("StopMusic")]

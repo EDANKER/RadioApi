@@ -1,6 +1,4 @@
-﻿using Api.Data.Minio;
-using Api.Data.Repository.Music;
-using Api.Model.MinioModel;
+﻿using Api.Data.Repository.Music;
 using Api.Model.RequestModel.Music;
 using Api.Model.ResponseModel.Music;
 using Api.Services.MusicPlayerToMicroControllerServices;
@@ -9,8 +7,8 @@ namespace Api.Services.MusicServices;
 
 public interface IMusicServices
 {
-    Task<bool> Play(string path, List<string> florSector);
-    Task<bool> PlayLife(IFormFile formFile, List<string> florSector);
+    Task<bool> Play(string path, string cabinet, string flor);
+    Task<bool> PlayLife(IFormFile formFile, string[] florSector);
     Task<bool> Stop();
     Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
     Task<List<DtoMusic>> GetMusic(string item, int limit);
@@ -26,14 +24,14 @@ public class MusicServices(
     IAudioFileServices.IAudioFileServices audioFileServices,
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices) : IMusicServices
 {
-    public async Task<bool> Play(string path, List<string> florSector)
+    public async Task<bool> Play(string nameMusic, string cabinet, string flor)
     {
-        return await musicPlayerToMicroControllerServices.PlayOne(await audioFileServices.GetByteMusic(path), florSector);
+        return await musicPlayerToMicroControllerServices.Play(cabinet, flor, nameMusic);
     }
 
-    public async Task<bool> PlayLife(IFormFile formFile, List<string> florSector)
+    public async Task<bool> PlayLife(IFormFile formFile, string[] florSector)
     {
-        return await musicPlayerToMicroControllerServices.PlayOne(formFile.OpenReadStream(), florSector);
+        return false;
     }
 
     public async Task<bool> Stop()

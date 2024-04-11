@@ -7,6 +7,7 @@ using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenario;
 using Api.Data.Repository.User;
 using Api.Model.JwtTokenConfig;
+using Api.Services.CacheServices;
 using Api.Services.GeneratorTokenServices;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.IAudioFileServices;
@@ -16,6 +17,7 @@ using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.ScenarioServices;
+using Api.Services.TcpServices;
 using Api.Services.TimeCounterServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,23 +32,6 @@ public static class ConfigFile
 {
     public static void Registration(IServiceCollection service)
     {
-        service.AddSingleton<IConnectionMultiplexer,ConnectionMultiplexer>(provider =>
-        {
-            ConfigurationOptions configurationOptions = new()
-            {
-                EndPoints = { "10.3.15.204:6379" },
-                AbortOnConnectFail = true
-            };
-            try
-            {
-                return ConnectionMultiplexer.Connect(configurationOptions);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e + "Erorr conn");
-                throw;
-            }
-        });
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
         service.AddTransient<IMinioClient, MinioClient>();
@@ -66,13 +51,14 @@ public static class ConfigFile
         service.AddScoped<IPlayListServices, PlayListServices>();
         service.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
         service.AddScoped<ILdapService, LdapService>();
+        service.AddScoped<IHttpMicroControllerServices, HttpMicroControllerServices>();
+        service.AddScoped<HttpClient>();
         service.AddMemoryCache();
         service.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = "http://10.3.11.209";
+            options.Configuration = "http://10.3.15.204";
             options.InstanceName = "Redis";
         });
-        service.AddHostedService<TimeCounterServices>();
         service.AddSingleton<IHebrideanCacheServices, HebrideanCacheServices>();
     }
 

@@ -6,7 +6,7 @@ namespace Api.Services.HebrideanCacheServices;
 
 public interface IHebrideanCacheServices
 {
-    Task<string> Get(string key, string item);
+    Task<string> Get(string key);
     Task<bool> Refresh(string key);
     Task<bool> Delete(string key);
     Task<bool> Put(string key, string item);
@@ -17,18 +17,16 @@ public class HebrideanCacheServices : IHebrideanCacheServices
     private IDistributedCache _distributedCache;
     private ILogger<HebrideanCacheServices> _logger;
     private IMemoryCache _memoryCache;
-    private readonly IConnectionMultiplexer _connectionMultiplexer;
 
-    public HebrideanCacheServices(IConnectionMultiplexer connectionMultiplexer,IDistributedCache distributedCache,
+    public HebrideanCacheServices(IDistributedCache distributedCache,
         ILogger<HebrideanCacheServices> logger, IMemoryCache memoryCache)
     {
-        _connectionMultiplexer = connectionMultiplexer;
         _distributedCache = distributedCache;
         _logger = logger;
         _memoryCache = memoryCache;
     }
 
-    public async Task<string> Get(string key, string item)
+    public async Task<string> Get(string key)
     {
         try
         {
