@@ -1,11 +1,10 @@
-using Api.Data.Minio;
 using Api.Data.Repository.MicroController;
 using Api.Data.Repository.Music;
-using Api.Model.MinioModel;
 using Api.Model.RequestModel.MicroController;
 using Api.Model.ResponseModel.MicroController;
 using Api.Services.HebrideanCacheServices;
-using Api.Services.TcpServices;
+using Api.Services.HttpMicroControllerServices;
+using Api.Services.JsonServices;
 
 namespace Api.Services.MicroControllerServices;
 
@@ -14,11 +13,11 @@ public interface IMicroControllerServices
     Task<byte[]?> GetMusicInMinio(int id);
     Task<bool> CreateOrSave(string item, MicroController microController);
     Task<List<DtoMicroController>> GetLimit(string item, int limit);
-    Task<DtoMicroController> GetId(string item, string[] florSector);
+    Task<DtoMicroController> GetId(string item, int cabinet, int floor);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, MicroController microController);
     Task<bool> Search(string item, string name);
-    Task<bool> CheckMicroController(string cabinet, string flor, string nameMusic);
+    Task<bool> CheckMicroController(int cabinet, int floor, string nameMusic);
 }
 
 public class MicroControllerServices(
@@ -31,12 +30,10 @@ public class MicroControllerServices(
 {
     public async Task<byte[]?> GetMusicInMinio(int id)
     {
-        byte[] buffer = new byte[1024];
-        int? read;
-        read = await audioFileServices.GetByteMusic(musicRepository.GetId("Musics", id).Result.Name).Result
-            .ReadAsync(buffer, 0, buffer.Length);
-
-        if (read > 0)
+        Stream read = audioFileServices.GetByteMusic(musicRepository.GetId("Musics", id).Result.Name).Result;
+        byte[] buffer = new byte[read.Length];
+        var readAsync = await read.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+        if (readAsync > 0)
             return buffer;
 
         return null;
@@ -47,7 +44,7 @@ public class MicroControllerServices(
         if (!await controllerRepository.CreateOrSave(item, microController))
             return false;
 
-        return await hebrideanCacheServices.Put("1", "Hello");
+        return await hebrideanCacheServices.Put("", new JsonServices<MicroController>().SerJson(microController));
     }
 
     public async Task<List<DtoMicroController>> GetLimit(string item, int limit)
@@ -55,9 +52,9 @@ public class MicroControllerServices(
         return await controllerRepository.GetLimit(item, limit);
     }
 
-    public async Task<DtoMicroController> GetId(string item, string[] florSector)
+    public async Task<DtoMicroController> GetId(string item, int cabinet, int floor)
     {
-        return await controllerRepository.GetId(item, florSector);
+        return await controllerRepository.GetId(item, cabinet, floor);
     }
 
     public async Task<bool> DeleteId(string item, int id)
@@ -75,8 +72,8 @@ public class MicroControllerServices(
         return await controllerRepository.Search(item, name);
     }
 
-    public async Task<bool> CheckMicroController(string cabinet, string flor, string nameMusic)
+    public async Task<bool> CheckMicroController(int cabinet, int floor, string nameMusic)
     {
-        return await httpMicroControllerServices.Post(cabinet, flor, nameMusic);
+        return await httpMicroControllerServices.Post(cabinet, floor, nameMusic);
     }
 }

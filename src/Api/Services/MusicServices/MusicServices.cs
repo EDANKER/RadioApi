@@ -7,7 +7,7 @@ namespace Api.Services.MusicServices;
 
 public interface IMusicServices
 {
-    Task<bool> Play(string path, string cabinet, string flor);
+    Task<bool> Play(string path, int cabinet, int floor);
     Task<bool> PlayLife(IFormFile formFile, string[] florSector);
     Task<bool> Stop();
     Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
@@ -24,9 +24,9 @@ public class MusicServices(
     IAudioFileServices.IAudioFileServices audioFileServices,
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices) : IMusicServices
 {
-    public async Task<bool> Play(string nameMusic, string cabinet, string flor)
+    public async Task<bool> Play(string nameMusic, int cabinet, int floor)
     {
-        return await musicPlayerToMicroControllerServices.Play(cabinet, flor, nameMusic);
+        return await musicPlayerToMicroControllerServices.Play(cabinet, floor, nameMusic);
     }
 
     public async Task<bool> PlayLife(IFormFile formFile, string[] florSector)

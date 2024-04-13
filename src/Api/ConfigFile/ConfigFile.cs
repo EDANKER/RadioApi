@@ -10,14 +10,15 @@ using Api.Model.JwtTokenConfig;
 using Api.Services.CacheServices;
 using Api.Services.GeneratorTokenServices;
 using Api.Services.HebrideanCacheServices;
+using Api.Services.HttpMicroControllerServices;
 using Api.Services.IAudioFileServices;
+using Api.Services.JsonServices;
 using Api.Services.LdapService;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.ScenarioServices;
-using Api.Services.TcpServices;
 using Api.Services.TimeCounterServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -51,7 +52,7 @@ public static class ConfigFile
         service.AddScoped<IPlayListServices, PlayListServices>();
         service.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
         service.AddScoped<ILdapService, LdapService>();
-        service.AddScoped<IHttpMicroControllerServices, HttpMicroControllerServices>();
+        service.AddSingleton<IHttpMicroControllerServices, HttpMicroControllerServices>();
         service.AddScoped<HttpClient>();
         service.AddMemoryCache();
         service.AddStackExchangeRedisCache(options =>

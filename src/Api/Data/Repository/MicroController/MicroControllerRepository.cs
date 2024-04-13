@@ -8,7 +8,8 @@ public interface IMicroControllerRepository
 {
     Task<bool> CreateOrSave(string item, Model.RequestModel.MicroController.MicroController microController);
     Task<List<DtoMicroController>> GetLimit(string item, int limit);
-    Task<DtoMicroController> GetId(string item, string[] florSector);
+    Task<DtoMicroController> GetId(string item, int cabinet, int flor);
+    Task<DtoMicroController> GetName(string item, string name);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, Model.RequestModel.MicroController.MicroController microController);
     Task<bool> Search(string item, string name);
@@ -82,7 +83,7 @@ public class MicroControllerRepository(
                     int cabinet = _dataReader.GetInt32(4);
                     int floor = _dataReader.GetInt32(5);
 
-                    _microController = new DtoMicroController(id, name, ip, 
+                    _microController = new DtoMicroController(id, name, ip,
                         port, floor, cabinet);
                     _microControllers.Add(_microController);
                 }
@@ -99,9 +100,10 @@ public class MicroControllerRepository(
         return _microControllers;
     }
 
-    public async Task<DtoMicroController> GetId(string item, string[] florSector)
+    public async Task<DtoMicroController> GetId(string item, int cabinet, int floor)
     {
-        const string command = "SELECT * FROM MicroControlles";
+        const string command = "SELECT * FROM MicroControlles " +
+                               "WHERE flor AND cabinet";
 
         try
         {
@@ -117,10 +119,10 @@ public class MicroControllerRepository(
                     string name = _dataReader.GetString(1);
                     string ip = _dataReader.GetString(2);
                     int port = _dataReader.GetInt32(0);
-                    int cabinet = _dataReader.GetInt32(0);
-                    int floor = _dataReader.GetInt32(0);
+                    cabinet = _dataReader.GetInt32(0);
+                    floor = _dataReader.GetInt32(0);
 
-                    _microController = new DtoMicroController(id, name, ip, 
+                    _microController = new DtoMicroController(id, name, ip,
                         port, floor, cabinet);
                 }
             }
@@ -136,11 +138,16 @@ public class MicroControllerRepository(
         return _microController;
     }
 
+    public Task<DtoMicroController> GetName(string item, string name)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<bool> DeleteId(string item, int id)
     {
-        const string command = "DELETE FROM MicroControlles " +
-                               "WHERE Id = @Id";
-        
+        string command = $"DELETE FROM {item} " +
+                         "WHERE Id = @Id";
+
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -151,7 +158,7 @@ public class MicroControllerRepository(
 
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
-            
+
             return true;
         }
         catch (MySqlException e)
@@ -176,8 +183,8 @@ public class MicroControllerRepository(
     public async Task<bool> Search(string item, string name)
     {
         string command = $"SELECT EXISTS(SELECT * FROM  {item} " +
-                               "WHERE Name = @Name)";
-        
+                         "WHERE Name = @Name)";
+
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -188,7 +195,7 @@ public class MicroControllerRepository(
 
             bool convertBool = Convert.ToBoolean(await mySqlCommand.ExecuteScalarAsync());
             await mySqlConnection.CloseAsync();
-            
+
             return convertBool;
         }
         catch (MySqlException e)

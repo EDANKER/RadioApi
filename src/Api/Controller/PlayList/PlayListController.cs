@@ -40,7 +40,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
             return BadRequest("Данные пусты");
         if (field == null)
             return BadRequest("Данные пусты");
-        if (id <= 0)
+        if (id < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await playListServices.Update("PlayLists", field, purpose, id));
@@ -49,7 +49,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     [HttpDelete("DeletePlayList/{id:int}")]
     public async Task<IActionResult> DeletePlayList(int id)
     {
-        if (id <= 0)
+        if (id < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await playListServices.DeleteId("PlayLists", id));
@@ -58,7 +58,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     [HttpGet("GetPlayListId/{id:int}")]
     public async Task<IActionResult> GetPlayListId(int id)
     {
-        if (id <= 0)
+        if (id < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await playListServices.GetPlayListId("PlayLists", id));
@@ -67,7 +67,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     [HttpGet("GetPlayList/{limit:int}")]
     public async Task<IActionResult> GetPlayList(int limit)
     {
-        if (limit <= 0)
+        if (limit < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await playListServices.GetPlayList("PlayLists", limit));

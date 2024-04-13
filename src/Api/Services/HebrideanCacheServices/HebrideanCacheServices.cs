@@ -1,41 +1,43 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using AutoMapper.Execution;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 
 namespace Api.Services.HebrideanCacheServices;
 
 public interface IHebrideanCacheServices
 {
-    Task<string> Get(string key);
+    Task<string?> Get(string key);
     Task<bool> Refresh(string key);
     Task<bool> Delete(string key);
     Task<bool> Put(string key, string item);
 }
 
-public class HebrideanCacheServices : IHebrideanCacheServices
+public class HebrideanCacheServices(
+    IDistributedCache distributedCache,
+    ILogger<HebrideanCacheServices> logger,
+    IMemoryCache memoryCache)
+    : IHebrideanCacheServices
 {
-    private IDistributedCache _distributedCache;
-    private ILogger<HebrideanCacheServices> _logger;
-    private IMemoryCache _memoryCache;
-
-    public HebrideanCacheServices(IDistributedCache distributedCache,
-        ILogger<HebrideanCacheServices> logger, IMemoryCache memoryCache)
-    {
-        _distributedCache = distributedCache;
-        _logger = logger;
-        _memoryCache = memoryCache;
-    }
-
-    public async Task<string> Get(string key)
+    public async Task<string?> Get(string key)
     {
         try
         {
-            return await _distributedCache.GetStringAsync(key);
+            string? get = await distributedCache.GetStringAsync(key);
+
+            if (string.IsNullOrEmpty(get))
+            {
+                
+                return null;
+            }
+
+            return get;
         }
         catch (Exception e)
         {
-            _logger.LogError(e.ToString());
-            _memoryCache.Get(key);
+            logger.LogError(e.ToString());
+            memoryCache.Get(key);
         }
 
         return "";
@@ -48,7 +50,7 @@ public class HebrideanCacheServices : IHebrideanCacheServices
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e.ToString());
         }
 
         return false;
@@ -61,7 +63,7 @@ public class HebrideanCacheServices : IHebrideanCacheServices
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            logger.LogError(e.ToString());
         }
 
         return false;
@@ -71,15 +73,15 @@ public class HebrideanCacheServices : IHebrideanCacheServices
     {
         try
         {
-            await _distributedCache.SetStringAsync(key, item, new DistributedCacheEntryOptions
+            await distributedCache.SetStringAsync(key, item, new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
             });
         }
         catch (Exception e)
         {
-            _logger.LogError(e.ToString());
-            _memoryCache.Set(key, item, new MemoryCacheEntryOptions()
+            logger.LogError(e.ToString());
+            memoryCache.Set(key, item, new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromHours(1)));
         }
 

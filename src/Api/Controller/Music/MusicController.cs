@@ -5,7 +5,7 @@ namespace Api.Controller.Music;
 
 public interface IMusicController
 {
-    public Task<IActionResult> PlayMusic(string path,  string cabinet, string flor);
+    public Task<IActionResult> PlayMusic(string path,  int cabinet, int flor);
     public Task<IActionResult> StopMusic();
     public Task<IActionResult> SaveMusic(IFormFile formFile, string name);
     public Task<IActionResult> GetMusicLimit(int limit);
@@ -21,16 +21,16 @@ public class MusicController(IMusicServices musicServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic")]
-    public async Task<IActionResult> PlayMusic([FromHeader] string path, [FromHeader] string cabinet, [FromHeader] string flor)
+    public async Task<IActionResult> PlayMusic([FromHeader] string path, [FromHeader] int cabinet, [FromHeader] int floor)
     {
         if (path == null)
             return BadRequest("Путь не должен быть пустой");
-        if (flor == null)
+        if (floor == null)
             return BadRequest("Запуск по секторам не должен быть пуст");
         if (cabinet == null)
             return BadRequest("Запуск по секторам не должен быть пуст");
         
-        return Ok(await musicServices.Play(path, cabinet, flor));
+        return Ok(await musicServices.Play(path, cabinet, floor));
     }
 
     [HttpPost("StopMusic")]
@@ -57,7 +57,7 @@ public class MusicController(IMusicServices musicServices)
     [HttpGet("GetMusicLimit/{limit:int}")]
     public async Task<IActionResult> GetMusicLimit(int limit)
     {
-        if (limit <= 0)
+        if (limit < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await musicServices.GetMusic("Musics", limit));
@@ -66,7 +66,7 @@ public class MusicController(IMusicServices musicServices)
     [HttpGet("GetMusic/{id:int}")]
     public async Task<IActionResult> GetMusic(int id)
     {
-        if (id <= 0)
+        if (id < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await musicServices.GetMusicId("Musics", id));
@@ -77,7 +77,7 @@ public class MusicController(IMusicServices musicServices)
     {
         if (path == null)
             return BadRequest("Путь не должен быть пустой");
-        if (id <= 0)
+        if (id < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await musicServices.DeleteId("Musics", id, path));
@@ -92,7 +92,7 @@ public class MusicController(IMusicServices musicServices)
             return BadRequest("Данные пусты");   
         if (path == null)
             return BadRequest("Данные пусты");
-        if (id <= 0)
+        if (id < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await musicServices.Update("Musics", path, field, name + ".mp3", id));
