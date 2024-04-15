@@ -7,6 +7,7 @@ using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenario;
 using Api.Data.Repository.User;
 using Api.Model.JwtTokenConfig;
+using Api.Model.ResponseModel.MicroController;
 using Api.Services.CacheServices;
 using Api.Services.GeneratorTokenServices;
 using Api.Services.HebrideanCacheServices;
@@ -60,7 +61,7 @@ public static class ConfigFile
             options.Configuration = "http://10.3.15.204";
             options.InstanceName = "Redis";
         });
-        service.AddSingleton<IHebrideanCacheServices, HebrideanCacheServices>();
+        service.AddSingleton<IHebrideanCacheServices<DtoMicroController>, HebrideanCacheServices<DtoMicroController>>();
     }
 
     public static void Jwt(IServiceCollection service)

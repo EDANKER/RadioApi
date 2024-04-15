@@ -18,7 +18,7 @@ public class LoginUserController(ILdapService ldapService, IGeneratorTokenServic
     {
         if (!await ldapService.Validation(authorization))
             return BadRequest();
-
+        
         return Ok(generatorTokenServices.Generator(authorization.Login));
     }
 }

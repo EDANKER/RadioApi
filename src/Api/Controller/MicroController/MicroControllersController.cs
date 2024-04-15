@@ -7,7 +7,8 @@ public interface IMicroController
 { 
     Task<IActionResult> GetMusicInMinio(int id);
     Task<IActionResult> CreateMicroController(Model.RequestModel.MicroController.MicroController microController);
-    Task<IActionResult> GetMicroController(int limit);
+    Task<IActionResult> GetMicroControllerLimit(int limit);
+    Task<IActionResult> GetMicroControllerId(int id);
     Task<IActionResult> DeleteMicroControllerId(int id);
 }
 
@@ -36,12 +37,21 @@ public class MicroControllersController(IMicroControllerServices microController
     }
     
     [HttpGet("GetMicroController/{limit:int}")]
-    public async Task<IActionResult> GetMicroController(int limit)
+    public async Task<IActionResult> GetMicroControllerLimit(int limit)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await microControllerServices.GetLimit("MicroControllers", limit));
+    }
+
+    [HttpGet("GetMicroControllerId/{id:int}")]
+    public async Task<IActionResult> GetMicroControllerId(int id)
+    {
+        if (id < 0)
+            return BadRequest("Некорректное значение id");
+        
+        return Ok(await microControllerServices.GetId("MicroControllers", id));
     }
 
     [HttpDelete("DeleteMicroControllerId/{id:int}")]

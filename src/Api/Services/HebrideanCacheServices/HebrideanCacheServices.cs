@@ -1,52 +1,70 @@
-﻿using AutoMapper.Execution;
+﻿using Api.Model.ResponseModel.MicroController;
+using Api.Services.JsonServices;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Tokens;
-using StackExchange.Redis;
 
 namespace Api.Services.HebrideanCacheServices;
 
-public interface IHebrideanCacheServices
+public interface IHebrideanCacheServices<T>
 {
-    Task<string?> Get(string key);
+    Task<T?> GetId(string key);
+    Task<List<T>?> GetLimit(string key);
     Task<bool> Refresh(string key);
     Task<bool> Delete(string key);
-    Task<bool> Put(string key, string item);
+    Task<bool> Put(string key, T item);
 }
 
-public class HebrideanCacheServices(
+public class HebrideanCacheServices<T>(
     IDistributedCache distributedCache,
-    ILogger<HebrideanCacheServices> logger,
+    ILogger<HebrideanCacheServices<T>> logger,
     IMemoryCache memoryCache)
-    : IHebrideanCacheServices
+    : IHebrideanCacheServices<T>
 {
-    public async Task<string?> Get(string key)
+    private IJsonServices<T> _jsonServices = new JsonServices<T>();
+    
+    public async Task<T?> GetId(string key)
     {
         try
         {
             string? get = await distributedCache.GetStringAsync(key);
-
-            if (string.IsNullOrEmpty(get))
-            {
-                
-                return null;
-            }
-
-            return get;
+            if (get != null)
+                return _jsonServices.DesJson(get);
         }
         catch (Exception e)
         {
             logger.LogError(e.ToString());
-            memoryCache.Get(key);
+            string? get = memoryCache.Get<string>(key);
+            if (get != null) 
+                return _jsonServices.DesJson(get);
         }
+        return default;
+    }
 
-        return "";
+    public async Task<List<T>?> GetLimit(string key)
+    {
+        List<T> dtoMicroControllers = new List<T>();
+        
+        try
+        {
+            string? get = await distributedCache.GetStringAsync(key);
+            if (get != null)
+                dtoMicroControllers.Add(_jsonServices.DesJson(get));
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
+            string? get = (string?)memoryCache.Get(key);
+            if (get != null) 
+                dtoMicroControllers.Add(_jsonServices.DesJson(get));
+        }
+        return null;
     }
 
     public async Task<bool> Refresh(string key)
     {
         try
         {
+            
         }
         catch (Exception e)
         {
@@ -69,11 +87,11 @@ public class HebrideanCacheServices(
         return false;
     }
 
-    public async Task<bool> Put(string key, string item)
+    public async Task<bool> Put(string key, T item)
     {
         try
         {
-            await distributedCache.SetStringAsync(key, item, new DistributedCacheEntryOptions
+            await distributedCache.SetStringAsync(key, _jsonServices.SerJson(item), new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
             });

@@ -8,7 +8,7 @@ public interface IMicroControllerRepository
 {
     Task<bool> CreateOrSave(string item, Model.RequestModel.MicroController.MicroController microController);
     Task<List<DtoMicroController>> GetLimit(string item, int limit);
-    Task<DtoMicroController> GetId(string item, int cabinet, int flor);
+    Task<DtoMicroController> GetId(string item, int id);
     Task<DtoMicroController> GetName(string item, string name);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, Model.RequestModel.MicroController.MicroController microController);
@@ -100,30 +100,31 @@ public class MicroControllerRepository(
         return _microControllers;
     }
 
-    public async Task<DtoMicroController> GetId(string item, int cabinet, int floor)
+    public async Task<DtoMicroController> GetId(string item, int id)
     {
-        const string command = "SELECT * FROM MicroControlles " +
-                               "WHERE flor AND cabinet";
+        string command = $"SELECT * FROM {item} " +
+                         "WHERE Id = @Id" ;
 
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)
             {
                 while (await _dataReader.ReadAsync())
                 {
-                    int id = _dataReader.GetInt32(0);
+                    id = _dataReader.GetInt32(0);
                     string name = _dataReader.GetString(1);
                     string ip = _dataReader.GetString(2);
-                    int port = _dataReader.GetInt32(0);
-                    cabinet = _dataReader.GetInt32(0);
-                    floor = _dataReader.GetInt32(0);
+                    int port = _dataReader.GetInt32(3);
+                    int cabinet = _dataReader.GetInt32(4);
+                    int floor = _dataReader.GetInt32(5);
 
                     _microController = new DtoMicroController(id, name, ip,
-                        port, floor, cabinet);
+                        port, floor, cabinet); 
                 }
             }
 
@@ -138,9 +139,43 @@ public class MicroControllerRepository(
         return _microController;
     }
 
-    public Task<DtoMicroController> GetName(string item, string name)
+    public async Task<DtoMicroController> GetName(string item, string name)
     {
-        throw new NotImplementedException();
+        string command = $"SELECT * FROM {item} " +
+                         "WHERE Name = @Name" ;
+
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    name = _dataReader.GetString(1);
+                    string ip = _dataReader.GetString(2);
+                    int port = _dataReader.GetInt32(3);
+                    int cabinet = _dataReader.GetInt32(4);
+                    int floor = _dataReader.GetInt32(5);
+
+                    _microController = new DtoMicroController(id, name, ip,
+                        port, floor, cabinet); 
+                }
+            }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+        }
+
+        return _microController;
     }
 
     public async Task<bool> DeleteId(string item, int id)

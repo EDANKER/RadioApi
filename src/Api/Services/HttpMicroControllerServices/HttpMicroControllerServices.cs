@@ -1,17 +1,15 @@
-﻿using Api.Services.MicroControllerServices;
-
-namespace Api.Services.HttpMicroControllerServices;
+﻿namespace Api.Services.HttpMicroControllerServices;
 
 public interface IHttpMicroControllerServices
 {
-    public Task<bool> Post(int cabinet, int floor, string nameMusic);
+    public Task<bool> Post(int cabinet, int floor, int idMusic);
 }
 
 public class HttpMicroControllerServices(
     ILogger<HttpMicroControllerServices> logger)
     : IHttpMicroControllerServices
 {
-    public async Task<bool> Post(int cabinet, int floor, string text)
+    public async Task<bool> Post(int cabinet, int floor, int idMusic)
     {
         HttpClient httpClient = new HttpClient();
         
