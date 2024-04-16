@@ -1,10 +1,11 @@
+using Api.Model.ResponseModel.MicroController;
 using Api.Services.HttpMicroControllerServices;
 namespace Api.Services.MusicPlayerToMicroControllerServices;
 
 public interface IMusicPlayerToMicroControllerServices
 {
     Task<bool> SoundVol(int vol);
-    Task<bool> Play(int cabinet, int floor, int idMusic);
+    Task<bool> Play(DtoMicroController dtoMicroController, int idMusic);
     Task<bool> Stop();
 }
 
@@ -17,9 +18,9 @@ public class MusicPlayerToMicroControllerServices(
         throw new NotImplementedException();
     }
 
-    public async Task<bool> Play(int cabinet, int floor, int idMusic)
+    public async Task<bool> Play(DtoMicroController dtoMicroController, int idMusic)
     {
-        return await httpMicroControllerServices.Post(cabinet, floor, idMusic);
+        return await httpMicroControllerServices.Post(dtoMicroController, idMusic);
     }
 
     public async Task<bool> Stop()

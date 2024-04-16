@@ -1,5 +1,4 @@
-﻿using Api.Model.ResponseModel.MicroController;
-using Api.Services.JsonServices;
+﻿using Api.Services.JsonServices;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -10,7 +9,7 @@ public interface IHebrideanCacheServices<T>
     Task<T?> GetId(string key);
     Task<List<T>?> GetLimit(string key);
     Task<bool> Refresh(string key);
-    Task<bool> Delete(string key);
+    Task<bool> DeleteId(string key);
     Task<bool> Put(string key, T item);
 }
 
@@ -74,7 +73,7 @@ public class HebrideanCacheServices<T>(
         return false;
     }
 
-    public async Task<bool> Delete(string key)
+    public async Task<bool> DeleteId(string key)
     {
         try
         {

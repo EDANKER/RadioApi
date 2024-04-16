@@ -1,13 +1,14 @@
 ﻿using Api.Data.Repository.Music;
 using Api.Model.RequestModel.Music;
 using Api.Model.ResponseModel.Music;
+using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
 
 namespace Api.Services.MusicServices;
 
 public interface IMusicServices
 {
-    Task<bool> Play(int idMusic, int cabinet, int floor);
+    Task<bool> Play(int idMusic, int idController);
     Task<bool> PlayLife(IFormFile formFile, string[] florSector);
     Task<bool> Stop();
     Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
@@ -22,11 +23,12 @@ public interface IMusicServices
 public class MusicServices(
     IMusicRepository musicRepository,
     IAudioFileServices.IAudioFileServices audioFileServices,
-    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices) : IMusicServices
+    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
+    IMicroControllerServices microControllerServices) : IMusicServices
 {
-    public async Task<bool> Play(int idMusic, int cabinet, int floor)
+    public async Task<bool> Play(int idMusic, int idController)
     {
-        return await musicPlayerToMicroControllerServices.Play(cabinet, floor, idMusic);
+        return await musicPlayerToMicroControllerServices.Play(await microControllerServices.GetId("MicroControllers", idController), idMusic);
     }
 
     public async Task<bool> PlayLife(IFormFile formFile, string[] florSector)

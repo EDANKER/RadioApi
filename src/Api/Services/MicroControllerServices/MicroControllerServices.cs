@@ -3,8 +3,6 @@ using Api.Data.Repository.Music;
 using Api.Model.RequestModel.MicroController;
 using Api.Model.ResponseModel.MicroController;
 using Api.Services.HebrideanCacheServices;
-using Api.Services.HttpMicroControllerServices;
-using Api.Services.JsonServices;
 
 namespace Api.Services.MicroControllerServices;
 
@@ -23,7 +21,6 @@ public interface IMicroControllerServices
 public class MicroControllerServices(
     IMicroControllerRepository controllerRepository,
     IAudioFileServices.IAudioFileServices audioFileServices,
-    IHttpMicroControllerServices httpMicroControllerServices,
     IMusicRepository musicRepository,
     IHebrideanCacheServices<DtoMicroController> hebrideanCacheServices)
     : IMicroControllerServices
@@ -73,7 +70,11 @@ public class MicroControllerServices(
 
     public async Task<bool> DeleteId(string item, int id)
     {
-        return await controllerRepository.DeleteId(item, id);
+        bool isReturnTrueDb = await controllerRepository.DeleteId(item, id);
+        if (!isReturnTrueDb)
+            return isReturnTrueDb;
+        
+        return await hebrideanCacheServices.DeleteId(id.ToString());
     }
 
     public async Task<bool> Update(string item, MicroController microController)

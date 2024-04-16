@@ -5,7 +5,7 @@ namespace Api.Controller.Music;
 
 public interface IMusicController
 {
-    public Task<IActionResult> PlayMusic(int idMusic,  int cabinet, int flor);
+    public Task<IActionResult> PlayMusic(int idMusic,  int idController);
     public Task<IActionResult> StopMusic();
     public Task<IActionResult> SaveMusic(IFormFile formFile, string name);
     public Task<IActionResult> GetMusicLimit(int limit);
@@ -21,16 +21,14 @@ public class MusicController(IMusicServices musicServices)
     : ControllerBase, IMusicController
 {
     [HttpPost("PlayMusic/{idMusic:int}")]
-    public async Task<IActionResult> PlayMusic(int idMusic, [FromHeader] int cabinet, [FromHeader] int floor)
+    public async Task<IActionResult> PlayMusic(int idMusic, [FromHeader] int idController)
     {
         if (idMusic == null)
             return BadRequest("Путь не должен быть пустой");
-        if (floor == null)
-            return BadRequest("Запуск по секторам не должен быть пуст");
-        if (cabinet == null)
-            return BadRequest("Запуск по секторам не должен быть пуст");
+        if (idController < 0)
+            return BadRequest("Некорректное значение id");
         
-        return Ok(await musicServices.Play(idMusic, cabinet, floor));
+        return Ok(await musicServices.Play(idMusic, idController));
     }
 
     [HttpPost("StopMusic")]
