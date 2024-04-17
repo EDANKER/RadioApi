@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Api.Model.ResponseModel.Scenario;
+using Api.Services.JsonServices;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
@@ -22,6 +23,8 @@ namespace Api.Data.Repository.Scenario
         MySqlConnection mySqlConnection,
         MySqlCommand mySqlCommand) : IScenarioRepository
     {
+        private IJsonServices<int[]> _jsonServicesIdMicroController = new JsonServices<int[]>();
+        private IJsonServices<string[]> _jsonServicesDays = new JsonServices<string[]>();
         private DbDataReader _dataReader;
         private List<DtoScenario> _getScenaris;
         private DtoScenario _dtoScenario;
@@ -30,8 +33,10 @@ namespace Api.Data.Repository.Scenario
         public async Task<bool> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario)
         {
             string command = $"INSERT INTO {item} " +
-                             "(Name, Sector, Time, Days) " +
-                             "VALUES(@Name,@Sector, @Time,@Days)";
+                             "(Name, IdMicroController, " +
+                             "Time, Days, IdMusic) " +
+                             "VALUES(@Name,@IdMicroController, " +
+                             "@Time, @Days, @IdMusic)";
 
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
@@ -40,8 +45,10 @@ namespace Api.Data.Repository.Scenario
 
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
             mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
-            mySqlCommand.Parameters.Add("@Sector", MySqlDbType.LongText).Value = scenario.Sector;
-            mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = JsonConvert.SerializeObject(scenario.Days);
+            mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = 
+                _jsonServicesIdMicroController.SerJson(scenario.IdMicroController);
+            mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = _jsonServicesDays.SerJson(scenario.Days);
+            mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
 
             try
             {
@@ -80,8 +87,10 @@ namespace Api.Data.Repository.Scenario
                         string sector = _dataReader.GetString(2);
                         string time = _dataReader.GetString(3);
                         string days = _dataReader.GetString(4);
+                        int idMusic = _dataReader.GetInt32(5);
 
-                        _dtoScenario = new DtoScenario(id, name,sector, time, days);
+                        _dtoScenario = new DtoScenario(id, name,_jsonServicesIdMicroController.DesJson(sector), 
+                            time, days, idMusic);
                         _getScenaris.Add(_dtoScenario);
                     }
                 }
@@ -122,8 +131,10 @@ namespace Api.Data.Repository.Scenario
                         string sector = _dataReader.GetString(2);
                         string time = _dataReader.GetString(3);
                         string days = _dataReader.GetString(4);
+                        int idMusic = _dataReader.GetInt32(5);
 
-                        _dtoScenario = new DtoScenario(id, name,sector, time, days);
+                        _dtoScenario = new DtoScenario(id, name,_jsonServicesIdMicroController.DesJson(sector), 
+                            time, days, idMusic);
                         _getScenaris.Add(_dtoScenario);
                     }
                 }
@@ -144,7 +155,7 @@ namespace Api.Data.Repository.Scenario
         {
             _getScenaris = new List<DtoScenario>();
             string command = $"SELECT * FROM {item} " +
-                             $"WHERE Time LIKE '{timeScenario}%'";
+                             $"WHERE Time LIKE '%{timeScenario}%'";
             try
             {
                 mySqlConnection = new MySqlConnection(_connect);
@@ -164,8 +175,10 @@ namespace Api.Data.Repository.Scenario
                         string sector = _dataReader.GetString(2);
                         string time = _dataReader.GetString(3);
                         string days = _dataReader.GetString(4);
+                        int idMusic = _dataReader.GetInt32(5);
 
-                        _dtoScenario = new DtoScenario(id, name,sector, time, days);
+                        _dtoScenario = new DtoScenario(id, name,_jsonServicesIdMicroController.DesJson(sector), 
+                            time, days, idMusic);
                         _getScenaris.Add(_dtoScenario);
                     }
                 }
@@ -212,8 +225,8 @@ namespace Api.Data.Repository.Scenario
         {
             string command = $"UPDATE {item} " +
                              $"SET " +
-                             $"Name = @Name, Sector = " +
-                             $"@Sector, Time = @Time " +
+                             $"Name = @Name, IdMicroController = " +
+                             $"@IdMicroController, Time = @Time, Days = @Days, IdMusic = @IdMusic " +
                              $"WHERE id = @Id";
 
             mySqlConnection = new MySqlConnection(_connect);
@@ -222,9 +235,12 @@ namespace Api.Data.Repository.Scenario
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
-            mySqlCommand.Parameters.Add("@Sector", MySqlDbType.LongText).Value = scenario.Time;
             mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
+            mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = 
+                _jsonServicesIdMicroController.SerJson(scenario.IdMicroController);
+            mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = _jsonServicesDays.SerJson(scenario.Days);
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+            mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
 
             try
             {

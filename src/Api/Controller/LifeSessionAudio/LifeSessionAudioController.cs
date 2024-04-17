@@ -9,11 +9,11 @@ public class LifeSessionAudioController(IMusicServices musicServices)
     : ControllerBase
 {
     [HttpPost("LifeSessionAudio")]
-    public async Task<IActionResult> LifeSessionAudio(IFormFile formFile, string[] florSector)
+    public async Task<IActionResult> LifeSessionAudio(IFormFile formFile, string[] idController)
     {
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");
         
-        return Ok(await musicServices.PlayLife(formFile, florSector));
+        return Ok(await musicServices.PlayLife(formFile, idController));
     }
 }

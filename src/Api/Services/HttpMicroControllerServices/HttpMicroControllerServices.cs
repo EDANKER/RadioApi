@@ -6,6 +6,7 @@ namespace Api.Services.HttpMicroControllerServices;
 public interface IHttpMicroControllerServices
 {
     public Task<bool> Post(DtoMicroController dtoMicroController, int idMusic);
+    public Task<bool> PostByte(DtoMicroController dtoMicroController, IFormFile formFile);
 }
 
 public class HttpMicroControllerServices(
@@ -29,5 +30,10 @@ public class HttpMicroControllerServices(
             logger.LogError(e.ToString());
             return false;
         }
+    }
+
+    public Task<bool> PostByte(DtoMicroController dtoMicroController, IFormFile formFile)
+    {
+        throw new NotImplementedException();
     }
 }

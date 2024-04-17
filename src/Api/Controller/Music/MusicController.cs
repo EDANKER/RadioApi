@@ -9,14 +9,12 @@ public class MusicController(IMusicServices musicServices)
     : ControllerBase
 {
     [HttpPost("PlayMusic/{idMusic:int}")]
-    public async Task<IActionResult> PlayMusic(int idMusic, [FromHeader] int idController)
+    public async Task<IActionResult> PlayMusic(int idMusic, [FromBody] int[] idControllers)
     {
         if (idMusic == null)
             return BadRequest("Путь не должен быть пустой");
-        if (idController < 0)
-            return BadRequest("Некорректное значение id");
         
-        return Ok(await musicServices.Play(idMusic, idController));
+        return Ok(await musicServices.Play(idMusic, idControllers));
     }
 
     [HttpPost("StopMusic")]
@@ -84,7 +82,7 @@ public class MusicController(IMusicServices musicServices)
         return Ok(await musicServices.Update("Musics", path, field, name + ".mp3", id));
     }
 
-    [HttpGet("GetPlayListTag")]
+    [HttpGet("GetMusicPlayListTag")]
     public async Task<IActionResult> GetMusicPlayListTag(string name)
     {
         if (name == null)

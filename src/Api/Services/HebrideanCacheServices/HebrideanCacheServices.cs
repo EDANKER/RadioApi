@@ -21,13 +21,10 @@ public class HebrideanCacheServices<T>(
     IMemoryCache memoryCache)
     : IHebrideanCacheServices<T>
 {
-   
-    
     private IJsonServices<T> _jsonServices = new JsonServices<T>();
     
     public async Task<T?> GetId(string key)
     {
-        
         try
         {
             string? get = await distributedCache.GetStringAsync(key);
@@ -82,9 +79,12 @@ public class HebrideanCacheServices<T>(
     {
         try
         {
+            await distributedCache.RemoveAsync(key);
+            return true;
         }
         catch (Exception e)
         {
+            memoryCache.Remove(key);
             logger.LogError(e.ToString());
         }
 
@@ -99,19 +99,28 @@ public class HebrideanCacheServices<T>(
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
             });
+            
+            return true;
         }
         catch (Exception e)
         {
             logger.LogError(e.ToString());
             memoryCache.Set(key, item, new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromHours(1)));
+            return false;
         }
-
-        return false;
     }
 
-    public Task<bool> Search(string key)
+    public async Task<bool> Search(string key)
     {
-        throw new NotImplementedException();
+        try
+        {
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 }

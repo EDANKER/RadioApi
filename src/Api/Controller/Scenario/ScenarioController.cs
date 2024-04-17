@@ -8,7 +8,7 @@ namespace Api.Controller.Scenario;
 public class ScenarioController(IScenarioServices scenarioServices) : ControllerBase
 {
 
-    [HttpPost("SettingsAll")]
+    [HttpPost("CreateOrSave")]
     public async Task<IActionResult> CreateOrSave([FromBody]Model.RequestModel.Scenario.Scenario scenario)
     {
         if (await scenarioServices.Search("Scenario", scenario.Name))

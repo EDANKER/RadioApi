@@ -8,8 +8,8 @@ namespace Api.Services.MusicServices;
 
 public interface IMusicServices
 {
-    Task<bool> Play(int idMusic, int idController);
-    Task<bool> PlayLife(IFormFile formFile, string[] florSector);
+    Task<bool> Play(int idMusic, int[] idController);
+    Task<bool> PlayLife(IFormFile formFile, string[] idController);
     Task<bool> Stop();
     Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
     Task<List<DtoMusic>> GetMusic(string item, int limit);
@@ -26,12 +26,18 @@ public class MusicServices(
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
     IMicroControllerServices microControllerServices) : IMusicServices
 {
-    public async Task<bool> Play(int idMusic, int idController)
+    public async Task<bool> Play(int idMusic, int[] idController)
     {
-        return await musicPlayerToMicroControllerServices.Play(await microControllerServices.GetId("MicroControllers", idController), idMusic);
+        foreach (var data in idController)
+        {
+            if (data < 0)
+                continue;
+            await musicPlayerToMicroControllerServices.Play(await microControllerServices.GetId("MicroControllers", data), idMusic);
+        }
+        return true;
     }
 
-    public async Task<bool> PlayLife(IFormFile formFile, string[] florSector)
+    public async Task<bool> PlayLife(IFormFile formFile, string[] idController)
     {
         return false;
     }
