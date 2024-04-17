@@ -4,14 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.Authorization.LoginUserController;
 
-public interface ILoginUserController
-{
-    public Task<IActionResult> Login(Api.Model.RequestModel.Authorization.Authorization authorization);
-}
 [Route("api/v1/[controller]")]
 [ApiController]
 public class LoginUserController(ILdapService ldapService, IGeneratorTokenServices generatorTokenServices)
-    : ControllerBase, ILoginUserController
+    : ControllerBase
 {
     [HttpPost("[action]")]
     public async Task<IActionResult> Login([FromBody] Api.Model.RequestModel.Authorization.Authorization authorization)

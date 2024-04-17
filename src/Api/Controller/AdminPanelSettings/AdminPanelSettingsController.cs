@@ -1,22 +1,12 @@
 ﻿using Api.Model.RequestModel.User;
 using Api.Services.UserServices;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.AdminPanelSettings;
 
-public interface IAdminPanelSettingsController
-{
-    public Task<IActionResult> CreateNewUser(User user);
-    public Task<IActionResult> DeleteUserId(int id);
-    public Task<IActionResult> UpdateUser(User user, int id);
-    public Task<IActionResult> GetUser(int limit);
-    public Task<IActionResult> GetIdUser(int id);
-}
-
 [Route("api/v1/[controller]")]
 [ApiController]
-public class AdminPanelSettingsController(IUserServices userServices) : ControllerBase, IAdminPanelSettingsController
+public class AdminPanelSettingsController(IUserServices userServices) : ControllerBase
 {
     [HttpPost("CreateNewUser")]
     public async Task<IActionResult> CreateNewUser([FromBody] User user)

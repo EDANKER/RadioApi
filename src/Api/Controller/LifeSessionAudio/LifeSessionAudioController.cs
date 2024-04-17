@@ -3,15 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.LifeSessionAudio;
 
-public interface ILifeSessionAudioController
-{
-    public Task<IActionResult> LifeSessionAudio(IFormFile formFile, string[] florSector);
-}
-
 [Route("/api/v1/[controller]")]
 [ApiController]
 public class LifeSessionAudioController(IMusicServices musicServices)
-    : ControllerBase, ILifeSessionAudioController
+    : ControllerBase
 {
     [HttpPost("LifeSessionAudio")]
     public async Task<IActionResult> LifeSessionAudio(IFormFile formFile, string[] florSector)

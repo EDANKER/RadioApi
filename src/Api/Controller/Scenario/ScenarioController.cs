@@ -3,18 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.Scenario;
 
-public interface IScenarioController
-{
-    public Task<IActionResult> CreateOrSave(Model.RequestModel.Scenario.Scenario scenario);
-    public Task<IActionResult> GetLimitScenario(int limit);
-    public Task<IActionResult> GetScenarioId(int id);
-    public Task<IActionResult> DeleteScenario(int id);
-    public Task<IActionResult> UpdateScenario(Model.RequestModel.Scenario.Scenario scenario, int id);
-}
-
 [ApiController]
 [Route("api/v1/[controller]")]
-public class ScenarioController(IScenarioServices scenarioServices) : ControllerBase, IScenarioController
+public class ScenarioController(IScenarioServices scenarioServices) : ControllerBase
 {
 
     [HttpPost("SettingsAll")]

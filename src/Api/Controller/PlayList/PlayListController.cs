@@ -3,18 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.PlayList;
 
-public interface IPlayListController
-{
-    public Task<IActionResult> CreatePlayList(string name, string description, IFormFile formFile);
-    public Task<IActionResult> UpdatePlayList(string field, string purpose, int id);
-    public Task<IActionResult> DeletePlayList(int id);
-    public Task<IActionResult> GetPlayListId(int id);
-    public Task<IActionResult> GetPlayList(int limit);
-}
 [ApiController]
 [Route("api/v1/[controller]")]
 
-public class PlayListController(IPlayListServices playListServices) : ControllerBase, IPlayListController
+public class PlayListController(IPlayListServices playListServices) : ControllerBase
 {
     [HttpPost("CreatePlayList")]
     public async Task<IActionResult> CreatePlayList([FromHeader] string name,  [FromHeader] string description, IFormFile formFile)

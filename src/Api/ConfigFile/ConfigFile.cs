@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Api.Controller.AdminPanelSettings;
 using Api.Data.Minio;
 using Api.Data.Repository.MicroController;
 using Api.Data.Repository.Music;
@@ -8,25 +7,21 @@ using Api.Data.Repository.Scenario;
 using Api.Data.Repository.User;
 using Api.Model.JwtTokenConfig;
 using Api.Model.ResponseModel.MicroController;
-using Api.Services.CacheServices;
 using Api.Services.GeneratorTokenServices;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.HttpMicroControllerServices;
 using Api.Services.IAudioFileServices;
-using Api.Services.JsonServices;
 using Api.Services.LdapService;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.ScenarioServices;
-using Api.Services.TimeCounterServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Minio;
 using MySql.Data.MySqlClient;
-using StackExchange.Redis;
 
 namespace Api.ConfigFile;
 
@@ -44,7 +39,6 @@ public static class ConfigFile
         service.AddScoped<IMicroControllerRepository, MicroControllerRepository>();
         service.AddSingleton<IScenarioServices, ScenarioServices>();
         service.AddSingleton<IScenarioRepository, ScenarioRepository>();
-        service.AddScoped<IAdminPanelSettingsController, AdminPanelSettingsController>();
         service.AddScoped<IMusicServices, MusicServices>();
         service.AddScoped<IMusicRepository, MusicRepository>();
         service.AddScoped<IUserRepository, UserRepository>();

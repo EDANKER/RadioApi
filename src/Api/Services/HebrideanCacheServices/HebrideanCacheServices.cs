@@ -1,6 +1,7 @@
 ﻿using Api.Services.JsonServices;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Redis;
 
 namespace Api.Services.HebrideanCacheServices;
 
@@ -11,6 +12,7 @@ public interface IHebrideanCacheServices<T>
     Task<bool> Refresh(string key);
     Task<bool> DeleteId(string key);
     Task<bool> Put(string key, T item);
+    Task<bool> Search(string key);
 }
 
 public class HebrideanCacheServices<T>(
@@ -19,10 +21,13 @@ public class HebrideanCacheServices<T>(
     IMemoryCache memoryCache)
     : IHebrideanCacheServices<T>
 {
+   
+    
     private IJsonServices<T> _jsonServices = new JsonServices<T>();
     
     public async Task<T?> GetId(string key)
     {
+        
         try
         {
             string? get = await distributedCache.GetStringAsync(key);
@@ -103,5 +108,10 @@ public class HebrideanCacheServices<T>(
         }
 
         return false;
+    }
+
+    public Task<bool> Search(string key)
+    {
+        throw new NotImplementedException();
     }
 }

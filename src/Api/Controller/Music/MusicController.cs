@@ -3,22 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.Music;
 
-public interface IMusicController
-{
-    public Task<IActionResult> PlayMusic(int idMusic,  int idController);
-    public Task<IActionResult> StopMusic();
-    public Task<IActionResult> SaveMusic(IFormFile formFile, string name);
-    public Task<IActionResult> GetMusicLimit(int limit);
-    public Task<IActionResult> GetMusic(int id);
-    public Task<IActionResult> DeleteMusicId(int id, string path);
-    public Task<IActionResult> Update(string name, string path, string field, int id);
-    public Task<IActionResult> GetMusicPlayListTag(string name);
-}
-
 [Route("api/v1/[controller]")]
 [ApiController]
 public class MusicController(IMusicServices musicServices)
-    : ControllerBase, IMusicController
+    : ControllerBase
 {
     [HttpPost("PlayMusic/{idMusic:int}")]
     public async Task<IActionResult> PlayMusic(int idMusic, [FromHeader] int idController)
