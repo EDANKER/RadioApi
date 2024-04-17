@@ -75,12 +75,10 @@ public class MusicServices(
 
     public async Task<bool> Update(string item, string path, string field, string name, int id)
     {
-        if (field != "Name")
-            return await musicRepository.Update(item, field, name, id);
         if (await audioFileServices.UpdateName(path, name))
             return await musicRepository.Update(item, field, name, id);
 
-        return false;
+        return await musicRepository.Update(item, field, name, id);
     }
 
     public async Task<bool> Search(string item, string name)

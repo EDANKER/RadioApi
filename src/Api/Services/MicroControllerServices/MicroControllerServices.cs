@@ -10,7 +10,7 @@ public interface IMicroControllerServices
 {
     Task<byte[]?> GetMusicInMinio(int id);
     Task<bool> CreateOrSave(string item, MicroController microController);
-    Task<List<DtoMicroController>> GetLimit(string item, int limit);
+    Task<List<DtoMicroController>> GetLimit(string item, int floor);
     Task<DtoMicroController> GetId(string item, int id);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, MicroController microController);
@@ -45,16 +45,16 @@ public class MicroControllerServices(
         return await hebrideanCacheServices.Put(dtoMicroController.Id.ToString(), dtoMicroController);
     }
 
-    public async Task<List<DtoMicroController>> GetLimit(string item, int limit)
+    public async Task<List<DtoMicroController>> GetLimit(string item, int floor)
     {
-        for (int i = 0; i < limit; i++)
+        for (int i = 0; i < floor; i++)
         {
             List<DtoMicroController>? dtoMicroController = await hebrideanCacheServices.GetLimit(i.ToString());
             if (dtoMicroController != null)
                 return dtoMicroController;
         }
         
-        return await controllerRepository.GetLimit(item, limit);
+        return await controllerRepository.GetLimit(item, floor);
     }
 
     public async Task<DtoMicroController> GetId(string item, int id)

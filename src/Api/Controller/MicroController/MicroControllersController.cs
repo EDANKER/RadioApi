@@ -27,13 +27,13 @@ public class MicroControllersController(IMicroControllerServices microController
         return Ok(await microControllerServices.CreateOrSave("MicroControllers", microController));
     }
     
-    [HttpGet("GetMicroController/{limit:int}")]
-    public async Task<IActionResult> GetMicroControllerLimit(int limit)
+    [HttpGet("GetMicroControllerLayer/{floor:int}")]
+    public async Task<IActionResult> GetMicroControllerLayer(int floor)
     {
-        if (limit < 0)
+        if (floor < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await microControllerServices.GetLimit("MicroControllers", limit));
+        return Ok(await microControllerServices.GetLimit("MicroControllers", floor));
     }
 
     [HttpGet("GetMicroControllerId/{id:int}")]

@@ -7,7 +7,7 @@ namespace Api.Data.Repository.MicroController;
 public interface IMicroControllerRepository
 {
     Task<bool> CreateOrSave(string item, Model.RequestModel.MicroController.MicroController microController);
-    Task<List<DtoMicroController>> GetLimit(string item, int limit);
+    Task<List<DtoMicroController>> GetLimit(string item, int floor);
     Task<DtoMicroController> GetId(string item, int id);
     Task<DtoMicroController> GetName(string item, string name);
     Task<bool> DeleteId(string item, int id);
@@ -59,18 +59,18 @@ public class MicroControllerRepository(
         }
     }
 
-    public async Task<List<DtoMicroController>> GetLimit(string item, int limit)
+    public async Task<List<DtoMicroController>> GetLimit(string item, int floor)
     {
         _microControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
-                         " LIMIT @Limit";
+                         " WHERE Floor = @Floor";
 
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+            mySqlCommand.Parameters.Add("@Floor", MySqlDbType.Int32).Value = floor;
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)
             {
@@ -81,7 +81,7 @@ public class MicroControllerRepository(
                     string ip = _dataReader.GetString(2);
                     int port = _dataReader.GetInt32(3);
                     int cabinet = _dataReader.GetInt32(4);
-                    int floor = _dataReader.GetInt32(5);
+                    floor = _dataReader.GetInt32(5);
 
                     _microController = new DtoMicroController(id, name, ip,
                         port, floor, cabinet);
