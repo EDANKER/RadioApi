@@ -1,7 +1,6 @@
 ﻿using Api.Services.JsonServices;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
-using StackExchange.Redis;
 
 namespace Api.Services.HebrideanCacheServices;
 
@@ -16,13 +15,12 @@ public interface IHebrideanCacheServices<T>
 }
 
 public class HebrideanCacheServices<T>(
+    IJsonServices<T> _jsonServices,
     IDistributedCache distributedCache,
     ILogger<HebrideanCacheServices<T>> logger,
     IMemoryCache memoryCache)
     : IHebrideanCacheServices<T>
 {
-    private IJsonServices<T> _jsonServices = new JsonServices<T>();
-    
     public async Task<T?> GetId(string key)
     {
         try

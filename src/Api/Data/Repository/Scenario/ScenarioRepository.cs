@@ -17,13 +17,13 @@ public interface IScenarioRepository
 }
 
 public class ScenarioRepository(
+    IJsonServices<int[]> jsonServicesIdMicroController,
+    IJsonServices<string[]> _jsonServicesDays,
     ILogger<ScenarioRepository> logger,
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand) : IScenarioRepository
 {
-    private IJsonServices<int[]> _jsonServicesIdMicroController = new JsonServices<int[]>();
-    private IJsonServices<string[]> _jsonServicesDays = new JsonServices<string[]>();
     private DbDataReader? _dataReader;
     private List<DtoScenario>? _dtoScenarios;
     private DtoScenario? _dtoScenario;
@@ -44,8 +44,8 @@ public class ScenarioRepository(
 
         mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
         mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
-        mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = 
-            _jsonServicesIdMicroController.SerJson(scenario.IdMicroController);
+        mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value =
+            jsonServicesIdMicroController.SerJson(scenario.IdMicroController);
         mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = _jsonServicesDays.SerJson(scenario.Days);
         mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
 
@@ -87,7 +87,7 @@ public class ScenarioRepository(
                     string days = _dataReader.GetString(4);
                     int idMusic = _dataReader.GetInt32(5);
 
-                    _dtoScenario = new DtoScenario(id, name,_jsonServicesIdMicroController.DesJson(sector), 
+                    _dtoScenario = new DtoScenario(id, name, jsonServicesIdMicroController.DesJson(sector),
                         time, days, idMusic);
                 }
             }
@@ -98,7 +98,7 @@ public class ScenarioRepository(
 
             await mySqlConnection.CloseAsync();
             await _dataReader.CloseAsync();
-                
+
             return _dtoScenario;
         }
         catch (MySqlException e)
@@ -135,7 +135,7 @@ public class ScenarioRepository(
                     string days = _dataReader.GetString(4);
                     int idMusic = _dataReader.GetInt32(5);
 
-                    _dtoScenario = new DtoScenario(id, name,_jsonServicesIdMicroController.DesJson(sector), 
+                    _dtoScenario = new DtoScenario(id, name, jsonServicesIdMicroController.DesJson(sector),
                         time, days, idMusic);
                     _dtoScenarios.Add(_dtoScenario);
                 }
@@ -183,7 +183,7 @@ public class ScenarioRepository(
                     string days = _dataReader.GetString(4);
                     int idMusic = _dataReader.GetInt32(5);
 
-                    _dtoScenario = new DtoScenario(id, name,_jsonServicesIdMicroController.DesJson(sector), 
+                    _dtoScenario = new DtoScenario(id, name, jsonServicesIdMicroController.DesJson(sector),
                         time, days, idMusic);
                     _dtoScenarios.Add(_dtoScenario);
                 }
@@ -242,8 +242,8 @@ public class ScenarioRepository(
 
         mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
         mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
-        mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = 
-            _jsonServicesIdMicroController.SerJson(scenario.IdMicroController);
+        mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value =
+            jsonServicesIdMicroController.SerJson(scenario.IdMicroController);
         mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = _jsonServicesDays.SerJson(scenario.Days);
         mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
         mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;

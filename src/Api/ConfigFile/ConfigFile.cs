@@ -11,6 +11,7 @@ using Api.Services.GeneratorTokenServices;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.HttpMicroControllerServices;
 using Api.Services.IAudioFileServices;
+using Api.Services.JsonServices;
 using Api.Services.LdapService;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
@@ -30,6 +31,9 @@ public static class ConfigFile
 {
     public static void Registration(IServiceCollection service)
     {
+        service.AddScoped<IJsonServices<int[]>, JsonServices<int[]>>();
+        service.AddScoped<IJsonServices<string[]>, JsonServices<string[]>>();
+        service.AddScoped<IJsonServices<DtoMicroController>, JsonServices<DtoMicroController>>();
         service.AddScoped<IStreamToByteArrayServices, StreamToByteArrayServices>();
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
@@ -39,8 +43,8 @@ public static class ConfigFile
         service.AddScoped<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
         service.AddScoped<IMicroControllerServices, MicroControllerServices>();
         service.AddScoped<IMicroControllerRepository, MicroControllerRepository>();
-        service.AddSingleton<IScenarioServices, ScenarioServices>();
-        service.AddSingleton<IScenarioRepository, ScenarioRepository>();
+        service.AddScoped<IScenarioServices, ScenarioServices>();
+        service.AddScoped<IScenarioRepository, ScenarioRepository>();
         service.AddScoped<IMusicServices, MusicServices>();
         service.AddScoped<IMusicRepository, MusicRepository>();
         service.AddScoped<IUserRepository, UserRepository>();
@@ -57,7 +61,7 @@ public static class ConfigFile
             options.Configuration = "http://10.3.15.204";
             options.InstanceName = "Redis";
         });
-        service.AddSingleton<IHebrideanCacheServices<DtoMicroController>, HebrideanCacheServices<DtoMicroController>>();
+        service.AddScoped<IHebrideanCacheServices<DtoMicroController>, HebrideanCacheServices<DtoMicroController>>();
     }
 
     public static void Jwt(IServiceCollection service)

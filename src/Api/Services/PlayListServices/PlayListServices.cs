@@ -39,13 +39,13 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
                     data.Description,
                     await minio.GetUrl(new MinioModel(data.ImgPath, "photo")));
                 getPlayLists.Add(dtoPlayList);
-            }  
+            }
         }
         else
         {
             return null;
         }
-        
+
         return getPlayLists;
     }
 
