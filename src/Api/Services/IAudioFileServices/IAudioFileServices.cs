@@ -10,7 +10,7 @@ public interface IAudioFileServices
     Task<Music?> SaveAudio(IFormFile formFile, string name);
     Task<bool> DeleteMusic(string path);
     Task<bool> UpdateName(string path, string newName);
-    Task<Stream> GetByteMusic(string path);
+    Task<Stream> GetStreamMusic(string path);
 }
 
 public class AudioFileServices(
@@ -36,7 +36,7 @@ public class AudioFileServices(
         return await minio.Update(new MinioModel(path, "music"), name, "audio/mpeg");
     }
 
-    public async Task<Stream> GetByteMusic(string path)
+    public async Task<Stream> GetStreamMusic(string path)
     {
         return await minio.GetByteMusic(new MinioModel(path, "music"));
     }

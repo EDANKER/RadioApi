@@ -7,9 +7,9 @@ namespace Api.Data.Repository.User;
 public interface IUserRepository
 {
     Task<bool> CreateOrSave(string item, Model.RequestModel.User.User user);
-    Task<List<DtoUser>> GetId(string item, int id);
-    Task<List<DtoUser>> GetLimit(string item, int limit);
-    Task<List<DtoUser>> GetName(string item, string name);
+    Task<DtoUser?> GetId(string item, int id);
+    Task<List<DtoUser>?> GetLimit(string item, int limit);
+    Task<DtoUser?> GetName(string item, string name);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, Api.Model.RequestModel.User.User user, int id);
     Task<bool> Search(string item, string name, string login);
@@ -21,11 +21,11 @@ public class UserRepository(
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand) : IUserRepository
 {
-    private DbDataReader _dataReader;
-    private List<DtoUser> _getUsers;
-    private DtoUser _user;
+    private DbDataReader? _dataReader;
+    private List<DtoUser>? _dtoUsers;
+    private DtoUser? _dtoUser;
 
-    private readonly string _connect = configuration.GetConnectionString("MySql");
+    private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
     public async Task<bool> CreateOrSave(string item, Api.Model.RequestModel.User.User user)
     {
@@ -56,9 +56,8 @@ public class UserRepository(
         return true;
     }
 
-    public async Task<List<DtoUser>> GetId(string item, int id)
+    public async Task<DtoUser?> GetId(string item, int id)
     {
-        _getUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
         try
@@ -79,26 +78,29 @@ public class UserRepository(
                     string login = _dataReader.GetString(2);
                     string role = _dataReader.GetString(3);
 
-                    _user = new DtoUser(id, fullname, login, role);
-                    _getUsers.Add(_user);
+                    _dtoUser = new DtoUser(id, fullname, login, role);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await mySqlConnection.CloseAsync();
             await _dataReader.CloseAsync();
 
-            return _getUsers;
+            return _dtoUser;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            throw;
+            return null;
         }
     }
 
-    public async Task<List<DtoUser>> GetLimit(string item, int limit)
+    public async Task<List<DtoUser>?> GetLimit(string item, int limit)
     {
-        _getUsers = new List<DtoUser>();
+        _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          "LIMIT @Limit";
         mySqlConnection = new MySqlConnection(_connect);
@@ -122,26 +124,30 @@ public class UserRepository(
                     string login = _dataReader.GetString(2);
                     string role = _dataReader.GetString(3);
 
-                    _user = new DtoUser(id, fullname, login, role);
-                    _getUsers.Add(_user);
+                    _dtoUser = new DtoUser(id, fullname, login, role);
+                    _dtoUsers.Add(_dtoUser);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await mySqlConnection.CloseAsync();
             await _dataReader.CloseAsync();
 
-            return _getUsers;
+            return _dtoUsers;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            throw;
+            return null;
         }
     }
 
-    public async Task<List<DtoUser>> GetName(string item, string name)
+    public async Task<DtoUser?> GetName(string item, string name)
     {
-        _getUsers = new List<DtoUser>();
+        _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM  {item} " +
                          $"WHERE Name = @Name";
 
@@ -164,21 +170,24 @@ public class UserRepository(
                     string login = _dataReader.GetString(2);
                     string role = _dataReader.GetString(3);
 
-                    _user = new DtoUser(id, fullname, login, role);
-                    _getUsers.Add(_user);
+                    _dtoUser = new DtoUser(id, fullname, login, role);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
 
+            return _dtoUser;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
+            return null;
         }
-        
-        return _getUsers;
     }
 
     public async Task<bool> DeleteId(string item, int id)

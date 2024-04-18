@@ -7,9 +7,9 @@ namespace Api.Data.Repository.Music;
 public interface IMusicRepository
 {
     Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music? music);
-    Task<DtoMusic> GetId(string item, int id);
-    Task<List<DtoMusic>> GetLimit(string item, int limit);
-    Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name);
+    Task<DtoMusic?> GetId(string item, int id);
+    Task<List<DtoMusic>?> GetLimit(string item, int limit);
+    Task<List<DtoMusic>?> GetMusicPlayListTag(string item, string name);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, string field, string name, int id);
     Task<bool> Search(string item, string name);
@@ -22,11 +22,11 @@ public class MusicRepository(
     MySqlCommand mySqlCommand)
     : IMusicRepository
 {
-    private DbDataReader _dataReader;
-    private List<DtoMusic> _musicsList;
-    private DtoMusic _music;
+    private DbDataReader? _dataReader;
+    private List<DtoMusic>? _dtoMusics;
+    private DtoMusic? _dtoMusic;
 
-    private readonly string _connect = configuration.GetConnectionString("MySql");
+    private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
     public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music? music)
     {
@@ -58,9 +58,9 @@ public class MusicRepository(
         return true;
     }
 
-    public async Task<DtoMusic> GetId(string item, int id)
+    public async Task<DtoMusic?> GetId(string item, int id)
     {
-        _musicsList = new List<DtoMusic>();
+        _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
@@ -81,25 +81,30 @@ public class MusicRepository(
                     string namePlayList = _dataReader.GetString(2);
                     string timeMusic = _dataReader.GetString(3);
 
-                    _music = new DtoMusic(id, name, namePlayList, timeMusic);
+                    _dtoMusic = new DtoMusic(id, name, namePlayList, timeMusic);
                 }
             }
-
+            else
+            {
+                return null;
+            }
+            
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
-
+            
+            return _dtoMusic;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
+            return null;
         }
         
-        return _music;
     }
 
-    public async Task<List<DtoMusic>> GetLimit(string item, int limit)
+    public async Task<List<DtoMusic>?> GetLimit(string item, int limit)
     {
-        _musicsList = new List<DtoMusic>();
+        _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT  @Limit";
 
@@ -122,26 +127,30 @@ public class MusicRepository(
                     string namePlayList = _dataReader.GetString(2);
                     string timeMusic = _dataReader.GetString(3);
 
-                    _music = new DtoMusic(id, name, namePlayList, timeMusic);
-                    _musicsList.Add(_music);
+                    _dtoMusic = new DtoMusic(id, name, namePlayList, timeMusic);
+                    _dtoMusics.Add(_dtoMusic);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
 
+            return _dtoMusics;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
+            return null;
         }
-        
-        return _musicsList;
     }
 
-    public async Task<List<DtoMusic>> GetMusicPlayListTag(string item, string name)
+    public async Task<List<DtoMusic>?> GetMusicPlayListTag(string item, string name)
     {
-        _musicsList = new List<DtoMusic>();
+        _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE namePlayList = @NamePlayList";
         try
@@ -162,21 +171,26 @@ public class MusicRepository(
                     string namePlayList = _dataReader.GetString(2);
                     string timeMusic = _dataReader.GetString(3);
 
-                    _music = new DtoMusic(id, nameMusic, namePlayList, timeMusic);
-                    _musicsList.Add(_music);
+                    _dtoMusic = new DtoMusic(id, nameMusic, namePlayList, timeMusic);
+                    _dtoMusics.Add(_dtoMusic);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
 
+            return _dtoMusics;
+
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
+            return null;
         }
-        
-        return _musicsList;
     }
 
     public async Task<bool> DeleteId(string item, int id)

@@ -17,6 +17,7 @@ using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.ScenarioServices;
+using Api.Services.StreamToByteArrayServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -29,6 +30,7 @@ public static class ConfigFile
 {
     public static void Registration(IServiceCollection service)
     {
+        service.AddScoped<IStreamToByteArrayServices, StreamToByteArrayServices>();
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
         service.AddTransient<IMinioClient, MinioClient>();
@@ -47,7 +49,7 @@ public static class ConfigFile
         service.AddScoped<IPlayListServices, PlayListServices>();
         service.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
         service.AddScoped<ILdapService, LdapService>();
-        service.AddSingleton<IHttpMicroControllerServices, HttpMicroControllerServices>();
+        service.AddScoped<IHttpMicroControllerServices, HttpMicroControllerServices>();
         service.AddScoped<HttpClient>();
         service.AddMemoryCache();
         service.AddStackExchangeRedisCache(options =>

@@ -112,7 +112,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
                 .WithObject(minioModel.Name)
                 .WithCallbackStream((stream1 =>
                 {
-                    stream1.CopyTo(stream);
+                    stream1.CopyToAsync(stream);
                 })));
         }
         catch (MinioException e)

@@ -7,9 +7,9 @@ namespace Api.Data.Repository.MicroController;
 public interface IMicroControllerRepository
 {
     Task<bool> CreateOrSave(string item, Model.RequestModel.MicroController.MicroController microController);
-    Task<List<DtoMicroController>> GetLimit(string item, int floor);
-    Task<DtoMicroController> GetId(string item, int id);
-    Task<DtoMicroController> GetName(string item, string name);
+    Task<List<DtoMicroController>?> GetLimit(string item, int floor);
+    Task<DtoMicroController?> GetId(string item, int id);
+    Task<DtoMicroController?> GetName(string item, string name);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, Model.RequestModel.MicroController.MicroController microController);
     Task<bool> Search(string item, string name);
@@ -22,18 +22,18 @@ public class MicroControllerRepository(
     IConfiguration configuration
 ) : IMicroControllerRepository
 {
-    private readonly string _connect = configuration.GetConnectionString("MySql");
-    private DbDataReader _dataReader;
-    private List<DtoMicroController> _microControllers;
-    private DtoMicroController _microController;
+    private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
+    private DbDataReader? _dataReader;
+    private List<DtoMicroController>? _dtoMicroControllers;
+    private DtoMicroController? _dtoMicroController;
 
     public async Task<bool> CreateOrSave(string item,
         Model.RequestModel.MicroController.MicroController microController)
     {
-        const string command = "INSERT INTO MicroControllers(Name, Ip, Port, " +
-                               "Cabinet, Floor) " +
-                               "VALUES (@Name, @Ip, @Port, " +
-                               "@Cabinet, @Floor)";
+        string command = $"INSERT INTO {item} (Name, Ip, Port, " +
+                         "Cabinet, Floor) " +
+                         "VALUES (@Name, @Ip, @Port, " +
+                         "@Cabinet, @Floor)";
 
         try
         {
@@ -59,9 +59,9 @@ public class MicroControllerRepository(
         }
     }
 
-    public async Task<List<DtoMicroController>> GetLimit(string item, int floor)
+    public async Task<List<DtoMicroController>?> GetLimit(string item, int floor)
     {
-        _microControllers = new List<DtoMicroController>();
+        _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
                          " WHERE Floor = @Floor";
 
@@ -83,10 +83,14 @@ public class MicroControllerRepository(
                     int cabinet = _dataReader.GetInt32(4);
                     floor = _dataReader.GetInt32(5);
 
-                    _microController = new DtoMicroController(id, name, ip,
+                    _dtoMicroController = new DtoMicroController(id, name, ip,
                         port, floor, cabinet);
-                    _microControllers.Add(_microController);
+                    _dtoMicroControllers.Add(_dtoMicroController);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await _dataReader.CloseAsync();
@@ -97,13 +101,13 @@ public class MicroControllerRepository(
             logger.LogError(e.ToString());
         }
 
-        return _microControllers;
+        return _dtoMicroControllers;
     }
 
-    public async Task<DtoMicroController> GetId(string item, int id)
+    public async Task<DtoMicroController?> GetId(string item, int id)
     {
         string command = $"SELECT * FROM {item} " +
-                         "WHERE Id = @Id" ;
+                         "WHERE Id = @Id";
 
         try
         {
@@ -123,9 +127,13 @@ public class MicroControllerRepository(
                     int cabinet = _dataReader.GetInt32(4);
                     int floor = _dataReader.GetInt32(5);
 
-                    _microController = new DtoMicroController(id, name, ip,
-                        port, floor, cabinet); 
+                    _dtoMicroController = new DtoMicroController(id, name, ip,
+                        port, floor, cabinet);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await _dataReader.CloseAsync();
@@ -136,13 +144,13 @@ public class MicroControllerRepository(
             logger.LogError(e.ToString());
         }
 
-        return _microController;
+        return _dtoMicroController;
     }
 
-    public async Task<DtoMicroController> GetName(string item, string name)
+    public async Task<DtoMicroController?> GetName(string item, string name)
     {
         string command = $"SELECT * FROM {item} " +
-                         "WHERE Name = @Name" ;
+                         "WHERE Name = @Name";
 
         try
         {
@@ -162,8 +170,8 @@ public class MicroControllerRepository(
                     int cabinet = _dataReader.GetInt32(4);
                     int floor = _dataReader.GetInt32(5);
 
-                    _microController = new DtoMicroController(id, name, ip,
-                        port, floor, cabinet); 
+                    _dtoMicroController = new DtoMicroController(id, name, ip,
+                        port, floor, cabinet);
                 }
             }
 
@@ -175,7 +183,7 @@ public class MicroControllerRepository(
             logger.LogError(e.ToString());
         }
 
-        return _microController;
+        return _dtoMicroController;
     }
 
     public async Task<bool> DeleteId(string item, int id)

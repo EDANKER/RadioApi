@@ -1,4 +1,5 @@
-﻿using Api.Services.PlayListServices;
+﻿using Api.Model.ResponseModel.PlayList;
+using Api.Services.PlayListServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.PlayList;
@@ -52,16 +53,22 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        
-        return Ok(await playListServices.GetPlayListId("PlayLists", id));
+        DtoPlayList? dtoPlayList = await playListServices.GetId("PlayLists", id);
+        if (dtoPlayList != null)
+            return Ok(dtoPlayList);
+
+        return BadRequest("Таких данных нет");
     }
 
-    [HttpGet("GetPlayList/{limit:int}")]
-    public async Task<IActionResult> GetPlayList(int limit)
+    [HttpGet("GetPlayListLimit/{limit:int}")]
+    public async Task<IActionResult> GetPlayListLimit(int limit)
     {
         if (limit < 0)
-            return BadRequest("Некорректное значение id");
-        
-        return Ok(await playListServices.GetPlayList("PlayLists", limit));
+            return BadRequest("Некорректное значение limit");
+        List<DtoPlayList>? dtoPlayList = await playListServices.GetLimit("PlayLists", limit);
+        if (dtoPlayList != null)
+            return Ok(dtoPlayList);
+
+        return BadRequest("Таких данных нет");
     }
 }

@@ -1,3 +1,4 @@
+using Api.Model.ResponseModel.MicroController;
 using Api.Services.MicroControllerServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,16 +8,6 @@ namespace Api.Controller.MicroController;
 [Route("api/v1/[controller]")]
 public class MicroControllersController(IMicroControllerServices microControllerServices) : ControllerBase
 {
-    [HttpGet("GetMusicInMinio/{id:int}")]
-    public async Task<IActionResult> GetMusicInMinio(int id)
-    {
-        byte[]? buffer = await microControllerServices.GetMusicInMinio(id);
-        
-        while (buffer?.Length > 0)
-            return Ok(await microControllerServices.GetMusicInMinio(id));
-        
-        return BadRequest("Это все или таких данных нет");
-    }
 
     [HttpPost("CreateMicroController")]
     public async Task<IActionResult> CreateMicroController([FromBody]Model.RequestModel.MicroController.MicroController microController)
@@ -27,13 +18,16 @@ public class MicroControllersController(IMicroControllerServices microController
         return Ok(await microControllerServices.CreateOrSave("MicroControllers", microController));
     }
     
-    [HttpGet("GetMicroControllerLayer/{floor:int}")]
-    public async Task<IActionResult> GetMicroControllerLayer(int floor)
+    [HttpGet("GetMicroControllerFloor/{floor:int}")]
+    public async Task<IActionResult> GetMicroControllerFloor(int floor)
     {
         if (floor < 0)
-            return BadRequest("Некорректное значение id");
+            return BadRequest("Некорректное значение floor");
+        List<DtoMicroController>? dtoMicroController = await microControllerServices.GetLimit("MicroControllers", floor);
+        if (dtoMicroController != null)
+            return Ok(dtoMicroController);
         
-        return Ok(await microControllerServices.GetLimit("MicroControllers", floor));
+        return BadRequest("Таких данных нет");
     }
 
     [HttpGet("GetMicroControllerId/{id:int}")]
@@ -41,8 +35,11 @@ public class MicroControllersController(IMicroControllerServices microController
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
+        DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", id);
+        if (dtoMicroController != null)
+            return Ok(dtoMicroController);
         
-        return Ok(await microControllerServices.GetId("MicroControllers", id));
+        return BadRequest("Таких данных нет");
     }
 
     [HttpDelete("DeleteMicroControllerId/{id:int}")]

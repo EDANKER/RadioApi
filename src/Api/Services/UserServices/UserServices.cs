@@ -7,9 +7,9 @@ namespace Api.Services.UserServices;
 public interface IUserServices
 {
     Task<bool> CreateOrSave(string item, User user);
-    Task<List<DtoUser>> GetLimitUser(string item, int limit);
-    Task<List<DtoUser>> GetIdUser(string item, int id);
-    Task<List<DtoUser>> GetName(string item, string name);
+    Task<List<DtoUser>?> GetLimit(string item, int limit);
+    Task<DtoUser?> GetId(string item, int id);
+    Task<DtoUser?> GetName(string item, string name);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, User user, int id);
     Task<bool> Search(string item, string name, string login);
@@ -22,17 +22,17 @@ public class UserServices(IUserRepository userRepository) : IUserServices
         return await userRepository.CreateOrSave(item, user);
     }
 
-    public async Task<List<DtoUser>> GetLimitUser(string item, int limit)
+    public async Task<List<DtoUser>?> GetLimit(string item, int limit)
     {
         return await userRepository.GetLimit(item, limit);
     }
 
-    public async Task<List<DtoUser>> GetIdUser(string item, int id)
+    public async Task<DtoUser?> GetId(string item, int id)
     {
         return await userRepository.GetId(item, id);
     }
 
-    public async Task<List<DtoUser>> GetName(string item, string name)
+    public async Task<DtoUser?> GetName(string item, string name)
     {
         return await userRepository.GetName(item, name);
     }

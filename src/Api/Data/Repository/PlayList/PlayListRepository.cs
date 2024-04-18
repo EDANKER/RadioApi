@@ -7,8 +7,8 @@ namespace Api.Data.Repository.PlayList;
 public interface IPlayListRepository
 {
     Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.PlayList playLis);
-    Task<DtoPlayList> GetId(string item, int id);
-    Task<List<DtoPlayList>> GetLimit(string item, int limit);
+    Task<DtoPlayList?> GetId(string item, int id);
+    Task<List<DtoPlayList>?> GetLimit(string item, int limit);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, string name, string field, int id);
     Task<bool> Search(string item, string name);
@@ -20,10 +20,10 @@ public class PlayListRepository(
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand) : IPlayListRepository
 {
-    private DbDataReader _dataReader;
-    private List<DtoPlayList> _playLists;
-    private DtoPlayList _playList;
-    private readonly string _connect = configuration.GetConnectionString("MySql");
+    private DbDataReader? _dataReader;
+    private List<DtoPlayList>? _dtoPlayLists;
+    private DtoPlayList? _dtoPlayList;
+    private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
     public async Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.PlayList playList)
     {
@@ -54,9 +54,9 @@ public class PlayListRepository(
         }
     }
 
-    public async Task<DtoPlayList> GetId(string item, int id)
+    public async Task<DtoPlayList?> GetId(string item, int id)
     {
-        _playLists = new List<DtoPlayList>();
+        _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE Id = @Id";
         mySqlConnection = new MySqlConnection(_connect);
@@ -78,24 +78,29 @@ public class PlayListRepository(
                     string description = _dataReader.GetString(2);
                     string imgPath = _dataReader.GetString(3);
 
-                    _playList = new DtoPlayList(id, name, description, imgPath);
+                    _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
+            
+            return _dtoPlayList;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
+            return null;
         }
-
-        return _playList;
     }
 
-    public async Task<List<DtoPlayList>> GetLimit(string item, int limit)
+    public async Task<List<DtoPlayList>?> GetLimit(string item, int limit)
     {
-        _playLists = new List<DtoPlayList>();
+        _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit";
         try
@@ -116,20 +121,25 @@ public class PlayListRepository(
                     string description = _dataReader.GetString(2);
                     string imgPath = _dataReader.GetString(3);
 
-                    _playList = new DtoPlayList(id, name, description, imgPath);
-                    _playLists.Add(_playList);
+                    _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
+                    _dtoPlayLists.Add(_dtoPlayList);
                 }
+            }
+            else
+            {
+                return null;
             }
 
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
+            
+            return _dtoPlayLists;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
+            return null;
         }
-
-        return _playLists;
     }
 
     public async Task<bool> DeleteId(string item, int id)

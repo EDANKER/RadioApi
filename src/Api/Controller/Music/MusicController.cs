@@ -1,4 +1,5 @@
-﻿using Api.Services.MusicServices;
+﻿using Api.Model.ResponseModel.Music;
+using Api.Services.MusicServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller.Music;
@@ -8,6 +9,16 @@ namespace Api.Controller.Music;
 public class MusicController(IMusicServices musicServices)
     : ControllerBase
 {
+    [HttpGet("GetMusicInMinio/{id:int}")]
+    public async Task<IActionResult> GetMusicInMinio(int id)
+    {
+        byte[]? buffer = await musicServices.GetMusicInMinio(id);
+        if (buffer == null)
+            return BadRequest("Таких данных нет");
+        
+        return Ok(buffer);
+    }
+    
     [HttpPost("PlayMusic/{idMusic:int}")]
     public async Task<IActionResult> PlayMusic(int idMusic, [FromBody] int[] idControllers)
     {
@@ -42,18 +53,24 @@ public class MusicController(IMusicServices musicServices)
     public async Task<IActionResult> GetMusicLimit(int limit)
     {
         if (limit < 0)
-            return BadRequest("Некорректное значение id");
+            return BadRequest("Некорректное значение limit");
+        List<DtoMusic>? dtoMusics = await musicServices.GetMusic("Musics", limit);
+        if (dtoMusics != null)
+            return Ok(dtoMusics);
         
-        return Ok(await musicServices.GetMusic("Musics", limit));
+        return BadRequest("Таких данных нет");
     }
 
-    [HttpGet("GetMusic/{id:int}")]
-    public async Task<IActionResult> GetMusic(int id)
+    [HttpGet("GetMusicId/{id:int}")]
+    public async Task<IActionResult> GetMusicId(int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
+        DtoMusic? dtoMusic = await musicServices.GetId("Musics", id);
+        if (dtoMusic != null)
+            return Ok(dtoMusic);
         
-        return Ok(await musicServices.GetMusicId("Musics", id));
+        return BadRequest("Таких данных нет");
     }
 
     [HttpDelete("DeleteMusicId/{id:int}")]
@@ -86,8 +103,12 @@ public class MusicController(IMusicServices musicServices)
     public async Task<IActionResult> GetMusicPlayListTag(string name)
     {
         if (name == null)
-            return BadRequest("Название не должно быть пустой");
+            return BadRequest("Название не должно быть пустым");
         
-        return Ok(await musicServices.GetMusicPlayListTag("Musics", name));
+        List<DtoMusic>? dtoMusic = await musicServices.GetTag("Musics", name);
+        if (dtoMusic != null)
+            return Ok(dtoMusic);
+        
+        return BadRequest("Таких данных нет");
     }
 }

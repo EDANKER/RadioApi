@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Api.Model.ResponseModel.MicroController;
+using Api.Services.StreamToByteArrayServices;
 
 namespace Api.Services.HttpMicroControllerServices;
 
@@ -10,17 +11,20 @@ public interface IHttpMicroControllerServices
 }
 
 public class HttpMicroControllerServices(
-    ILogger<HttpMicroControllerServices> logger)
+    ILogger<HttpMicroControllerServices> logger,
+    IStreamToByteArrayServices streamToByteArrayServices)
     : IHttpMicroControllerServices
 {
+    private HttpClient httpClient;
+
     public async Task<bool> Post(DtoMicroController dtoMicroController, int idMusic)
     {
-        HttpClient httpClient = new HttpClient();
+        httpClient = new HttpClient();
         try
         {
             httpClient.BaseAddress = new Uri($"https://{dtoMicroController.Ip}:{dtoMicroController.Port}");
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("/api/v1/Music/Post", 
-                new StringContent(idMusic.ToString(), Encoding.UTF8, 
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("",
+                new StringContent(idMusic.ToString(), Encoding.UTF8,
                     "application/json"));
             Console.WriteLine(httpResponseMessage.Content.ReadAsStringAsync().Result);
             return true;
@@ -32,8 +36,26 @@ public class HttpMicroControllerServices(
         }
     }
 
-    public Task<bool> PostByte(DtoMicroController dtoMicroController, IFormFile formFile)
+    public async Task<bool> PostByte(DtoMicroController dtoMicroController, IFormFile formFile)
     {
-        throw new NotImplementedException();
+        httpClient = new HttpClient();
+
+        try
+        {
+            byte[]? arrayByte = await streamToByteArrayServices.StreamToByte(formFile.OpenReadStream());
+            if (arrayByte == null)
+                return false;
+            
+            
+            httpClient.BaseAddress = new Uri($"https://{dtoMicroController.Ip}:{dtoMicroController.Port}");
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("", new ByteArrayContent(arrayByte));
+            Console.WriteLine(await httpResponseMessage.Content.ReadAsStringAsync());
+            
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 }
