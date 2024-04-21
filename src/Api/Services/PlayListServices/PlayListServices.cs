@@ -1,5 +1,6 @@
 ﻿using Api.Data.Minio;
 using Api.Data.Repository.PlayList;
+using Api.Interface;
 using Api.Model.MinioModel;
 using Api.Model.RequestModel.PlayList;
 using Api.Model.ResponseModel.PlayList;
@@ -12,11 +13,11 @@ public interface IPlayListServices
     Task<List<DtoPlayList>?> GetLimit(string item, int limit);
     Task<DtoPlayList?> GetId(string item, int id);
     Task<bool> DeleteId(string item, int id);
-    Task<bool> Update(string item, string field, string name, int id);
+    Task<bool> UpdateId(string item, PlayList playList, int id);
     Task<bool> Search(string item, string name);
 }
 
-public class PlayListServices(IPlayListRepository playListRepository, IMinio minio) : IPlayListServices
+public class PlayListServices(IRepository<PlayList, DtoPlayList> playListRepository, IMinio minio) : IPlayListServices
 {
     public async Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile)
     {
@@ -64,9 +65,9 @@ public class PlayListServices(IPlayListRepository playListRepository, IMinio min
         return await playListRepository.DeleteId(item, id);
     }
 
-    public async Task<bool> Update(string item, string field, string name, int id)
+    public async Task<bool> UpdateId(string item, PlayList playList, int id)
     {
-        return await playListRepository.Update(item, name, field, id);
+        return await playListRepository.UpdateId(item, playList, id);
     }
 
     public async Task<bool> Search(string item, string name)

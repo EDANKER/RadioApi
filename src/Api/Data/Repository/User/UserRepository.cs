@@ -1,25 +1,16 @@
 ﻿using System.Data.Common;
+using Api.Interface;
+using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.User;
 using MySql.Data.MySqlClient;
 
 namespace Api.Data.Repository.User;
 
-public interface IUserRepository
-{
-    Task<bool> CreateOrSave(string item, Model.RequestModel.User.User user);
-    Task<DtoUser?> GetId(string item, int id);
-    Task<List<DtoUser>?> GetLimit(string item, int limit);
-    Task<DtoUser?> GetName(string item, string name);
-    Task<bool> DeleteId(string item, int id);
-    Task<bool> Update(string item, Api.Model.RequestModel.User.User user, int id);
-    Task<bool> Search(string item, string name, string login);
-}
-
 public class UserRepository(
     IConfiguration configuration,
-    ILogger<IUserRepository> logger,
+    ILogger<IRepository<Model.RequestModel.User.User, DtoMusic>> logger,
     MySqlConnection mySqlConnection,
-    MySqlCommand mySqlCommand) : IUserRepository
+    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.User.User, DtoUser>
 {
     private DbDataReader? _dataReader;
     private List<DtoUser>? _dtoUsers;
@@ -98,6 +89,50 @@ public class UserRepository(
         }
     }
 
+    public async Task<List<DtoUser>?> GetString(string item, string namePurpose, string field)
+    {
+        _dtoUsers = new List<DtoUser>();
+        string command = $"SELECT * FROM {item} " +
+                         $"WHERE {field} = @NamePurpose";
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.AddWithValue("@Name", namePurpose);
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string fullname = _dataReader.GetString(1);
+                    string login = _dataReader.GetString(2);
+                    string role = _dataReader.GetString(3);
+
+                    _dtoUser = new DtoUser(id, fullname, login, role);
+                    _dtoUsers.Add(_dtoUser);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
+            return _dtoUsers;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
+    }
+
     public async Task<List<DtoUser>?> GetLimit(string item, int limit)
     {
         _dtoUsers = new List<DtoUser>();
@@ -145,51 +180,6 @@ public class UserRepository(
         }
     }
 
-    public async Task<DtoUser?> GetName(string item, string name)
-    {
-        _dtoUsers = new List<DtoUser>();
-        string command = $"SELECT * FROM  {item} " +
-                         $"WHERE Name = @Name";
-
-        mySqlConnection = new MySqlConnection(_connect);
-
-        try
-        {
-            await mySqlConnection.OpenAsync();
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
-
-            _dataReader = await mySqlCommand.ExecuteReaderAsync();
-
-            if (_dataReader.HasRows)
-            {
-                while (await _dataReader.ReadAsync())
-                {
-                    int id = _dataReader.GetInt32(0);
-                    string fullname = _dataReader.GetString(1);
-                    string login = _dataReader.GetString(2);
-                    string role = _dataReader.GetString(3);
-
-                    _dtoUser = new DtoUser(id, fullname, login, role);
-                }
-            }
-            else
-            {
-                return null;
-            }
-
-            await _dataReader.CloseAsync();
-            await mySqlConnection.CloseAsync();
-
-            return _dtoUser;
-        }
-        catch (MySqlException e)
-        {
-            logger.LogError(e.ToString());
-            return null;
-        }
-    }
-
     public async Task<bool> DeleteId(string item, int id)
     {
         string command = $"DELETE FROM {item} " +
@@ -215,12 +205,13 @@ public class UserRepository(
         return true;
     }
 
-    public async Task<bool> Update(string item, Api.Model.RequestModel.User.User user, int id)
+    public async Task<bool> UpdateId(string item, Api.Model.RequestModel.User.User user, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET " +
-                         $"FullName = @FullName, Login = " +
-                         $"@Login, Role = @Role " +
+                         $"FullName = @FullName, " +
+                         $"Login = @Login, " +
+                         $"Role = @Role " +
                          $"WHERE id = @Id";
 
         mySqlConnection = new MySqlConnection(_connect);
@@ -247,12 +238,11 @@ public class UserRepository(
 
         return true;
     }
-
-    public async Task<bool> Search(string item, string name, string login)
+    
+    public async Task<bool> Search(string item, string fullName)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
-                         $"WHERE FullName = @FullName " +
-                         $"AND Login = @Login)";
+                         $"WHERE FullName = @FullName)";
 
         mySqlConnection = new MySqlConnection(_connect);
 
@@ -261,8 +251,7 @@ public class UserRepository(
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = name;
-            mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = login;
+            mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = fullName;
 
             object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);

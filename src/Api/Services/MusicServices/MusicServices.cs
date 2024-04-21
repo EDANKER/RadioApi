@@ -1,5 +1,7 @@
 ﻿using Api.Data.Repository.Music;
+using Api.Interface;
 using Api.Model.RequestModel.Music;
+using Api.Model.ResponseModel.MicroController;
 using Api.Model.ResponseModel.Music;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
@@ -14,17 +16,17 @@ public interface IMusicServices
     Task<bool> PlayLife(IFormFile formFile, int[] idController);
     Task<bool> Stop();
     Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
-    Task<List<DtoMusic>?> GetMusic(string item, int limit);
+    Task<List<DtoMusic>?> GetLimit(string item, int limit);
     Task<DtoMusic?> GetId(string item, int id);
-    Task<List<DtoMusic>?> GetTag(string item, string name);
+    Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id, string path);
-    Task<bool> Update(string item, string path, string field, string name, int id);
+    Task<bool> UpdateId(string item, Music music, int id);
     Task<bool> Search(string item, string name);
 }
 
 public class MusicServices(
-    IMusicRepository musicRepository,
-    IAudioFileServices.IAudioFileServices audioFileServices,
+    IRepository<Music, DtoMusic> musicRepository,
+    IAudioFileServices.IAudioMusicFileServices audioMusicFileServices,
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
     IMicroControllerServices microControllerServices,
     IStreamToByteArrayServices streamToByteArrayServices) : IMusicServices
@@ -32,11 +34,11 @@ public class MusicServices(
     
     public async Task<byte[]?> GetMusicInMinio(int id)
     {
-        DtoMusic? dtoMusic = musicRepository.GetId("Musics", id).Result;
+        DtoMusic? dtoMusic = await musicRepository.GetId("Musics", id);
         if (dtoMusic != null)
         {
             string name = dtoMusic.Name;
-            Stream read = audioFileServices.GetStreamMusic(name).Result;
+            Stream read = await audioMusicFileServices.GetStreamMusic(name);
             if (read != null)
                 return await streamToByteArrayServices.StreamToByte(read);
         }
@@ -50,8 +52,10 @@ public class MusicServices(
         {
             if (data < 0)
                 continue;
-            await musicPlayerToMicroControllerServices.Play(
-                await microControllerServices.GetId("MicroControllers", data), idMusic);
+            DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
+            if (dtoMicroController != null)
+                await musicPlayerToMicroControllerServices.Play(
+                    dtoMicroController, idMusic);
         }
 
         return true;
@@ -63,8 +67,10 @@ public class MusicServices(
         {
             if (data < 0)
                 continue;
-            await musicPlayerToMicroControllerServices.PlayLife(
-                await microControllerServices.GetId("MicroControllers", data), formFile);
+            DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
+            if (dtoMicroController != null)
+                await musicPlayerToMicroControllerServices.PlayLife(
+                    dtoMicroController, formFile);
         }
 
         return true;
@@ -77,14 +83,14 @@ public class MusicServices(
 
     public async Task<bool> CreateOrSave(string item, IFormFile formFile, string name)
     {
-        Music? music = await audioFileServices.SaveAudio(formFile, name);
+        Music? music = await audioMusicFileServices.SaveMusic(formFile, name);
         if (music != null)
             return await musicRepository.CreateOrSave(item, music);
 
         return false;
     }
 
-    public async Task<List<DtoMusic>?> GetMusic(string item, int limit)
+    public async Task<List<DtoMusic>?> GetLimit(string item, int limit)
     {
         return await musicRepository.GetLimit(item, limit);
     }
@@ -94,25 +100,25 @@ public class MusicServices(
         return await musicRepository.GetId(item, id);
     }
 
-    public async Task<List<DtoMusic>?> GetTag(string item, string name)
+    public async Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field)
     {
-        return await musicRepository.GetMusicPlayListTag(item, name);
+        return await musicRepository.GetString(item, namePurpose, field);
     }
 
     public async Task<bool> DeleteId(string item, int id, string path)
     {
-        if (await audioFileServices.DeleteMusic(path))
+        if (await audioMusicFileServices.DeleteMusic(path))
             return await musicRepository.DeleteId(item, id);
 
         return false;
     }
 
-    public async Task<bool> Update(string item, string path, string field, string name, int id)
+    public async Task<bool> UpdateId(string item, Music music, int id)
     {
-        if (await audioFileServices.UpdateName(path, name))
-            return await musicRepository.Update(item, field, name, id);
+        if (!await audioMusicFileServices.UpdateName(music.Name))
+            return false;
 
-        return await musicRepository.Update(item, field, name, id);
+        return await musicRepository.UpdateId(item, music, id);
     }
 
     public async Task<bool> Search(string item, string name)

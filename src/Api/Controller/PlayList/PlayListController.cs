@@ -26,17 +26,15 @@ public class PlayListController(IPlayListServices playListServices) : Controller
         return Ok(await playListServices.CreateOrSave("PlayLists", name, description, formFile));
     }
 
-    [HttpPatch("UpdatePlayList/{id:int}")]
-    public async Task<IActionResult> UpdatePlayList([FromHeader] string field, [FromHeader] string purpose, int id)
+    [HttpPut("UpdatePlayList/{id:int}")]
+    public async Task<IActionResult> UpdatePlayList([FromBody] Model.RequestModel.PlayList.PlayList playList , int id)
     {
-        if (purpose == null)
-            return BadRequest("Данные пусты");
-        if (field == null)
+        if (playList == null)
             return BadRequest("Данные пусты");
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await playListServices.Update("PlayLists", field, purpose, id));
+        return Ok(await playListServices.UpdateId("PlayLists", playList, id));
     }
 
     [HttpDelete("DeletePlayList/{id:int}")]

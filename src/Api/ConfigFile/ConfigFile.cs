@@ -1,14 +1,24 @@
 ﻿using System.Text;
 using Api.Data.Minio;
+using Api.Data.Repository.HebrideanCacheRepository;
 using Api.Data.Repository.MicroController;
 using Api.Data.Repository.Music;
 using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenario;
 using Api.Data.Repository.User;
+using Api.Interface;
 using Api.Model.JwtTokenConfig;
+using Api.Model.RequestModel.MicroController;
+using Api.Model.RequestModel.Music;
+using Api.Model.RequestModel.PlayList;
+using Api.Model.RequestModel.Scenario;
+using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.MicroController;
+using Api.Model.ResponseModel.Music;
+using Api.Model.ResponseModel.PlayList;
+using Api.Model.ResponseModel.Scenario;
+using Api.Model.ResponseModel.User;
 using Api.Services.GeneratorTokenServices;
-using Api.Services.HebrideanCacheServices;
 using Api.Services.HttpMicroControllerServices;
 using Api.Services.IAudioFileServices;
 using Api.Services.JsonServices;
@@ -39,17 +49,17 @@ public static class ConfigFile
         service.AddTransient<MySqlCommand>();
         service.AddTransient<IMinioClient, MinioClient>();
         service.AddScoped<IMinio, Data.Minio.Minio>();
-        service.AddScoped<IAudioFileServices, AudioFileServices>();
+        service.AddScoped<IAudioMusicFileServices, AudioMusicFileServices>();
         service.AddScoped<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
         service.AddScoped<IMicroControllerServices, MicroControllerServices>();
-        service.AddScoped<IMicroControllerRepository, MicroControllerRepository>();
+        service.AddScoped<IRepository<MicroController, DtoMicroController>, MicroControllerRepository>();
         service.AddScoped<IScenarioServices, ScenarioServices>();
-        service.AddScoped<IScenarioRepository, ScenarioRepository>();
+        service.AddScoped<IRepository<Scenario, DtoScenario>, ScenarioRepository>();
         service.AddScoped<IMusicServices, MusicServices>();
-        service.AddScoped<IMusicRepository, MusicRepository>();
-        service.AddScoped<IUserRepository, UserRepository>();
+        service.AddScoped<IRepository<Music, DtoMusic>, MusicRepository>();
+        service.AddScoped<IRepository<User, DtoUser>, UserRepository>();
         service.AddScoped<IUserServices, UserServices>();
-        service.AddScoped<IPlayListRepository, PlayListRepository>();
+        service.AddScoped<IRepository<PlayList, DtoPlayList>, PlayListRepository>();
         service.AddScoped<IPlayListServices, PlayListServices>();
         service.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
         service.AddScoped<ILdapService, LdapService>();
@@ -61,7 +71,7 @@ public static class ConfigFile
             options.Configuration = "http://10.3.15.204";
             options.InstanceName = "Redis";
         });
-        service.AddScoped<IHebrideanCacheServices<DtoMicroController>, HebrideanCacheServices<DtoMicroController>>();
+        service.AddScoped<IHebrideanCacheServices<DtoMicroController>, HebrideanCacheRepository<DtoMicroController>>();
     }
 
     public static void Jwt(IServiceCollection service)

@@ -54,7 +54,7 @@ public class MusicController(IMusicServices musicServices)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
-        List<DtoMusic>? dtoMusics = await musicServices.GetMusic("Musics", limit);
+        List<DtoMusic>? dtoMusics = await musicServices.GetLimit("Musics", limit);
         if (dtoMusics != null)
             return Ok(dtoMusics);
         
@@ -84,19 +84,15 @@ public class MusicController(IMusicServices musicServices)
         return Ok(await musicServices.DeleteId("Musics", id, path));
     }
 
-    [HttpPatch("Update")]
-    public async Task<IActionResult> Update([FromHeader] string path, [FromHeader] string name,[FromHeader] string field, [FromHeader] int id)
+    [HttpPut("UpdateMusic/{id:int}")]
+    public async Task<IActionResult> UpdateMusic([FromBody] Model.RequestModel.Music.Music music, int id)
     {
-        if (name == null)
-            return BadRequest("Данные пусты");
-        if (field == null)
-            return BadRequest("Данные пусты");   
-        if (path == null)
+        if (music == null)
             return BadRequest("Данные пусты");
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await musicServices.Update("Musics", path, field, name + ".mp3", id));
+        return Ok(await musicServices.UpdateId("Musics", music, id));
     }
 
     [HttpGet("GetMusicPlayListTag")]
@@ -105,7 +101,7 @@ public class MusicController(IMusicServices musicServices)
         if (name == null)
             return BadRequest("Название не должно быть пустым");
         
-        List<DtoMusic>? dtoMusic = await musicServices.GetTag("Musics", name);
+        List<DtoMusic>? dtoMusic = await musicServices.GetUni("Musics", name, "NamePlayList");
         if (dtoMusic != null)
             return Ok(dtoMusic);
         

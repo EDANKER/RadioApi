@@ -56,6 +56,6 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
         if (id < 0)
             return BadRequest("Некорректное значение id");
 
-        return Ok(await scenarioServices.Update("Scenario", scenario, id));
+        return Ok(await scenarioServices.UpdateId("Scenario", scenario, id));
     }
 }

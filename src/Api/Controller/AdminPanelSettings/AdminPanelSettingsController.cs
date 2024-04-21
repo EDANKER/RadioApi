@@ -12,7 +12,7 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
     [HttpPost("CreateUser")]
     public async Task<IActionResult> CreateUser([FromBody] User user)
     {
-        if (await userServices.Search("Users", user.FullName, user.Login))
+        if (await userServices.Search("Users", user.FullName))
             return BadRequest("Такие данные уже есть");
 
         return Ok(await userServices.CreateOrSave("Users", user));
@@ -33,7 +33,7 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await userServices.Update("Users", user, id));
+        return Ok(await userServices.UpdateId("Users", user, id));
     }
 
     [HttpGet("GetUserLimit/{limit:int}")]

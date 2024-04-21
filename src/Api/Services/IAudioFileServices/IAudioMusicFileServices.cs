@@ -5,19 +5,19 @@ using TagLib;
 
 namespace Api.Services.IAudioFileServices;
 
-public interface IAudioFileServices
+public interface IAudioMusicFileServices
 {
-    Task<Music?> SaveAudio(IFormFile formFile, string name);
+    Task<Music?> SaveMusic(IFormFile formFile, string name);
     Task<bool> DeleteMusic(string path);
-    Task<bool> UpdateName(string path, string newName);
+    Task<bool> UpdateName(string newName);
     Task<Stream> GetStreamMusic(string path);
 }
 
-public class AudioFileServices(
+public class AudioMusicFileServices(
     IMinio minio)
-    : IAudioFileServices
+    : IAudioMusicFileServices
 {
-    public async Task<Music?> SaveAudio(IFormFile formFile, string name)
+    public async Task<Music?> SaveMusic(IFormFile formFile, string name)
     {
         if (await Save(formFile))
             return new Music(formFile.FileName, name,
@@ -31,9 +31,9 @@ public class AudioFileServices(
         return await minio.Delete(new MinioModel(path, "music"));
     }
 
-    public async Task<bool> UpdateName(string path, string name)
+    public async Task<bool> UpdateName(string name)
     {
-        return await minio.Update(new MinioModel(path, "music"), name, "audio/mpeg");
+        return await minio.Update(new MinioModel(name, "music"), name, "audio/mpeg");
     }
 
     public async Task<Stream> GetStreamMusic(string path)

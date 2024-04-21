@@ -5,15 +5,15 @@ namespace Api.Services.JsonServices;
 
 public interface IJsonServices<T>
 {
-    string SerJson(T item);
-    T DesJson(string item);
+    string? SerJson(T item);
+    T? DesJson(string? item);
 }
 
 public class JsonServices<T> : IJsonServices<T>
 {
     private ILogger<JsonServices<T>> _logger;
     
-    public string SerJson(T item)
+    public string? SerJson(T item)
     {
         try
         {
@@ -26,7 +26,7 @@ public class JsonServices<T> : IJsonServices<T>
         }
     }
 
-    public T DesJson(string item)
+    public T? DesJson(string? item)
     {
         try
         {

@@ -1,28 +1,18 @@
 ﻿using System.Data.Common;
+using Api.Interface;
 using Api.Model.ResponseModel.Scenario;
 using Api.Services.JsonServices;
 using MySql.Data.MySqlClient;
 
 namespace Api.Data.Repository.Scenario;
 
-public interface IScenarioRepository
-{
-    Task<bool> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario);
-    Task<DtoScenario?> GetId(string item, int id);
-    Task<List<DtoScenario>?> GetLimit(string item, int limit);
-    Task<List<DtoScenario>?> GetHour(string item, string timeScenario);
-    Task<bool> DeleteId(string item, int id);
-    Task<bool> Update(string item, Model.RequestModel.Scenario.Scenario scenario, int id);
-    Task<bool> Search(string item, string name);
-}
-
 public class ScenarioRepository(
     IJsonServices<int[]> jsonServicesIdMicroController,
-    IJsonServices<string[]> _jsonServicesDays,
+    IJsonServices<string[]> jsonServicesDays,
     ILogger<ScenarioRepository> logger,
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
-    MySqlCommand mySqlCommand) : IScenarioRepository
+    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.Scenario.Scenario, DtoScenario>
 {
     private DbDataReader? _dataReader;
     private List<DtoScenario>? _dtoScenarios;
@@ -44,9 +34,8 @@ public class ScenarioRepository(
 
         mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
         mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
-        mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value =
-            jsonServicesIdMicroController.SerJson(scenario.IdMicroController);
-        mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = _jsonServicesDays.SerJson(scenario.Days);
+        mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = scenario.IdMicroController;
+        mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = scenario.Days;
         mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
 
         try
@@ -82,12 +71,12 @@ public class ScenarioRepository(
                 while (await _dataReader.ReadAsync())
                 {
                     string name = _dataReader.GetString(1);
-                    string sector = _dataReader.GetString(2);
+                    string idMicroController = _dataReader.GetString(2);
                     string time = _dataReader.GetString(3);
                     string days = _dataReader.GetString(4);
                     int idMusic = _dataReader.GetInt32(5);
 
-                    _dtoScenario = new DtoScenario(id, name, jsonServicesIdMicroController.DesJson(sector),
+                    _dtoScenario = new DtoScenario(id, name, idMicroController,
                         time, days, idMusic);
                 }
             }
@@ -100,6 +89,52 @@ public class ScenarioRepository(
             await _dataReader.CloseAsync();
 
             return _dtoScenario;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
+    }
+
+    public async Task<List<DtoScenario>?> GetString(string item, string namePurpose, string field)
+    {
+        _dtoScenarios = new List<DtoScenario>();
+        string command = $"SELECT * FROM {item} " +
+                         $"WHERE {field} = @NamePurpose";
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.AddWithValue("@Name", namePurpose);
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string idMicroController = _dataReader.GetString(3);
+                    string time = _dataReader.GetString(4);
+                    string days = _dataReader.GetString(5);
+                    int idMusic = _dataReader.GetInt32(5);
+
+                    _dtoScenario = new DtoScenario(id, name, idMicroController, time, days, idMusic);
+                    _dtoScenarios.Add(_dtoScenario);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
+            return _dtoScenarios;
         }
         catch (MySqlException e)
         {
@@ -130,12 +165,12 @@ public class ScenarioRepository(
                 {
                     int id = _dataReader.GetInt32(0);
                     string name = _dataReader.GetString(1);
-                    string sector = _dataReader.GetString(2);
+                    string idMicroController = _dataReader.GetString(2);
                     string time = _dataReader.GetString(3);
                     string days = _dataReader.GetString(4);
                     int idMusic = _dataReader.GetInt32(5);
 
-                    _dtoScenario = new DtoScenario(id, name, jsonServicesIdMicroController.DesJson(sector),
+                    _dtoScenario = new DtoScenario(id, name, idMicroController,
                         time, days, idMusic);
                     _dtoScenarios.Add(_dtoScenario);
                 }
@@ -156,51 +191,7 @@ public class ScenarioRepository(
             return null;
         }
     }
-
-    public async Task<List<DtoScenario>?> GetHour(string item, string timeScenario)
-    {
-        _dtoScenarios = new List<DtoScenario>();
-        string command = $"SELECT * FROM {item} " +
-                         $"WHERE Time LIKE '%{timeScenario}%'";
-        try
-        {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
-
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
-
-
-            _dataReader = await mySqlCommand.ExecuteReaderAsync();
-
-            if (_dataReader.HasRows)
-            {
-                while (await _dataReader.ReadAsync())
-                {
-                    int id = _dataReader.GetInt32(0);
-                    string name = _dataReader.GetString(1);
-                    string sector = _dataReader.GetString(2);
-                    string time = _dataReader.GetString(3);
-                    string days = _dataReader.GetString(4);
-                    int idMusic = _dataReader.GetInt32(5);
-
-                    _dtoScenario = new DtoScenario(id, name, jsonServicesIdMicroController.DesJson(sector),
-                        time, days, idMusic);
-                    _dtoScenarios.Add(_dtoScenario);
-                }
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
-            return _dtoScenarios;
-        }
-        catch (MySqlException e)
-        {
-            logger.LogError(e.ToString());
-            return null;
-        }
-    }
-
+    
     public async Task<bool> DeleteId(string item, int id)
     {
         _dtoScenarios = new List<DtoScenario>();
@@ -227,29 +218,31 @@ public class ScenarioRepository(
         return true;
     }
 
-    public async Task<bool> Update(string item, Model.RequestModel.Scenario.Scenario scenario, int id)
+    public async Task<bool> UpdateId(string item, Model.RequestModel.Scenario.Scenario scenario, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET " +
-                         $"Name = @Name, IdMicroController = " +
-                         $"@IdMicroController, Time = @Time, Days = @Days, IdMusic = @IdMusic " +
+                         $"Name = @Name, " +
+                         $"IdMicroController = @IdMicroController," +
+                         $"Time = @Time," +
+                         $"Days = @Days, " +
+                         $"IdMusic = @IdMusic " +
                          $"WHERE id = @Id";
-
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-
-        mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
-        mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
-        mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value =
-            jsonServicesIdMicroController.SerJson(scenario.IdMicroController);
-        mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = _jsonServicesDays.SerJson(scenario.Days);
-        mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-        mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
-
+        
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
+            mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
+            mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = scenario.IdMicroController;
+            mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = scenario.Days;
+            mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+            mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
+            
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
         }
@@ -262,7 +255,7 @@ public class ScenarioRepository(
         return true;
     }
 
-    public async Task<bool> Search(string item, string name)
+    public async Task<bool> Search(string item, string fullName)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
                          $"WHERE Name = @Name)";
@@ -273,7 +266,7 @@ public class ScenarioRepository(
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = fullName;
 
             object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);

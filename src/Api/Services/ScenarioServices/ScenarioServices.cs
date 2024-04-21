@@ -1,4 +1,5 @@
 ﻿using Api.Data.Repository.Scenario;
+using Api.Interface;
 using Api.Model.RequestModel.Scenario;
 using Api.Model.ResponseModel.Scenario;
 
@@ -9,13 +10,12 @@ public interface IScenarioServices
     Task<bool> CreateOrSave(string item, Scenario scenario);
     Task<DtoScenario?> GetId(string item, int id);
     Task<List<DtoScenario>?> GetLimit(string item, int limit);
-    Task<List<DtoScenario>?> GetHour(string item, string time);
     Task<bool> DeleteId(string item, int id);
-    Task<bool> Update(string item, Scenario scenario, int id);
+    Task<bool> UpdateId(string item, Scenario scenario, int id);
     Task<bool> Search(string item, string name);
 }
 
-public class ScenarioServices(IScenarioRepository scenarioRepository) : IScenarioServices
+public class ScenarioServices(IRepository<Scenario, DtoScenario> scenarioRepository) : IScenarioServices
 {
     public async Task<bool> CreateOrSave(string item, Scenario scenario)
     {
@@ -31,20 +31,15 @@ public class ScenarioServices(IScenarioRepository scenarioRepository) : IScenari
     {
         return await scenarioRepository.GetLimit(item, limit);
     }
-
-    public async Task<List<DtoScenario>?> GetHour(string item, string time)
-    {
-        return await scenarioRepository.GetHour(item, time);
-    }
-
+    
     public async Task<bool> DeleteId(string item, int id)
     {
         return await scenarioRepository.DeleteId(item, id);
     }
 
-    public async Task<bool> Update(string item, Scenario scenario, int id)
+    public async Task<bool> UpdateId(string item, Scenario scenario, int id)
     {
-        return await scenarioRepository.Update(item, scenario, id);
+        return await scenarioRepository.UpdateId(item, scenario, id);
     }
 
     public async Task<bool> Search(string item, string name)
