@@ -35,18 +35,18 @@ public class MusicController(IMusicServices musicServices)
     }
 
     [HttpPost("SaveMusic")]
-    public async Task<IActionResult> SaveMusic(IFormFile formFile, [FromHeader]string name)
+    public async Task<IActionResult> SaveMusic(IFormFile formFile, [FromHeader]string namePlayList)
     {
         if (formFile == null)
             return BadRequest("Такие данные уже есть или данные пусты");
-        if (await musicServices.Search("Musics", formFile.FileName))
+        if (await musicServices.Search("Musics", formFile.FileName, "Name"))
             return BadRequest("Такие данные уже есть или данные пусты");
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");
-        if (name == "All")
+        if (namePlayList == "All")
             return Ok(await musicServices.CreateOrSave("Musics", formFile, "All"));
 
-        return Ok(await musicServices.CreateOrSave("Musics", formFile, name));
+        return Ok(await musicServices.CreateOrSave("Musics", formFile, namePlayList));
     }
 
     [HttpGet("GetMusicLimit/{limit:int}")]
@@ -87,8 +87,8 @@ public class MusicController(IMusicServices musicServices)
     [HttpPut("UpdateMusic/{id:int}")]
     public async Task<IActionResult> UpdateMusic([FromBody] Model.RequestModel.Music.Music music, int id)
     {
-        if (music == null)
-            return BadRequest("Данные пусты");
+        if (music != null && await musicServices.Search("Musics", music.Name, "Name"))
+            return BadRequest("Данные пусты или такое имя уже занято");
         if (id < 0)
             return BadRequest("Некорректное значение id");
         

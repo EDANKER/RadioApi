@@ -9,9 +9,9 @@ public interface IMinio
 {
     Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type);
     Task<bool> Delete(MinioModel minioModel);
-    Task<bool> Update(MinioModel minioModel, string newName, string type);
+    Task<bool> UpdateName(MinioModel minioModel, string newName, string type);
     Task<string> GetUrl(MinioModel minioModel);
-    Task<Stream> GetByteMusic(MinioModel minioModel);
+    Task<Stream?> GetByteMusic(MinioModel minioModel);
 }
 
 public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
@@ -21,7 +21,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         .WithCredentials(configuration.GetSection("Minio:user").Value,
             configuration.GetSection("Minio:pass").Value)
         .Build();
-    
+
 
     public async Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type)
     {
@@ -64,24 +64,30 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         }
     }
 
-    public async Task<bool> Update(MinioModel minioModel, string newName, string type)
+    public async Task<bool> UpdateName(MinioModel minioModel, string newName, string type)
     {
         try
         {
-            await _minioClient.PutObjectAsync(new PutObjectArgs()
-                .WithBucket(minioModel.BucketName)
-                .WithObject(newName)
-                .WithStreamData(await GetByteMusic(minioModel))
-                .WithObjectSize(GetByteMusic(minioModel).Result.Length)
-                .WithContentType(type));
-            await Delete(minioModel);
-            
-            return true;
+            Stream? stream = await GetByteMusic(minioModel);
+            if (stream != null)
+            {
+                await _minioClient.PutObjectAsync(new PutObjectArgs()
+                    .WithBucket(minioModel.BucketName)
+                    .WithObject(newName)
+                    .WithStreamData(stream)
+                    .WithObjectSize(stream.Length)
+                    .WithContentType(type));
+                await Delete(minioModel);
+
+                return true;
+            }
+
+            return false;
         }
         catch (MinioException e)
         {
-           logger.LogError(e.ToString());
-           return false;
+            logger.LogError(e.ToString());
+            return false;
         }
     }
 
@@ -102,25 +108,28 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         }
     }
 
-    public async Task<Stream> GetByteMusic(MinioModel minioModel)
+    public async Task<Stream?> GetByteMusic(MinioModel minioModel)
     {
-        MemoryStream stream = new MemoryStream();
+        Stream stream = new MemoryStream();
+
         try
         {
+            
             await _minioClient.GetObjectAsync(new GetObjectArgs()
                 .WithBucket(minioModel.BucketName)
                 .WithObject(minioModel.Name)
-                .WithCallbackStream((stream1 =>
+                .WithCallbackStream(stream1 =>
                 {
-                    stream1.CopyToAsync(stream);
-                })));
+                    stream1.CopyTo(stream);
+                }));
+            
+            stream.Seek(0, SeekOrigin.Begin);
+            return stream;
         }
         catch (MinioException e)
         {
             logger.LogError(e.ToString());
+            return null;
         }
-
-        stream.Seek(0, SeekOrigin.Begin);
-        return stream;
     }
 }

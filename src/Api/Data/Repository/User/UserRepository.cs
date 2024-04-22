@@ -24,10 +24,10 @@ public class UserRepository(
                          "(FullName, Login, Role) " +
                          "VALUES(@FullName, @Login, @Role)";
 
-        mySqlConnection = new MySqlConnection(_connect);
-
         try
-        { await mySqlConnection.OpenAsync();
+        { 
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
@@ -51,6 +51,7 @@ public class UserRepository(
     {
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
+        
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -94,6 +95,7 @@ public class UserRepository(
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
+        
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -138,10 +140,10 @@ public class UserRepository(
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          "LIMIT @Limit";
-        mySqlConnection = new MySqlConnection(_connect);
         
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
@@ -214,10 +216,9 @@ public class UserRepository(
                          $"Role = @Role " +
                          $"WHERE id = @Id";
 
-        mySqlConnection = new MySqlConnection(_connect);
-        
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
@@ -239,19 +240,17 @@ public class UserRepository(
         return true;
     }
     
-    public async Task<bool> Search(string item, string fullName)
+    public async Task<bool> Search(string item, string name, string field)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
-                         $"WHERE FullName = @FullName)";
-
-        mySqlConnection = new MySqlConnection(_connect);
-
+                         $"WHERE {field} = @Name)";
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = fullName;
+            mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = name;
 
             object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);

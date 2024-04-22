@@ -14,7 +14,7 @@ public interface IUserServices
     Task<DtoUser?> GetId(string item, int id);
     Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, User user, int id);
-    Task<bool> Search(string item, string name);
+    Task<bool> Search(string item, string name, string field);
 }
 
 public class UserServices(IRepository<User, DtoUser> userRepository) : IUserServices
@@ -44,8 +44,8 @@ public class UserServices(IRepository<User, DtoUser> userRepository) : IUserServ
         return await userRepository.UpdateId(item, user, id);
     }
 
-    public async Task<bool> Search(string item, string name)
+    public async Task<bool> Search(string item, string name, string field)
     {
-        return await userRepository.Search(item, name);
+        return await userRepository.Search(item, name, field);
     }
 }

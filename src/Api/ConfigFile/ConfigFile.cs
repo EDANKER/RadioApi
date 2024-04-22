@@ -29,6 +29,7 @@ using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.ScenarioServices;
 using Api.Services.StreamToByteArrayServices;
+using Api.Services.TimeCounterServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -49,7 +50,7 @@ public static class ConfigFile
         service.AddTransient<MySqlCommand>();
         service.AddTransient<IMinioClient, MinioClient>();
         service.AddScoped<IMinio, Data.Minio.Minio>();
-        service.AddScoped<IAudioMusicFileServices, AudioMusicFileServices>();
+        service.AddScoped<IFileServices, FileServices>();
         service.AddScoped<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
         service.AddScoped<IMicroControllerServices, MicroControllerServices>();
         service.AddScoped<IRepository<MicroController, DtoMicroController>, MicroControllerRepository>();
@@ -63,6 +64,7 @@ public static class ConfigFile
         service.AddScoped<IPlayListServices, PlayListServices>();
         service.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
         service.AddScoped<ILdapService, LdapService>();
+        service.AddScoped<ITimeCounterServices, TimeCounterServices>();
         service.AddScoped<IHttpMicroControllerServices, HttpMicroControllerServices>();
         service.AddScoped<HttpClient>();
         service.AddMemoryCache();

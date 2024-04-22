@@ -1,9 +1,7 @@
-﻿using Api.Data.Minio;
-using Api.Data.Repository.PlayList;
-using Api.Interface;
-using Api.Model.MinioModel;
+﻿using Api.Interface;
 using Api.Model.RequestModel.PlayList;
 using Api.Model.ResponseModel.PlayList;
+using Api.Services.IAudioFileServices;
 
 namespace Api.Services.PlayListServices;
 
@@ -11,17 +9,19 @@ public interface IPlayListServices
 {
     Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile);
     Task<List<DtoPlayList>?> GetLimit(string item, int limit);
-    Task<DtoPlayList?> GetId(string item, int id);
+    Task<DtoPlayList?> GetId(string item, int id, bool isActiveGetUrl);
+    Task<List<DtoPlayList>?> GetString(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, PlayList playList, int id);
-    Task<bool> Search(string item, string name);
+    Task<bool> Search(string item, string name, string field);
 }
 
-public class PlayListServices(IRepository<PlayList, DtoPlayList> playListRepository, IMinio minio) : IPlayListServices
+public class PlayListServices(IRepository<PlayList, DtoPlayList> playListRepository, IFileServices fileServices)
+    : IPlayListServices
 {
     public async Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile)
     {
-        if (await minio.Save(new MinioModel(formFile.FileName, "photo"), formFile, ""))
+        if (await fileServices.Save(formFile, formFile.Name, "photo", ""))
             return await playListRepository.CreateOrSave(item,
                 new PlayList(name, description, formFile.FileName));
 
@@ -38,7 +38,7 @@ public class PlayListServices(IRepository<PlayList, DtoPlayList> playListReposit
             {
                 DtoPlayList dtoPlayList = new DtoPlayList(data.Id, data.Name,
                     data.Description,
-                    await minio.GetUrl(new MinioModel(data.ImgPath, "photo")));
+                    await fileServices.GetUrl(data.ImgPath, "photo"));
                 getPlayLists.Add(dtoPlayList);
             }
         }
@@ -50,19 +50,32 @@ public class PlayListServices(IRepository<PlayList, DtoPlayList> playListReposit
         return getPlayLists;
     }
 
-    public async Task<DtoPlayList?> GetId(string item, int id)
+    public async Task<DtoPlayList?> GetId(string item, int id, bool isActiveGetUrl)
     {
         DtoPlayList? dtoPlayListRepo = await playListRepository.GetId(item, id);
-        if (dtoPlayListRepo != null)
+        if (isActiveGetUrl && dtoPlayListRepo != null)
+        {
             return new DtoPlayList(dtoPlayListRepo.Id, dtoPlayListRepo.Name, dtoPlayListRepo.Description,
-                await minio.GetUrl(new MinioModel(dtoPlayListRepo.ImgPath, "photo")));
+                await fileServices.GetUrl(dtoPlayListRepo.ImgPath, "photo"));
+        }
 
-        return null;
+        return dtoPlayListRepo;
+    }
+
+    public async Task<List<DtoPlayList>?> GetString(string item, string namePurpose, string field)
+    {
+        return await playListRepository.GetString(item, namePurpose, field);
     }
 
     public async Task<bool> DeleteId(string item, int id)
     {
-        return await playListRepository.DeleteId(item, id);
+        DtoPlayList? dtoPlayList = await GetId(item, id, false);
+        bool delete = await playListRepository.DeleteId(item, id);
+        if (dtoPlayList != null && delete &&
+            !await Search(item, dtoPlayList.ImgPath, "ImgPath"))
+            return await fileServices.Delete(dtoPlayList.ImgPath, "photo");
+
+        return delete;
     }
 
     public async Task<bool> UpdateId(string item, PlayList playList, int id)
@@ -70,8 +83,8 @@ public class PlayListServices(IRepository<PlayList, DtoPlayList> playListReposit
         return await playListRepository.UpdateId(item, playList, id);
     }
 
-    public async Task<bool> Search(string item, string name)
+    public async Task<bool> Search(string item, string name, string field)
     {
-        return await playListRepository.Search(item, name);
+        return await playListRepository.Search(item, name, field);
     }
 }

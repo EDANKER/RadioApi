@@ -7,8 +7,6 @@ using MySql.Data.MySqlClient;
 namespace Api.Data.Repository.Scenario;
 
 public class ScenarioRepository(
-    IJsonServices<int[]> jsonServicesIdMicroController,
-    IJsonServices<string[]> jsonServicesDays,
     ILogger<ScenarioRepository> logger,
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
@@ -26,20 +24,20 @@ public class ScenarioRepository(
                          "Time, Days, IdMusic) " +
                          "VALUES(@Name,@IdMicroController, " +
                          "@Time, @Days, @IdMusic)";
-
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-
-        mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
-        mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
-        mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = scenario.IdMicroController;
-        mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = scenario.Days;
-        mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
-
+        
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
+            mySqlCommand.Parameters.Add("@Time", MySqlDbType.LongText).Value = scenario.Time;
+            mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = scenario.IdMicroController;
+            mySqlCommand.Parameters.Add("@Days", MySqlDbType.LongText).Value = scenario.Days;
+            mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
+            
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
         }
@@ -198,14 +196,14 @@ public class ScenarioRepository(
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
-
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+            
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
         }
@@ -255,18 +253,17 @@ public class ScenarioRepository(
         return true;
     }
 
-    public async Task<bool> Search(string item, string fullName)
+    public async Task<bool> Search(string item, string name, string field)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
-                         $"WHERE Name = @Name)";
-
+                         $"WHERE {field} = @Name)";
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = fullName;
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
 
             object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);

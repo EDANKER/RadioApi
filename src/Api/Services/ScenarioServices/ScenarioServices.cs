@@ -12,7 +12,7 @@ public interface IScenarioServices
     Task<List<DtoScenario>?> GetLimit(string item, int limit);
     Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, Scenario scenario, int id);
-    Task<bool> Search(string item, string name);
+    Task<bool> Search(string item, string name, string field);
 }
 
 public class ScenarioServices(IRepository<Scenario, DtoScenario> scenarioRepository) : IScenarioServices
@@ -42,8 +42,8 @@ public class ScenarioServices(IRepository<Scenario, DtoScenario> scenarioReposit
         return await scenarioRepository.UpdateId(item, scenario, id);
     }
 
-    public async Task<bool> Search(string item, string name)
+    public async Task<bool> Search(string item, string name, string field)
     {
-        return await scenarioRepository.Search(item, name);
+        return await scenarioRepository.Search(item, name, field);
     }
 }

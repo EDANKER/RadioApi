@@ -1,24 +1,18 @@
-﻿using Api.Data.Repository.HebrideanCacheRepository;
-using Api.Model.ResponseModel.MicroController;
-using Api.Services.ScenarioServices;
+﻿using TagLib;
 
 namespace Api.Services.TimeCounterServices;
 
-public class TimeCounterServices(IScenarioServices scenarioServices, IHebrideanCacheServices<DtoMicroController> hebrideanCacheServices)
+public interface ITimeCounterServices
 {
-    public async Task StartAsync(CancellationToken cancellationToken)
-    {
-        // TimeSpan timeSpan = DateTime.Now.TimeOfDay;
-        // TimeSpan ignoreTime = new TimeSpan(timeSpan.Hours, timeSpan.Minutes, 0);
-        // foreach (var data in await scenarioServices.GetHour("Scenario", "3"))
-        // {
-        //     await hebrideanCacheServices.Put(data.Id.ToString(), data.Time);
-        //     Console.WriteLine(data.Id);
-        // }
-    }
+    Task<double> Time(IFormFile formFile);
+}
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+public class TimeCounterServices : ITimeCounterServices
+{
+    public Task<double> Time(IFormFile formFile)
     {
-        
+        TagLib.File bit = TagLib.File.Create(new StreamFileAbstraction(formFile.FileName, formFile.OpenReadStream(),
+            formFile.OpenReadStream()));
+        return Task.FromResult(bit.Properties.Duration.TotalSeconds);
     }
 }

@@ -12,7 +12,7 @@ public class MicroControllersController(IMicroControllerServices microController
     [HttpPost("CreateMicroController")]
     public async Task<IActionResult> CreateMicroController([FromBody]Model.RequestModel.MicroController.MicroController microController)
     {
-        if (await microControllerServices.Search("MicroControllers", microController.Name)) 
+        if (await microControllerServices.Search("MicroControllers", microController.Name, "Name")) 
             return BadRequest("Такой уже есть");
         
         return Ok(await microControllerServices.CreateOrSave("MicroControllers", microController));

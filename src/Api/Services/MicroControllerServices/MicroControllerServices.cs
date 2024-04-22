@@ -13,7 +13,7 @@ public interface IMicroControllerServices
     Task<DtoMicroController?> GetId(string item, int id);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, MicroController microController, int id);
-    Task<bool> Search(string item, string name);
+    Task<bool> Search(string item, string name, string field);
 }
 
 public class MicroControllerServices(
@@ -84,8 +84,8 @@ public class MicroControllerServices(
         return await controllerRepository.UpdateId(item, microController, id);
     }
 
-    public async Task<bool> Search(string item, string name)
+    public async Task<bool> Search(string item, string name, string field)
     {
-        return await controllerRepository.Search(item, name);
+        return await controllerRepository.Search(item, name, field);
     }
 }

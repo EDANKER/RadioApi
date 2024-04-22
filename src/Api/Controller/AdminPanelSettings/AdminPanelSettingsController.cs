@@ -12,7 +12,7 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
     [HttpPost("CreateUser")]
     public async Task<IActionResult> CreateUser([FromBody] User user)
     {
-        if (await userServices.Search("Users", user.FullName))
+        if (await userServices.Search("Users", user.FullName, "FullName"))
             return BadRequest("Такие данные уже есть");
 
         return Ok(await userServices.CreateOrSave("Users", user));

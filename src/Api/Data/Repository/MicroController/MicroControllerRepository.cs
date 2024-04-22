@@ -53,7 +53,7 @@ public class MicroControllerRepository(
         _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
                          " WHERE Floor = @Floor";
-
+        
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -141,6 +141,7 @@ public class MicroControllerRepository(
         _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
+        
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -214,6 +215,7 @@ public class MicroControllerRepository(
                          $"Cabinet = @Cabinet, " +
                          $"Floor = @Floor " +
                          $"WHERE Id = @Id";
+        
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -239,10 +241,10 @@ public class MicroControllerRepository(
         return true;
     }
 
-    public async Task<bool> Search(string item, string fullName)
+    public async Task<bool> Search(string item, string name, string field)
     {
         string command = $"SELECT EXISTS(SELECT * FROM  {item} " +
-                         "WHERE Name = @Name)";
+                         $"WHERE {field} = @Name)";
 
         try
         {
@@ -250,7 +252,7 @@ public class MicroControllerRepository(
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = fullName;
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
 
             bool convertBool = Convert.ToBoolean(await mySqlCommand.ExecuteScalarAsync());
             await mySqlConnection.CloseAsync();

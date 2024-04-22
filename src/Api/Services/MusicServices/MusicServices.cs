@@ -1,11 +1,11 @@
-﻿using Api.Data.Repository.Music;
-using Api.Interface;
+﻿using Api.Interface;
 using Api.Model.RequestModel.Music;
 using Api.Model.ResponseModel.MicroController;
 using Api.Model.ResponseModel.Music;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.StreamToByteArrayServices;
+using Api.Services.TimeCounterServices;
 
 namespace Api.Services.MusicServices;
 
@@ -15,37 +15,37 @@ public interface IMusicServices
     Task<bool> Play(int idMusic, int[] idController);
     Task<bool> PlayLife(IFormFile formFile, int[] idController);
     Task<bool> Stop();
-    Task<bool> CreateOrSave(string item, IFormFile formFile, string name);
+    Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList);
     Task<List<DtoMusic>?> GetLimit(string item, int limit);
     Task<DtoMusic?> GetId(string item, int id);
     Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id, string path);
     Task<bool> UpdateId(string item, Music music, int id);
-    Task<bool> Search(string item, string name);
+    Task<bool> Search(string item, string name, string field);
 }
 
 public class MusicServices(
     IRepository<Music, DtoMusic> musicRepository,
-    IAudioFileServices.IAudioMusicFileServices audioMusicFileServices,
+    IAudioFileServices.IFileServices fileServices,
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
     IMicroControllerServices microControllerServices,
-    IStreamToByteArrayServices streamToByteArrayServices) : IMusicServices
+    IStreamToByteArrayServices streamToByteArrayServices,
+    ITimeCounterServices timeCounterServices) : IMusicServices
 {
-    
     public async Task<byte[]?> GetMusicInMinio(int id)
     {
         DtoMusic? dtoMusic = await musicRepository.GetId("Musics", id);
         if (dtoMusic != null)
         {
             string name = dtoMusic.Name;
-            Stream read = await audioMusicFileServices.GetStreamMusic(name);
+            Stream read = await fileServices.GetStream(name, "music");
             if (read != null)
                 return await streamToByteArrayServices.StreamToByte(read);
         }
 
         return null;
     }
-    
+
     public async Task<bool> Play(int idMusic, int[] idController)
     {
         foreach (var data in idController)
@@ -81,11 +81,11 @@ public class MusicServices(
         return await musicPlayerToMicroControllerServices.Stop();
     }
 
-    public async Task<bool> CreateOrSave(string item, IFormFile formFile, string name)
+    public async Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList)
     {
-        Music? music = await audioMusicFileServices.SaveMusic(formFile, name);
-        if (music != null)
-            return await musicRepository.CreateOrSave(item, music);
+        if (await fileServices.Save(formFile, namePlayList, "music", "audio/mpeg"))
+            return await musicRepository.CreateOrSave(item,
+                new Music(formFile.FileName, namePlayList, await timeCounterServices.Time(formFile)));
 
         return false;
     }
@@ -107,7 +107,7 @@ public class MusicServices(
 
     public async Task<bool> DeleteId(string item, int id, string path)
     {
-        if (await audioMusicFileServices.DeleteMusic(path))
+        if (await fileServices.Delete(path, "music"))
             return await musicRepository.DeleteId(item, id);
 
         return false;
@@ -115,14 +115,16 @@ public class MusicServices(
 
     public async Task<bool> UpdateId(string item, Music music, int id)
     {
-        if (!await audioMusicFileServices.UpdateName(music.Name))
-            return false;
+        var dtoMusic = await musicRepository.GetId(item, id);
+        if (dtoMusic != null && await fileServices.UpdateName(dtoMusic.Name, music.Name,
+                "music", "audio/mpeg"))
+            return await musicRepository.UpdateId(item, music, id);
 
-        return await musicRepository.UpdateId(item, music, id);
+        return false;
     }
 
-    public async Task<bool> Search(string item, string name)
+    public async Task<bool> Search(string item, string name, string field)
     {
-        return await musicRepository.Search(item, name);
+        return await musicRepository.Search(item, name, field);
     }
 }

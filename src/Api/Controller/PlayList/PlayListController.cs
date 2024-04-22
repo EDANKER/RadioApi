@@ -18,7 +18,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
             return BadRequest("Данные пусты");
         if (description == null)
             return BadRequest("Данные пусты");
-        if (await playListServices.Search("PlayLists", name))
+        if (await playListServices.Search("PlayLists", name, "Name"))
             return BadRequest("Такие данные уже есть");
         if (formFile.ContentType != "image/jpeg")
             return BadRequest("Это не фото");
@@ -51,7 +51,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        DtoPlayList? dtoPlayList = await playListServices.GetId("PlayLists", id);
+        DtoPlayList? dtoPlayList = await playListServices.GetId("PlayLists", id, true);
         if (dtoPlayList != null)
             return Ok(dtoPlayList);
 

@@ -24,10 +24,9 @@ public class MusicRepository(
                          $"(name, namePlayList, timeMusic) " +
                          $"VALUES(@Name, @NamePlayList, @TimeMusic)";
 
-        mySqlConnection = new MySqlConnection(_connect);
-
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
@@ -100,8 +99,10 @@ public class MusicRepository(
         {
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
+            
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.AddWithValue("@NamePurpose", namePurpose);
+            
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)
             {
@@ -184,10 +185,9 @@ public class MusicRepository(
         string command = $"DELETE FROM {item} " +
                          $"WHERE Id = @Id";
 
-        mySqlConnection = new MySqlConnection(_connect);
-
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
@@ -212,10 +212,9 @@ public class MusicRepository(
                          $"TimeMusic = @TimeMusic " +
                          $"WHERE id = @Id";
 
-        mySqlConnection = new MySqlConnection(_connect);
-
         try
         {
+            mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
@@ -236,17 +235,17 @@ public class MusicRepository(
         return true;
     }
 
-    public async Task<bool> Search(string item, string fullName)
+    public async Task<bool> Search(string item, string name, string field)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
-                         $"WHERE Name = @Name)";
+                         $"WHERE {field} = @Name)";
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = fullName;
+            mySqlCommand.Parameters.Add("Name", MySqlDbType.LongText).Value = name;
 
             bool convertBool = Convert.ToBoolean(await mySqlCommand.ExecuteScalarAsync());
             await mySqlConnection.CloseAsync();
