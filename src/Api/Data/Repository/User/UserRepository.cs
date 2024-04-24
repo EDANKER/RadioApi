@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 using Api.Interface;
-using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.User;
 using MySql.Data.MySqlClient;
 
@@ -8,9 +7,9 @@ namespace Api.Data.Repository.User;
 
 public class UserRepository(
     IConfiguration configuration,
-    ILogger<IRepository<Model.RequestModel.User.User, DtoMusic>> logger,
+    ILogger<UserRepository> logger,
     MySqlConnection mySqlConnection,
-    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.User.User, DtoUser>
+    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.User.User, DtoUser, Model.RequestModel.User.User>
 {
     private DbDataReader? _dataReader;
     private List<DtoUser>? _dtoUsers;
@@ -239,7 +238,7 @@ public class UserRepository(
 
         return true;
     }
-    
+
     public async Task<bool> Search(string item, string name, string field)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +

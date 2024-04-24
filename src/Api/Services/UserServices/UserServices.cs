@@ -17,7 +17,7 @@ public interface IUserServices
     Task<bool> Search(string item, string name, string field);
 }
 
-public class UserServices(IRepository<User, DtoUser> userRepository) : IUserServices
+public class UserServices(IRepository<User, DtoUser, User> userRepository) : IUserServices
 {
     public async Task<bool> CreateOrSave(string item, User user)
     {

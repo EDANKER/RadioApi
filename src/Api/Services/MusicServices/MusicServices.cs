@@ -1,5 +1,6 @@
 ﻿using Api.Interface;
 using Api.Model.RequestModel.Music;
+using Api.Model.RequestModel.Update.UpdateMusic;
 using Api.Model.ResponseModel.MicroController;
 using Api.Model.ResponseModel.Music;
 using Api.Services.MicroControllerServices;
@@ -20,13 +21,13 @@ public interface IMusicServices
     Task<DtoMusic?> GetId(string item, int id);
     Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id, string path);
-    Task<bool> UpdateId(string item, Music music, int id);
+    Task<bool> UpdateId(string item, UpdateMusic updateMusic, int id);
     Task<bool> Search(string item, string name, string field);
 }
 
 public class MusicServices(
-    IRepository<Music, DtoMusic> musicRepository,
-    IAudioFileServices.IFileServices fileServices,
+    IRepository<CreateMusic, DtoMusic, UpdateMusic> musicRepository,
+    IFileServices.IFileServices fileServices,
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
     IMicroControllerServices microControllerServices,
     IStreamToByteArrayServices streamToByteArrayServices,
@@ -38,7 +39,7 @@ public class MusicServices(
         if (dtoMusic != null)
         {
             string name = dtoMusic.Name;
-            Stream read = await fileServices.GetStream(name, "music");
+            Stream? read = await fileServices.GetStream(name, "music");
             if (read != null)
                 return await streamToByteArrayServices.StreamToByte(read);
         }
@@ -83,9 +84,16 @@ public class MusicServices(
 
     public async Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList)
     {
-        if (await fileServices.Save(formFile, namePlayList, "music", "audio/mpeg"))
-            return await musicRepository.CreateOrSave(item,
-                new Music(formFile.FileName, namePlayList, await timeCounterServices.Time(formFile)));
+        if (await musicRepository.CreateOrSave(item,
+                new CreateMusic(formFile.FileName, namePlayList, await timeCounterServices.Time(formFile))))
+        {
+            List<DtoMusic>? dtoMusics = await musicRepository.GetString(item, formFile.FileName, "Name");
+            if (dtoMusics != null)
+            {
+                foreach (var data in dtoMusics)
+                    return await fileServices.Save(formFile, data.Id + ".mp3", "music", "audio/mpeg");
+            }
+        }
 
         return false;
     }
@@ -107,20 +115,15 @@ public class MusicServices(
 
     public async Task<bool> DeleteId(string item, int id, string path)
     {
-        if (await fileServices.Delete(path, "music"))
+        if (await fileServices.Delete(id.ToString(), "music"))
             return await musicRepository.DeleteId(item, id);
 
         return false;
     }
 
-    public async Task<bool> UpdateId(string item, Music music, int id)
+    public async Task<bool> UpdateId(string item, UpdateMusic updateMusic, int id)
     {
-        var dtoMusic = await musicRepository.GetId(item, id);
-        if (dtoMusic != null && await fileServices.UpdateName(dtoMusic.Name, music.Name,
-                "music", "audio/mpeg"))
-            return await musicRepository.UpdateId(item, music, id);
-
-        return false;
+        return await musicRepository.UpdateId(item, updateMusic, id);
     }
 
     public async Task<bool> Search(string item, string name, string field)

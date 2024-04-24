@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Api.Interface;
+using Api.Model.RequestModel.Update.UpdateMusic;
 using Api.Model.ResponseModel.Music;
 using MySql.Data.MySqlClient;
 
@@ -10,7 +11,7 @@ public class MusicRepository(
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand)
-    : IRepository<Model.RequestModel.Music.Music, DtoMusic>
+    : IRepository<Model.RequestModel.Music.CreateMusic, DtoMusic, UpdateMusic>
 {
     private DbDataReader? _dataReader;
     private List<DtoMusic>? _dtoMusics;
@@ -18,7 +19,7 @@ public class MusicRepository(
 
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
-    public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.Music music)
+    public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.CreateMusic createMusic)
     {
         string command = $"INSERT INTO {item} " +
                          $"(name, namePlayList, timeMusic) " +
@@ -31,9 +32,9 @@ public class MusicRepository(
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
-            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = music.Name;
-            mySqlCommand.Parameters.Add("@NamePlayList", MySqlDbType.VarChar).Value = music.NamePlayList;
-            mySqlCommand.Parameters.Add("@TimeMusic", MySqlDbType.VarChar).Value = music.TimeMusic.ToString();
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = createMusic.Name;
+            mySqlCommand.Parameters.Add("@NamePlayList", MySqlDbType.VarChar).Value = createMusic.NamePlayList;
+            mySqlCommand.Parameters.Add("@TimeMusic", MySqlDbType.VarChar).Value = createMusic.TimeMusic.ToString();
 
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
@@ -204,12 +205,11 @@ public class MusicRepository(
         }
     }
 
-    public async Task<bool> UpdateId(string item, Model.RequestModel.Music.Music model, int id)
+    public async Task<bool> UpdateId(string item, UpdateMusic model, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET Name = @Name, " +
-                         $"NamePlayList = @NamePlayList, " +
-                         $"TimeMusic = @TimeMusic " +
+                         $"NamePlayList = @NamePlayList "+
                          $"WHERE id = @Id";
 
         try
@@ -220,7 +220,6 @@ public class MusicRepository(
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = model.Name;
             mySqlCommand.Parameters.Add("@NamePlayList", MySqlDbType.LongText).Value = model.NamePlayList;
-            mySqlCommand.Parameters.Add("@TimeMusic", MySqlDbType.LongText).Value = model.TimeMusic;
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             await mySqlCommand.ExecuteNonQueryAsync();
@@ -234,6 +233,8 @@ public class MusicRepository(
 
         return true;
     }
+
+  
 
     public async Task<bool> Search(string item, string name, string field)
     {

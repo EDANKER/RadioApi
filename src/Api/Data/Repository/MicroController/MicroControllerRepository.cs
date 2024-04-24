@@ -10,7 +10,7 @@ public class MicroControllerRepository(
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand,
     IConfiguration configuration
-) : IRepository<Model.RequestModel.MicroController.MicroController, DtoMicroController>
+) : IRepository<Model.RequestModel.MicroController.MicroController, DtoMicroController, Model.RequestModel.MicroController.MicroController>
 {
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
     private DbDataReader? _dataReader;

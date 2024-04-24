@@ -10,7 +10,7 @@ public class ScenarioRepository(
     ILogger<ScenarioRepository> logger,
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
-    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.Scenario.Scenario, DtoScenario>
+    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.Scenario.Scenario, DtoScenario, Model.RequestModel.Scenario.Scenario>
 {
     private DbDataReader? _dataReader;
     private List<DtoScenario>? _dtoScenarios;

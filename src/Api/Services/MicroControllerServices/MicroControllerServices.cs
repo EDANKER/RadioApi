@@ -1,7 +1,7 @@
-using Api.Data.Repository.HebrideanCacheRepository;
 using Api.Interface;
 using Api.Model.RequestModel.MicroController;
 using Api.Model.ResponseModel.MicroController;
+using Api.Services.HebrideanCacheServices;
 using Api.Services.JsonServices;
 
 namespace Api.Services.MicroControllerServices;
@@ -18,8 +18,8 @@ public interface IMicroControllerServices
 
 public class MicroControllerServices(
     IJsonServices<DtoMicroController?> jsonServices,
-    IRepository<MicroController, DtoMicroController> controllerRepository,
-    IHebrideanCacheServices<DtoMicroController> hebrideanCacheServices)
+    IRepository<MicroController, DtoMicroController, MicroController> controllerRepository,
+    IHebrideanCacheServices hebrideanCacheServices)
     : IMicroControllerServices
 {
     public async Task<bool> CreateOrSave(string item, MicroController microController)
@@ -61,11 +61,10 @@ public class MicroControllerServices(
 
     public async Task<DtoMicroController?> GetId(string item, int id)
     {
-        DtoMicroController? dtoMicroController =
-            jsonServices.DesJson(await hebrideanCacheServices.GetId(id.ToString()));
+        string? dtoMicroController = await hebrideanCacheServices.GetId(id.ToString());
 
         if (dtoMicroController != default)
-            return dtoMicroController;
+            return jsonServices.DesJson(dtoMicroController);
 
         return await controllerRepository.GetId(item, id);
     }

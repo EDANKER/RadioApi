@@ -9,12 +9,12 @@ namespace Api.Controller.Authorization.LoginUserController;
 public class LoginUserController(ILdapService ldapService, IGeneratorTokenServices generatorTokenServices)
     : ControllerBase
 {
-    [HttpPost("[action]")]
+    [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] Api.Model.RequestModel.Authorization.Authorization authorization)
     {
         if (!await ldapService.Validation(authorization))
-            return BadRequest();
+            return BadRequest("не верные данные");
         
-        return Ok(generatorTokenServices.Generator(authorization.Login));
+        return Ok(await generatorTokenServices.Generator(authorization.Login));
     }
 }

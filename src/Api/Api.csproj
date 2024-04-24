@@ -38,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\HebrideanCacheServices\" />
+      <Folder Include="Model\RequestModel\Create\" />
     </ItemGroup>
 
 </Project>

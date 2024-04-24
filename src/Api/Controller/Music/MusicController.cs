@@ -1,4 +1,5 @@
-﻿using Api.Model.ResponseModel.Music;
+﻿using Api.Model.RequestModel.Update.UpdateMusic;
+using Api.Model.ResponseModel.Music;
 using Api.Services.MusicServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,8 +44,6 @@ public class MusicController(IMusicServices musicServices)
             return BadRequest("Такие данные уже есть или данные пусты");
         if (formFile.ContentType != "audio/mpeg")
             return BadRequest("Только audio/mpeg");
-        if (namePlayList == "All")
-            return Ok(await musicServices.CreateOrSave("Musics", formFile, "All"));
 
         return Ok(await musicServices.CreateOrSave("Musics", formFile, namePlayList));
     }
@@ -85,14 +84,16 @@ public class MusicController(IMusicServices musicServices)
     }
 
     [HttpPut("UpdateMusic/{id:int}")]
-    public async Task<IActionResult> UpdateMusic([FromBody] Model.RequestModel.Music.Music music, int id)
+    public async Task<IActionResult> UpdateMusic([FromBody] UpdateMusic updateMusic, int id)
     {
-        if (music != null && await musicServices.Search("Musics", music.Name, "Name"))
-            return BadRequest("Данные пусты или такое имя уже занято");
+        if (updateMusic == null)
+            return BadRequest("Данные пусты");
+        if (await musicServices.Search("Musics", updateMusic.Name, "Name"))
+            return BadRequest("Такое имя уже занято");
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await musicServices.UpdateId("Musics", music, id));
+        return Ok(await musicServices.UpdateId("Musics", updateMusic, id));
     }
 
     [HttpGet("GetMusicPlayListTag")]

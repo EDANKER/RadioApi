@@ -9,12 +9,12 @@ namespace Api.Services.GeneratorTokenServices;
 
 public interface IGeneratorTokenServices
 {
-    string Generator(string login);
+    Task<string> Generator(string login);
 }
 
 public class GeneratorTokenServices : IGeneratorTokenServices
 {
-    public string Generator(string login)
+    public Task<string> Generator(string login)
     {
         JwtTokenConfig jwtTokenConfig = new JwtTokenConfig();
         DateTime dateTime = DateTime.Now;
@@ -36,7 +36,7 @@ public class GeneratorTokenServices : IGeneratorTokenServices
             token = jwtSecurityTokenHandler,
         };
 
-        return JsonConvert.SerializeObject(response);
+        return Task.FromResult(JsonConvert.SerializeObject(response));
     }
 
     private static List<Claim> Claims(string login)

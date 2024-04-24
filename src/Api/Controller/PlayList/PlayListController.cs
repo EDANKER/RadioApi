@@ -1,4 +1,5 @@
-﻿using Api.Model.ResponseModel.PlayList;
+﻿using Api.Model.RequestModel.Update.UpdatePlayList;
+using Api.Model.ResponseModel.PlayList;
 using Api.Services.PlayListServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,23 +19,23 @@ public class PlayListController(IPlayListServices playListServices) : Controller
             return BadRequest("Данные пусты");
         if (description == null)
             return BadRequest("Данные пусты");
-        if (await playListServices.Search("PlayLists", name, "Name"))
-            return BadRequest("Такие данные уже есть");
         if (formFile.ContentType != "image/jpeg")
             return BadRequest("Это не фото");
+        if (await playListServices.Search("PlayLists", name, "Name"))
+            return BadRequest("Такие данные уже есть");
         
         return Ok(await playListServices.CreateOrSave("PlayLists", name, description, formFile));
     }
 
     [HttpPut("UpdatePlayList/{id:int}")]
-    public async Task<IActionResult> UpdatePlayList([FromBody] Model.RequestModel.PlayList.PlayList playList , int id)
+    public async Task<IActionResult> UpdatePlayList([FromBody] UpdatePlayList updatePlayList , int id)
     {
-        if (playList == null)
+        if (updatePlayList == null)
             return BadRequest("Данные пусты");
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await playListServices.UpdateId("PlayLists", playList, id));
+        return Ok(await playListServices.UpdateId("PlayLists", updatePlayList , id));
     }
 
     [HttpDelete("DeletePlayList/{id:int}")]

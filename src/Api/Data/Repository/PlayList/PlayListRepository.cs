@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Api.Interface;
+using Api.Model.RequestModel.Update.UpdatePlayList;
 using Api.Model.ResponseModel.PlayList;
 using MySql.Data.MySqlClient;
 
@@ -9,14 +10,14 @@ public class PlayListRepository(
     ILogger<PlayListRepository> logger,
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
-    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.PlayList.PlayList, DtoPlayList>
+    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.PlayList.CreatePlayList, DtoPlayList, UpdatePlayList>
 {
     private DbDataReader? _dataReader;
     private List<DtoPlayList>? _dtoPlayLists;
     private DtoPlayList? _dtoPlayList;
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
-    public async Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.PlayList playList)
+    public async Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.CreatePlayList createPlayList)
     {
         string command = $"INSERT INTO {item} " +
                          "(name, description ,imgPath)" +
@@ -29,9 +30,9 @@ public class PlayListRepository(
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
 
-            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = playList.Name;
-            mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = playList.Description;
-            mySqlCommand.Parameters.Add("@ImgPath", MySqlDbType.LongText).Value = playList.ImgPath;
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = createPlayList.Name;
+            mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = createPlayList.Description;
+            mySqlCommand.Parameters.Add("@ImgPath", MySqlDbType.LongText).Value = createPlayList.ImgPath;
 
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
@@ -200,12 +201,11 @@ public class PlayListRepository(
         return true;
     }
 
-    public async Task<bool> UpdateId(string item, Model.RequestModel.PlayList.PlayList model, int id)
+    public async Task<bool> UpdateId(string item, UpdatePlayList model, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET Name = @Name," +
-                         $"Description = @Description, " +
-                         $"ImgPath = @ImgPath " +
+                         $"Description = @Description " +
                          $"WHERE Id = @Id";
 
         try
@@ -216,7 +216,6 @@ public class PlayListRepository(
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = model.Name;
             mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = model.Description;
-            mySqlCommand.Parameters.Add("@ImgPath", MySqlDbType.LongText).Value = model.ImgPath;
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             await mySqlCommand.ExecuteNonQueryAsync();

@@ -15,7 +15,7 @@ public interface IScenarioServices
     Task<bool> Search(string item, string name, string field);
 }
 
-public class ScenarioServices(IRepository<Scenario, DtoScenario> scenarioRepository) : IScenarioServices
+public class ScenarioServices(IRepository<Scenario, DtoScenario, Scenario> scenarioRepository) : IScenarioServices
 {
     public async Task<bool> CreateOrSave(string item, Scenario scenario)
     {

@@ -1,7 +1,8 @@
 ﻿using Api.Interface;
 using Api.Model.RequestModel.PlayList;
+using Api.Model.RequestModel.Update.UpdatePlayList;
 using Api.Model.ResponseModel.PlayList;
-using Api.Services.IAudioFileServices;
+using TagLib.Riff;
 
 namespace Api.Services.PlayListServices;
 
@@ -12,18 +13,28 @@ public interface IPlayListServices
     Task<DtoPlayList?> GetId(string item, int id, bool isActiveGetUrl);
     Task<List<DtoPlayList>?> GetString(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id);
-    Task<bool> UpdateId(string item, PlayList playList, int id);
+    Task<bool> UpdateId(string item, UpdatePlayList updatePlayList, int id);
     Task<bool> Search(string item, string name, string field);
 }
 
-public class PlayListServices(IRepository<PlayList, DtoPlayList> playListRepository, IFileServices fileServices)
+public class PlayListServices(
+    IRepository<CreatePlayList, DtoPlayList, UpdatePlayList> playListRepository,
+    IFileServices.IFileServices fileServices)
     : IPlayListServices
 {
     public async Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile)
     {
-        if (await fileServices.Save(formFile, formFile.Name, "photo", ""))
-            return await playListRepository.CreateOrSave(item,
-                new PlayList(name, description, formFile.FileName));
+        if (await fileServices.Save(formFile, formFile.Name, "photo", "image/jpeg") &&
+            await playListRepository.CreateOrSave(item,
+                new CreatePlayList(name, description, formFile.FileName)))
+        {
+            List<DtoPlayList>? playLists = await playListRepository.GetString(item, name, "Name");
+            if (playLists != null)
+            {
+                foreach (var data in playLists)
+                    return await fileServices.CreateBucket(data.Id.ToString());
+            }
+        }
 
         return false;
     }
@@ -78,9 +89,9 @@ public class PlayListServices(IRepository<PlayList, DtoPlayList> playListReposit
         return delete;
     }
 
-    public async Task<bool> UpdateId(string item, PlayList playList, int id)
+    public async Task<bool> UpdateId(string item, UpdatePlayList updatePlayList, int id)
     {
-        return await playListRepository.UpdateId(item, playList, id);
+        return await playListRepository.UpdateId(item, updatePlayList, id);
     }
 
     public async Task<bool> Search(string item, string name, string field)
