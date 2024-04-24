@@ -34,7 +34,7 @@ public class MemoryCacheRepository(IMemoryCache memoryCache) : ICacheRepository
     {
         try
         {
-            Task.FromResult<>(memoryCache.Remove(key));
+            memoryCache.Remove(key);
         }
         catch (Exception e)
         {
@@ -43,11 +43,11 @@ public class MemoryCacheRepository(IMemoryCache memoryCache) : ICacheRepository
         }
     }
 
-    public Task DeleteId(string key)
+    public async Task DeleteId(string key)
     {
         try
         {
-            return Task.FromResult<>(memoryCache.Remove(key));
+            memoryCache.Remove(key);
         }
         catch (Exception e)
         {
