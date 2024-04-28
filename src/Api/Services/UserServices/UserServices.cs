@@ -1,6 +1,5 @@
 ﻿using Api.Data.Repository.User;
 using Api.Interface;
-using Api.Model.RequestModel.Music;
 using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.User;

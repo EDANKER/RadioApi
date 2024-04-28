@@ -1,4 +1,5 @@
-﻿using Api.Model.RequestModel.Update.UpdatePlayList;
+﻿using System.ComponentModel.DataAnnotations;
+using Api.Model.RequestModel.Update.UpdatePlayList;
 using Api.Model.ResponseModel.PlayList;
 using Api.Services.PlayListServices;
 using Microsoft.AspNetCore.Mvc;
@@ -7,48 +8,43 @@ namespace Api.Controller.PlayList;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-
 public class PlayListController(IPlayListServices playListServices) : ControllerBase
 {
     [HttpPost("CreatePlayList")]
-    public async Task<IActionResult> CreatePlayList([FromHeader] string name,  [FromHeader] string description, IFormFile formFile)
+    [Consumes("application/json")]
+    public async Task<IActionResult> CreatePlayList([Required] [FromQuery] string name,
+        [Required] [FromQuery] string description, [Required] [FromForm] IFormFile formFile)
     {
-        if (formFile == null)
-            return BadRequest("Данные пусты");
-        if (name == null)
-            return BadRequest("Данные пусты");
-        if (description == null)
-            return BadRequest("Данные пусты");
         if (formFile.ContentType != "image/jpeg")
             return BadRequest("Это не фото");
         if (await playListServices.Search("PlayLists", name, "Name"))
             return BadRequest("Такие данные уже есть");
-        
+
         return Ok(await playListServices.CreateOrSave("PlayLists", name, description, formFile));
     }
 
-    [HttpPut("UpdatePlayList/{id:int}")]
-    public async Task<IActionResult> UpdatePlayList([FromBody] UpdatePlayList updatePlayList , int id)
+    [HttpPut("UpdatePlayList")]
+    public async Task<IActionResult> UpdatePlayList([FromBody] UpdatePlayList updatePlayList, [Required] [FromQuery] int id)
     {
-        if (updatePlayList == null)
-            return BadRequest("Данные пусты");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        
-        return Ok(await playListServices.UpdateId("PlayLists", updatePlayList , id));
+
+        return Ok(await playListServices.UpdateId("PlayLists", updatePlayList, id));
     }
 
-    [HttpDelete("DeletePlayList/{id:int}")]
-    public async Task<IActionResult> DeletePlayList(int id)
+    [HttpDelete("DeletePlayList")]
+    public async Task<IActionResult> DeletePlayList([Required] [FromQuery] int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        
+
         return Ok(await playListServices.DeleteId("PlayLists", id));
     }
 
-    [HttpGet("GetPlayListId/{id:int}")]
-    public async Task<IActionResult> GetPlayListId(int id)
+    [HttpGet("GetPlayListId")]
+    public async Task<IActionResult> GetPlayListId([Required] [FromQuery] int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
@@ -59,8 +55,8 @@ public class PlayListController(IPlayListServices playListServices) : Controller
         return BadRequest("Таких данных нет");
     }
 
-    [HttpGet("GetPlayListLimit/{limit:int}")]
-    public async Task<IActionResult> GetPlayListLimit(int limit)
+    [HttpGet("GetPlayListLimit")]
+    public async Task<IActionResult> GetPlayListLimit([Required] [FromQuery] int limit)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");

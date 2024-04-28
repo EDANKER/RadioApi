@@ -6,80 +6,47 @@ public class MemoryCacheRepository(IMemoryCache memoryCache) : ICacheRepository
 {
     public Task<string?> GetId(string key)
     {
-        try
-        {
-            return Task.FromResult(memoryCache.Get<string>(key));
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        string? get = memoryCache.Get<string>(key);
+
+        if (get != null)
+            return Task.FromResult(get);
+
+        return Task.FromResult(get);
     }
 
     public Task<string?> GetLimit(string key)
     {
-        try
-        {
-            return Task.FromResult(memoryCache.Get<string>(key));
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        string? get = memoryCache.Get<string>(key);
+
+        if (get != null)
+            return Task.FromResult(get);
+
+        return Task.FromResult(get);
     }
 
-    public async Task Refresh(string key)
+    public Task? Refresh(string key)
     {
-        try
-        {
-            memoryCache.Remove(key);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        memoryCache.Remove(key);
+        return null;
     }
 
     public async Task DeleteId(string key)
     {
-        try
-        {
-            memoryCache.Remove(key);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        memoryCache.Remove(key);
     }
 
     public async Task Put(string key, string item)
     {
-        try
-        {
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        memoryCache.Set(key, item);
     }
 
-    public async Task<bool> Search(string key)
+    public Task<bool> Search(string key)
     {
-        try
-        {
+        string? get = memoryCache.Get<string>(key);
 
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        if (get != null)
+            return Task.FromResult(true);
 
-        return true;
+        return Task.FromResult(false);
     }
 }

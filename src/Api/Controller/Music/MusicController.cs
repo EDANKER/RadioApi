@@ -1,4 +1,5 @@
-﻿using Api.Model.RequestModel.Update.UpdateMusic;
+﻿using System.ComponentModel.DataAnnotations;
+using Api.Model.RequestModel.Update.UpdateMusic;
 using Api.Model.ResponseModel.Music;
 using Api.Services.MusicServices;
 using Microsoft.AspNetCore.Mvc;
@@ -10,36 +11,23 @@ namespace Api.Controller.Music;
 public class MusicController(IMusicServices musicServices)
     : ControllerBase
 {
-    [HttpGet("GetMusicInMinio/{id:int}")]
-    public async Task<IActionResult> GetMusicInMinio(int id)
+    [HttpPost("PlayMusic")]
+    public async Task<IActionResult> PlayMusic([Required] [FromQuery] int idMusic, [Required] [FromBody] int[] idControllers)
     {
-        byte[]? buffer = await musicServices.GetMusicInMinio(id);
-        if (buffer == null)
-            return BadRequest("Таких данных нет");
-        
-        return Ok(buffer);
-    }
-    
-    [HttpPost("PlayMusic/{idMusic:int}")]
-    public async Task<IActionResult> PlayMusic(int idMusic, [FromBody] int[] idControllers)
-    {
-        if (idMusic == null)
-            return BadRequest("Путь не должен быть пустой");
-        
         return Ok(await musicServices.Play(idMusic, idControllers));
     }
 
     [HttpPost("StopMusic")]
-    public async Task<IActionResult> StopMusic()
+    public async Task<IActionResult> StopMusic([Required] [FromBody] int[] idController)
     {
-        return Ok(await musicServices.Stop());
+        return Ok(await musicServices.Stop(idController));
     }
 
     [HttpPost("SaveMusic")]
-    public async Task<IActionResult> SaveMusic(IFormFile formFile, [FromHeader]string namePlayList)
+    public async Task<IActionResult> SaveMusic([Required] [FromForm] IFormFile formFile, [Required] [FromQuery] string namePlayList)
     {
-        if (formFile == null)
-            return BadRequest("Такие данные уже есть или данные пусты");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
         if (await musicServices.Search("Musics", formFile.FileName, "Name"))
             return BadRequest("Такие данные уже есть или данные пусты");
         if (formFile.ContentType != "audio/mpeg")
@@ -48,8 +36,8 @@ public class MusicController(IMusicServices musicServices)
         return Ok(await musicServices.CreateOrSave("Musics", formFile, namePlayList));
     }
 
-    [HttpGet("GetMusicLimit/{limit:int}")]
-    public async Task<IActionResult> GetMusicLimit(int limit)
+    [HttpGet("GetMusicLimit")]
+    public async Task<IActionResult> GetMusicLimit([Required] [FromQuery] int limit)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
@@ -60,8 +48,8 @@ public class MusicController(IMusicServices musicServices)
         return BadRequest("Таких данных нет");
     }
 
-    [HttpGet("GetMusicId/{id:int}")]
-    public async Task<IActionResult> GetMusicId(int id)
+    [HttpGet("GetMusicId")]
+    public async Task<IActionResult> GetMusicId([Required] [FromQuery] int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
@@ -72,22 +60,20 @@ public class MusicController(IMusicServices musicServices)
         return BadRequest("Таких данных нет");
     }
 
-    [HttpDelete("DeleteMusicId/{id:int}")]
-    public async Task<IActionResult> DeleteMusicId(int id, [FromBody] string path)
+    [HttpDelete("DeleteMusicId")]
+    public async Task<IActionResult> DeleteMusicId([Required] [FromQuery] int id, [Required] [FromBody] string path)
     {
-        if (path == null)
-            return BadRequest("Путь не должен быть пустой");
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await musicServices.DeleteId("Musics", id, path));
     }
 
-    [HttpPut("UpdateMusic/{id:int}")]
-    public async Task<IActionResult> UpdateMusic([FromBody] UpdateMusic updateMusic, int id)
+    [HttpPut("UpdateMusic")]
+    public async Task<IActionResult> UpdateMusic([FromBody] UpdateMusic updateMusic, [Required] [FromQuery] int id)
     {
-        if (updateMusic == null)
-            return BadRequest("Данные пусты");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
         if (await musicServices.Search("Musics", updateMusic.Name, "Name"))
             return BadRequest("Такое имя уже занято");
         if (id < 0)
@@ -97,11 +83,8 @@ public class MusicController(IMusicServices musicServices)
     }
 
     [HttpGet("GetMusicPlayListTag")]
-    public async Task<IActionResult> GetMusicPlayListTag(string name)
+    public async Task<IActionResult> GetMusicPlayListTag([Required] [FromQuery] string name)
     {
-        if (name == null)
-            return BadRequest("Название не должно быть пустым");
-        
         List<DtoMusic>? dtoMusic = await musicServices.GetUni("Musics", name, "NamePlayList");
         if (dtoMusic != null)
             return Ok(dtoMusic);

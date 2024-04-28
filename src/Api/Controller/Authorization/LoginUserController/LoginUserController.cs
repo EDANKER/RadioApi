@@ -10,8 +10,11 @@ public class LoginUserController(ILdapService ldapService, IGeneratorTokenServic
     : ControllerBase
 {
     [HttpPost("Login")]
+    [Consumes("application/json")]
     public async Task<IActionResult> Login([FromBody] Api.Model.RequestModel.Authorization.Authorization authorization)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
         if (!await ldapService.Validation(authorization))
             return BadRequest("не верные данные");
         

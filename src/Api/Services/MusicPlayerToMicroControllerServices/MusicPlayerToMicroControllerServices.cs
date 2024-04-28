@@ -4,9 +4,9 @@ namespace Api.Services.MusicPlayerToMicroControllerServices;
 
 public interface IMusicPlayerToMicroControllerServices
 {
-    Task<bool> SoundVol(int vol);
-    Task<bool> Play(DtoMicroController dtoMicroController, int idMusic);
-    Task<bool> PlayLife(DtoMicroController dtoMicroController, IFormFile formFile);
+    Task<bool> SoundVol(DtoMicroController dtoMicroController, int vol);
+    Task<bool> Play(DtoMicroController dtoMicroController, Stream stream);
+    Task<bool> PlayLife(DtoMicroController dtoMicroController, Stream stream);
     Task<bool> Stop();
 }
 
@@ -14,19 +14,19 @@ public class MusicPlayerToMicroControllerServices(
     IHttpMicroControllerServices httpMicroControllerServices)
     : IMusicPlayerToMicroControllerServices
 {
-    public async Task<bool> SoundVol(int vol)
+    public async Task<bool> SoundVol(DtoMicroController dtoMicroController, int vol)
     {
-        throw new NotImplementedException();
+        return await httpMicroControllerServices.PostVol(dtoMicroController, vol);
     }
 
-    public async Task<bool> Play(DtoMicroController dtoMicroController, int idMusic)
+    public async Task<bool> Play(DtoMicroController dtoMicroController, Stream stream)
     {
-        return await httpMicroControllerServices.Post(dtoMicroController, idMusic);
+        return await httpMicroControllerServices.PostByte(dtoMicroController, stream);
     }
 
-    public async Task<bool> PlayLife(DtoMicroController dtoMicroController, IFormFile formFile)
+    public async Task<bool> PlayLife(DtoMicroController dtoMicroController, Stream stream)
     {
-        return await httpMicroControllerServices.PostByte(dtoMicroController, formFile);
+        return await httpMicroControllerServices.PostByte(dtoMicroController, stream);
     }
 
     public async Task<bool> Stop()

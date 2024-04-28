@@ -6,8 +6,8 @@ namespace Api.Services.HttpMicroControllerServices;
 
 public interface IHttpMicroControllerServices
 {
-    public Task<bool> Post(DtoMicroController dtoMicroController, int idMusic);
-    public Task<bool> PostByte(DtoMicroController dtoMicroController, IFormFile formFile);
+    public Task<bool> PostVol(DtoMicroController dtoMicroController, int idMusic);
+    public Task<bool> PostByte(DtoMicroController dtoMicroController, Stream stream);
 }
 
 public class HttpMicroControllerServices(
@@ -17,7 +17,7 @@ public class HttpMicroControllerServices(
 {
     private HttpClient httpClient;
 
-    public async Task<bool> Post(DtoMicroController dtoMicroController, int idMusic)
+    public async Task<bool> PostVol(DtoMicroController dtoMicroController, int idMusic)
     {
         httpClient = new HttpClient();
         try
@@ -36,13 +36,13 @@ public class HttpMicroControllerServices(
         }
     }
 
-    public async Task<bool> PostByte(DtoMicroController dtoMicroController, IFormFile formFile)
+    public async Task<bool> PostByte(DtoMicroController dtoMicroController, Stream stream)
     {
         httpClient = new HttpClient();
 
         try
         {
-            byte[]? arrayByte = await streamToByteArrayServices.StreamToByte(formFile.OpenReadStream());
+            byte[]? arrayByte = await streamToByteArrayServices.StreamToByte(stream);
             if (arrayByte == null)
                 return false;
             

@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Api.Interface;
+using Api.Model.RequestModel.Create.CreatePlayList;
 using Api.Model.RequestModel.Update.UpdatePlayList;
 using Api.Model.ResponseModel.PlayList;
 using MySql.Data.MySqlClient;
@@ -10,14 +11,14 @@ public class PlayListRepository(
     ILogger<PlayListRepository> logger,
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
-    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.PlayList.CreatePlayList, DtoPlayList, UpdatePlayList>
+    MySqlCommand mySqlCommand) : IRepository<CreatePlayList, DtoPlayList, UpdatePlayList>
 {
     private DbDataReader? _dataReader;
     private List<DtoPlayList>? _dtoPlayLists;
     private DtoPlayList? _dtoPlayList;
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
-    public async Task<bool> CreateOrSave(string item, Model.RequestModel.PlayList.CreatePlayList createPlayList)
+    public async Task<bool> CreateOrSave(string item, CreatePlayList createPlayList)
     {
         string command = $"INSERT INTO {item} " +
                          "(name, description ,imgPath)" +
@@ -68,7 +69,7 @@ public class PlayListRepository(
                     string name = _dataReader.GetString(1);
                     string description = _dataReader.GetString(2);
                     string imgPath = _dataReader.GetString(3);
-
+                    
                     _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
                 }
             }

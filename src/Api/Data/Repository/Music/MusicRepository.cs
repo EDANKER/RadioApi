@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Api.Interface;
+using Api.Model.RequestModel.Create.CreateMusic;
 using Api.Model.RequestModel.Update.UpdateMusic;
 using Api.Model.ResponseModel.Music;
 using MySql.Data.MySqlClient;
@@ -11,7 +12,7 @@ public class MusicRepository(
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand)
-    : IRepository<Model.RequestModel.Music.CreateMusic, DtoMusic, UpdateMusic>
+    : IRepository<CreateMusic, DtoMusic, UpdateMusic>
 {
     private DbDataReader? _dataReader;
     private List<DtoMusic>? _dtoMusics;
@@ -19,7 +20,7 @@ public class MusicRepository(
 
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
-    public async Task<bool> CreateOrSave(string item, Model.RequestModel.Music.CreateMusic createMusic)
+    public async Task<bool> CreateOrSave(string item, CreateMusic createMusic)
     {
         string command = $"INSERT INTO {item} " +
                          $"(name, namePlayList, timeMusic) " +

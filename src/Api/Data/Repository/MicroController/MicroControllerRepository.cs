@@ -30,8 +30,8 @@ public class MicroControllerRepository(
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = microController.Name;
-            mySqlCommand.Parameters.Add("@Ip", MySqlDbType.LongText).Value = microController.Ip;
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = microController.Name;
+            mySqlCommand.Parameters.Add("@Ip", MySqlDbType.VarChar).Value = microController.Ip;
             mySqlCommand.Parameters.Add("@Port", MySqlDbType.Int32).Value = microController.Port;
             mySqlCommand.Parameters.Add("@Cabinet", MySqlDbType.Int32).Value = microController.Cabinet;
             mySqlCommand.Parameters.Add("@Floor", MySqlDbType.Int32).Value = microController.Floor;

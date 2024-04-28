@@ -1,5 +1,5 @@
 ﻿using Api.Interface;
-using Api.Model.RequestModel.PlayList;
+using Api.Model.RequestModel.Create.CreatePlayList;
 using Api.Model.RequestModel.Update.UpdatePlayList;
 using Api.Model.ResponseModel.PlayList;
 using TagLib.Riff;

@@ -1,5 +1,4 @@
-﻿using Api.Data.Repository.CacheRepository;
-using Api.Model.ResponseModel.MicroController;
+﻿using Api.Data.Repository.CacheRepository.HebrideanCacheRepository;
 
 namespace Api.Services.HebrideanCacheServices;
 
@@ -13,7 +12,7 @@ public interface IHebrideanCacheServices
     Task<bool> Search(string key);
 }
 
-public class HebrideanCacheServices(ICacheRepository hebrideanCacheRepository)
+public class HebrideanCacheServices(HebrideanCacheRepository hebrideanCacheRepository)
     : IHebrideanCacheServices
 {
     public async Task<string?> GetId(string key)
@@ -38,7 +37,7 @@ public class HebrideanCacheServices(ICacheRepository hebrideanCacheRepository)
 
     public async Task<bool> Put(string key, string item)
     {
-        return true;
+        return await hebrideanCacheRepository.Put(key, item);
     }
 
     public async Task<bool> Search(string key)

@@ -1,20 +1,16 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
-
-namespace Api.Data.Repository.CacheRepository.HebrideanCacheRepository;
+﻿namespace Api.Data.Repository.CacheRepository.HebrideanCacheRepository;
 
 public class HebrideanCacheRepository(
     ILogger<HebrideanCacheRepository> logger,
-    IDistributedCache distributedCache,
-    IMemoryCache memoryCache)
-    : ICacheRepository
+    ICacheRepository distributedCache,
+    ICacheRepository memoryCache)
 {
     private Selectively.Selectively _selectivelyD =
-        new(new DistributedCacheRepository.DistributedCacheRepository(distributedCache));
+        new(distributedCache);
     private Selectively.Selectively _selectivelyM =
-        new(new MemoryCacheRepository.MemoryCacheRepository(memoryCache));
+        new(memoryCache);
 
-    public async Task<bool> Connect()
+    private static async Task<bool> Connect()
     {
         return false;
     }
@@ -23,7 +19,10 @@ public class HebrideanCacheRepository(
     {
         try
         {
-            return await _selectivelyD.CacheRepository.GetId(key);
+            if (await Connect())
+                return await _selectivelyD.CacheRepository.GetId(key);
+
+            return await _selectivelyM.CacheRepository.GetId(key);
         }
         catch (Exception e)
         {
@@ -36,50 +35,69 @@ public class HebrideanCacheRepository(
     {
         try
         {
+            if (await Connect())
+                return await _selectivelyD.CacheRepository.GetLimit(key);
+
+            return await _selectivelyM.CacheRepository.GetLimit(key);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
             return null;
         }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
-            return null;
-        }
     }
 
-    public async Task Refresh(string key)
+    public async Task<bool> Refresh(string key)
     {
         try
         {
-            
+            if (await Connect())
+                await _selectivelyD.CacheRepository.Refresh(key);
+
+            await _selectivelyM.CacheRepository.Refresh(key);
+
+            return true;
         }
         catch (Exception e)
         {
             logger.LogError(e.ToString());
+            return false;
         }
     }
 
-    public async Task DeleteId(string key)
+    public async Task<bool> DeleteId(string key)
     {
         try
         {
-            
+            if (await Connect())
+                await _selectivelyD.CacheRepository.DeleteId(key);
+
+            await _selectivelyM.CacheRepository.DeleteId(key);
+
+            return true;
         }
         catch (Exception e)
         {
             logger.LogError(e.ToString());
-            
+            return false;
         }
     }
 
-    public async Task Put(string key, string item)
+    public async Task<bool> Put(string key, string item)
     {
         try
         {
-            
+            if (await Connect())
+                await _selectivelyD.CacheRepository.Put(key, item);
+
+            await _selectivelyM.CacheRepository.Put(key, item);
+
+            return true;
         }
         catch (Exception e)
         {
             logger.LogError(e.ToString());
-            
+            return false;
         }
     }
 
@@ -87,10 +105,14 @@ public class HebrideanCacheRepository(
     {
         try
         {
-            return true;
+            if (await Connect())
+                return await _selectivelyD.CacheRepository.Search(key);
+            
+            return await _selectivelyM.CacheRepository.Search(key);
         }
         catch (Exception e)
         {
+            logger.LogError(e.ToString());
             return false;
         }
     }

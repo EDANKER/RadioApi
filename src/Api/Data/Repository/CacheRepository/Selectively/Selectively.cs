@@ -2,5 +2,5 @@
 
 public class Selectively(ICacheRepository cacheRepository)
 {
-    public ICacheRepository CacheRepository = cacheRepository;
+    public readonly ICacheRepository CacheRepository = cacheRepository;
 }

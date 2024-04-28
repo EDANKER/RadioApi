@@ -1,7 +1,9 @@
-﻿using Api.Model.RequestModel.User;
+﻿using System.ComponentModel.DataAnnotations;
+using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.User;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Controller.AdminPanelSettings;
 
@@ -10,16 +12,20 @@ namespace Api.Controller.AdminPanelSettings;
 public class AdminPanelSettingsController(IUserServices userServices) : ControllerBase
 {
     [HttpPost("CreateUser")]
+    [Consumes("application/json")]
     public async Task<IActionResult> CreateUser([FromBody] User user)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
         if (await userServices.Search("Users", user.FullName, "FullName"))
             return BadRequest("Такие данные уже есть");
 
         return Ok(await userServices.CreateOrSave("Users", user));
     }
 
-    [HttpDelete("DeleteUserId/{id:int}")]
-    public async Task<IActionResult> DeleteUserId(int id)
+    [HttpDelete("DeleteUserId")]
+    public async Task<IActionResult> DeleteUserId([Required] [FromQuery] int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
@@ -27,17 +33,19 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
         return Ok(await userServices.DeleteId("Users", id));
     }
 
-    [HttpPut("UpdateUser/{id:int}")]
-    public async Task<IActionResult> UpdateUser([FromBody] User user, int id)
+    [HttpPut("UpdateUser")]
+    public async Task<IActionResult> UpdateUser([FromBody] User user, [Required] [FromQuery] int id)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
         return Ok(await userServices.UpdateId("Users", user, id));
     }
 
-    [HttpGet("GetUserLimit/{limit:int}")]
-    public async Task<IActionResult> GetUserLimit(int limit)
+    [HttpGet("GetUserLimit")]
+    public async Task<IActionResult> GetUserLimit([Required] [FromQuery] int limit)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение id");
@@ -49,8 +57,8 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
         return BadRequest("Таких данных нет");
     }
 
-    [HttpGet("GetUserId/{id:int}")]
-    public async Task<IActionResult> GetUserId(int id)
+    [HttpGet("GetUserId")]
+    public async Task<IActionResult> GetUserId([Required] [FromQuery] int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
