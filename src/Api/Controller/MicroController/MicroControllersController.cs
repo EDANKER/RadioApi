@@ -27,7 +27,7 @@ public class MicroControllersController(IMicroControllerServices microController
     {
         if (floor < 0)
             return BadRequest("Некорректное значение floor");
-        List<DtoMicroController>? dtoMicroController = await microControllerServices.GetLimit("MicroControllers", floor);
+        List<DtoMicroController>? dtoMicroController = await microControllerServices.GetFloor("MicroControllers", floor);
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         
@@ -44,6 +44,12 @@ public class MicroControllersController(IMicroControllerServices microController
             return Ok(dtoMicroController);
         
         return BadRequest("Таких данных нет");
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateMicroController([Required] [FromQuery] int id, [FromBody] Model.RequestModel.MicroController.MicroController microController)
+    {
+        return Ok(await microControllerServices.Update("MicroControllers" , microController, id));
     }
 
     [HttpDelete("DeleteMicroControllerId")]

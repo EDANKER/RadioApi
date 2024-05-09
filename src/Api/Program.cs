@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 ConfigFile.Cors(builder.Services);
 ConfigFile.Jwt(builder.Services);
-ConfigFile.Registration(builder.Services);
+ConfigFile.Registration(builder.Services, builder.Configuration.GetSection("Redis:url").Value);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -16,7 +16,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1"); });
-}
+} 
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

@@ -10,18 +10,9 @@ public class DistributedCacheRepository(IDistributedCache distributedCache) : IC
         if (get != null)
             return get;
 
-        return null;
+        return get;
     }
-
-    public async Task<string?> GetLimit(string key)
-    {
-        string? get = await distributedCache.GetStringAsync(key);
-        if (get != null)
-            return get;
-
-        return null;
-    }
-
+    
     public async Task? Refresh(string key)
     {
         await distributedCache.RefreshAsync(key);

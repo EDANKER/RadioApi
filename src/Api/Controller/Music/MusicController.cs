@@ -24,7 +24,7 @@ public class MusicController(IMusicServices musicServices)
     }
 
     [HttpPost("SaveMusic")]
-    public async Task<IActionResult> SaveMusic([Required] [FromForm] IFormFile formFile, [Required] [FromQuery] string namePlayList)
+    public async Task<IActionResult> SaveMusic([Required] IFormFile formFile, [Required] [FromQuery] string namePlayList)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);

@@ -12,7 +12,7 @@ public class HebrideanCacheRepository(
 
     private static async Task<bool> Connect()
     {
-        return false;
+        return true;
     }
 
     public async Task<string?> GetId(string key)
@@ -30,23 +30,7 @@ public class HebrideanCacheRepository(
             return null;
         }
     }
-
-    public async Task<string?> GetLimit(string key)
-    {
-        try
-        {
-            if (await Connect())
-                return await _selectivelyD.CacheRepository.GetLimit(key);
-
-            return await _selectivelyM.CacheRepository.GetLimit(key);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
-            return null;
-        }
-    }
-
+    
     public async Task<bool> Refresh(string key)
     {
         try
@@ -93,22 +77,6 @@ public class HebrideanCacheRepository(
             await _selectivelyM.CacheRepository.Put(key, item);
 
             return true;
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
-            return false;
-        }
-    }
-
-    public async Task<bool> Search(string key)
-    {
-        try
-        {
-            if (await Connect())
-                return await _selectivelyD.CacheRepository.Search(key);
-            
-            return await _selectivelyM.CacheRepository.Search(key);
         }
         catch (Exception e)
         {

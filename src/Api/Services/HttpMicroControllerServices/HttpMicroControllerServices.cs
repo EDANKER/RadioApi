@@ -55,6 +55,7 @@ public class HttpMicroControllerServices(
         }
         catch (Exception e)
         {
+            logger.LogError(e.ToString());
             return false;
         }
     }

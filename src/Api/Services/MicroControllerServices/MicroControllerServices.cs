@@ -9,7 +9,7 @@ namespace Api.Services.MicroControllerServices;
 public interface IMicroControllerServices
 {
     Task<bool> CreateOrSave(string item, MicroController microController);
-    Task<List<DtoMicroController>?> GetLimit(string item, int limit);
+    Task<List<DtoMicroController>?> GetFloor(string item, int floor);
     Task<DtoMicroController?> GetId(string item, int id);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, MicroController microController, int id);
@@ -42,21 +42,9 @@ public class MicroControllerServices(
         return false;
     }
 
-    public async Task<List<DtoMicroController>?> GetLimit(string item, int limit)
+    public async Task<List<DtoMicroController>?> GetFloor(string item, int floor)
     {
-        List<DtoMicroController> dtoMicroControllers = new List<DtoMicroController>();
-        for (int i = 0; i < limit; i++)
-        {
-            DtoMicroController? dtoMicroController =
-                jsonServices.DesJson((await hebrideanCacheServices.GetLimit(i.ToString())));
-            if (dtoMicroController != null)
-            {
-                dtoMicroControllers.Add(dtoMicroController);
-                return dtoMicroControllers;
-            }
-        }
-
-        return await controllerRepository.GetLimit(item, limit);
+        return await controllerRepository.GetLimit(item, floor);
     }
 
     public async Task<DtoMicroController?> GetId(string item, int id)
@@ -65,17 +53,16 @@ public class MicroControllerServices(
 
         if (dtoMicroController != default)
             return jsonServices.DesJson(dtoMicroController);
-
+        
         return await controllerRepository.GetId(item, id);
     }
 
     public async Task<bool> DeleteId(string item, int id)
     {
-        bool isReturnTrueDb = await controllerRepository.DeleteId(item, id);
-        if (!isReturnTrueDb)
-            return isReturnTrueDb;
-
-        return await hebrideanCacheServices.DeleteId(id.ToString());
+        bool isDelete = await hebrideanCacheServices.DeleteId(id.ToString());
+        if (!isDelete)
+            return await controllerRepository.DeleteId(item, id);
+        return false;
     }
 
     public async Task<bool> Update(string item, MicroController microController, int id)

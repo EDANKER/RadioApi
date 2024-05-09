@@ -99,7 +99,7 @@ public class MusicServices(
             List<DtoMusic>? dtoMusics = await musicRepository.GetString(item, formFile.FileName, "Name");
             if (dtoMusics != null)
                 foreach (var data in dtoMusics)
-                    return await fileServices.Save(formFile, data.Id + ".mp3", "music", "audio/mpeg");
+                    return await fileServices.Save(formFile, data.Name, "music", "audio/mpeg");
         }
 
         return false;

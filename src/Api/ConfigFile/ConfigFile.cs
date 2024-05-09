@@ -47,7 +47,7 @@ namespace Api.ConfigFile;
 
 public static class ConfigFile
 {
-    public static void Registration(IServiceCollection service)
+    public static void Registration(IServiceCollection service, string redis)
     {
         service.AddScoped<IHebrideanCacheServices, HebrideanCacheServices>();
         service.AddScoped<ICacheRepository, MemoryCacheRepository>();
@@ -81,7 +81,7 @@ public static class ConfigFile
         service.AddMemoryCache();
         service.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = "http://10.3.15.204";
+            options.Configuration = redis;
             options.InstanceName = "Redis";
         });
     }
