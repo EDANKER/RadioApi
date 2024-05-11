@@ -46,6 +46,11 @@ public class PlayListRepository(
         }
     }
 
+    public Task<List<DtoPlayList>>? GetAll(string item)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<DtoPlayList?> GetId(string item, int id)
     {
         _dtoPlayLists = new List<DtoPlayList>();

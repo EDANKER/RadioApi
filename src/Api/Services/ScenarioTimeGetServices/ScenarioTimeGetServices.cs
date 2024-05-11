@@ -1,14 +1,28 @@
-﻿namespace Api.Services.ScenarioTimeGetServices;
+﻿using Api.Model.ResponseModel.Scenario;
+using Api.Services.HebrideanCacheServices;
+using Api.Services.JsonServices;
+using Api.Services.ScenarioServices;
 
-public class ScenarioTimeGetServices : IHostedService
+namespace Api.Services.ScenarioTimeGetServices;
+
+public class ScenarioTimeGetServices(
+    IScenarioServices scenarioServices,
+    IHebrideanCacheServices hebrideanCacheServices,
+    IJsonServices<DtoScenario> jsonServices) : IHostedService
 {
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        List<DtoScenario>? dtoScenarios = await scenarioServices.GetAll("Scenario");
+        if (dtoScenarios != null)
+            foreach (var data in dtoScenarios)
+                await hebrideanCacheServices.Put(data.Time, jsonServices.SerJson(data));
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        List<DtoScenario>? dtoScenarios = await scenarioServices.GetAll("Scenario");
+        if (dtoScenarios != null)
+            foreach (var data in dtoScenarios)
+                await hebrideanCacheServices.DeleteId(data.Time);
     }
 }

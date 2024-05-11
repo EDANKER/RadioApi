@@ -46,6 +46,11 @@ public class UserRepository(
         return true;
     }
 
+    public Task<List<DtoUser>>? GetAll(string item)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<DtoUser?> GetId(string item, int id)
     {
         string command = $"SELECT * FROM {item} " +

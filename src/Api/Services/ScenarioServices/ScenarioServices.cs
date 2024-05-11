@@ -9,6 +9,7 @@ public interface IScenarioServices
 {
     Task<bool> CreateOrSave(string item, Scenario scenario);
     Task<DtoScenario?> GetId(string item, int id);
+    Task<List<DtoScenario>?> GetAll(string item);
     Task<List<DtoScenario>?> GetLimit(string item, int limit);
     Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, Scenario scenario, int id);
@@ -25,6 +26,11 @@ public class ScenarioServices(IRepository<Scenario, DtoScenario, Scenario> scena
     public async Task<DtoScenario?> GetId(string item, int id)
     {
         return await scenarioRepository.GetId(item, id);
+    }
+
+    public async Task<List<DtoScenario>?> GetAll(string item)
+    {
+        return await scenarioRepository.GetAll(item);
     }
 
     public async Task<List<DtoScenario>?> GetLimit(string item, int limit)

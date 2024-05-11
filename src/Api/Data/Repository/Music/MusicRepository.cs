@@ -49,6 +49,11 @@ public class MusicRepository(
         return true;
     }
 
+    public Task<List<DtoMusic>>? GetAll(string item)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<DtoMusic?> GetId(string item, int id)
     {
         _dtoMusics = new List<DtoMusic>();

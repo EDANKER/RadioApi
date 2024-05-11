@@ -50,6 +50,52 @@ public class ScenarioRepository(
         return true;
     }
 
+    public async Task<List<DtoScenario>?> GetAll(string item)
+    {
+        _dtoScenarios = new List<DtoScenario>();
+        string command = $"SELECT * FROM {item} ";
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string idMicroController = _dataReader.GetString(2);
+                    string time = _dataReader.GetString(3);
+                    string days = _dataReader.GetString(4);
+                    int idMusic = _dataReader.GetInt32(5);
+
+                    _dtoScenario = new DtoScenario(id, name, idMicroController,
+                        time, days, idMusic);
+                    _dtoScenarios.Add(_dtoScenario);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await mySqlConnection.CloseAsync();
+            await _dataReader.CloseAsync();
+
+            return _dtoScenarios;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
+    }
+
     public async Task<DtoScenario?> GetId(string item, int id)
     {
         string command = $"SELECT * FROM {item} " +

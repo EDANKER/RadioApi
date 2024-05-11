@@ -48,6 +48,11 @@ public class MicroControllerRepository(
         }
     }
 
+    public Task<List<DtoMicroController>>? GetAll(string item)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<List<DtoMicroController>?> GetLimit(string item, int floor)
     {
         _dtoMicroControllers = new List<DtoMicroController>();

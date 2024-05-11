@@ -34,11 +34,11 @@ using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.ScenarioServices;
+using Api.Services.ScenarioTimeGetServices;
 using Api.Services.StreamToByteArrayServices;
 using Api.Services.TimeCounterServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Minio;
 using MySql.Data.MySqlClient;
@@ -49,12 +49,13 @@ public static class ConfigFile
 {
     public static void Registration(IServiceCollection service, string redis)
     {
-        service.AddScoped<IHebrideanCacheServices, HebrideanCacheServices>();
-        service.AddScoped<ICacheRepository, MemoryCacheRepository>();
-        service.AddScoped<ICacheRepository, DistributedCacheRepository>();
-        service.AddScoped<HebrideanCacheRepository>();
+        service.AddSingleton<IHebrideanCacheServices, HebrideanCacheServices>();
+        service.AddSingleton<ICacheRepository, MemoryCacheRepository>();
+        service.AddSingleton<ICacheRepository, DistributedCacheRepository>();
+        service.AddSingleton<HebrideanCacheRepository>();
         service.AddScoped<IJsonServices<int[]>, JsonServices<int[]>>();
         service.AddScoped<IJsonServices<string[]>, JsonServices<string[]>>();
+        service.AddSingleton<IJsonServices<DtoScenario>, JsonServices<DtoScenario>>();
         service.AddScoped<IJsonServices<DtoMicroController>, JsonServices<DtoMicroController>>();
         service.AddScoped<IStreamToByteArrayServices, StreamToByteArrayServices>();
         service.AddTransient<MySqlConnection>();
@@ -65,8 +66,8 @@ public static class ConfigFile
         service.AddScoped<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
         service.AddScoped<IMicroControllerServices, MicroControllerServices>();
         service.AddScoped<IRepository<MicroController, DtoMicroController, MicroController>, MicroControllerRepository>();
-        service.AddScoped<IScenarioServices, ScenarioServices>();
-        service.AddScoped<IRepository<Scenario, DtoScenario, Scenario>, ScenarioRepository>();
+        service.AddSingleton<IScenarioServices, ScenarioServices>();
+        service.AddSingleton<IRepository<Scenario, DtoScenario, Scenario>, ScenarioRepository>();
         service.AddScoped<IMusicServices, MusicServices>();
         service.AddScoped<IRepository<CreateMusic, DtoMusic, UpdateMusic>, MusicRepository>();
         service.AddScoped<IRepository<User, DtoUser, User>, UserRepository>();
@@ -84,6 +85,7 @@ public static class ConfigFile
             options.Configuration = redis;
             options.InstanceName = "Redis";
         });
+        service.AddSingleton<IHostedService, ScenarioTimeGetServices>();
     }
 
     public static void Jwt(IServiceCollection service)
