@@ -3,7 +3,6 @@ using Api.Data.Minio;
 using Api.Data.Repository.CacheRepository;
 using Api.Data.Repository.CacheRepository.DistributedCacheRepository;
 using Api.Data.Repository.CacheRepository.HebrideanCacheRepository;
-using Api.Data.Repository.CacheRepository.MemoryCacheRepository;
 using Api.Data.Repository.MicroController;
 using Api.Data.Repository.Music;
 using Api.Data.Repository.PlayList;
@@ -23,6 +22,8 @@ using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.PlayList;
 using Api.Model.ResponseModel.Scenario;
 using Api.Model.ResponseModel.User;
+using Api.Services.BackGroundTaskServices.MicroControllerGetServices;
+using Api.Services.BackGroundTaskServices.ScenarioTimeGetServices;
 using Api.Services.GeneratorTokenServices;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.HttpMicroControllerServices;
@@ -34,7 +35,6 @@ using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.ScenarioServices;
-using Api.Services.ScenarioTimeGetServices;
 using Api.Services.StreamToByteArrayServices;
 using Api.Services.TimeCounterServices;
 using Api.Services.UserServices;
@@ -50,35 +50,36 @@ public static class ConfigFile
     public static void Registration(IServiceCollection service, string redis)
     {
         service.AddSingleton<IHebrideanCacheServices, HebrideanCacheServices>();
-        service.AddSingleton<ICacheRepository, MemoryCacheRepository>();
         service.AddSingleton<ICacheRepository, DistributedCacheRepository>();
         service.AddSingleton<HebrideanCacheRepository>();
-        service.AddScoped<IJsonServices<int[]>, JsonServices<int[]>>();
-        service.AddScoped<IJsonServices<string[]>, JsonServices<string[]>>();
+        service.AddSingleton<IJsonServices<int[]>, JsonServices<int[]>>();
+        service.AddSingleton<IJsonServices<string[]>, JsonServices<string[]>>();
         service.AddSingleton<IJsonServices<DtoScenario>, JsonServices<DtoScenario>>();
-        service.AddScoped<IJsonServices<DtoMicroController>, JsonServices<DtoMicroController>>();
-        service.AddScoped<IStreamToByteArrayServices, StreamToByteArrayServices>();
+        service.AddSingleton<IJsonServices<Scenario>, JsonServices<Scenario>>();
+        service.AddSingleton<IJsonServices<DtoMicroController>, JsonServices<DtoMicroController>>();
+        service.AddSingleton<IJsonServices<MicroController>, JsonServices<MicroController>>();
+        service.AddSingleton<IStreamToByteArrayServices, StreamToByteArrayServices>();
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
         service.AddTransient<IMinioClient, MinioClient>();
-        service.AddScoped<IMinio, Data.Minio.Minio>();
-        service.AddScoped<IFileServices, FileServices>();
-        service.AddScoped<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
-        service.AddScoped<IMicroControllerServices, MicroControllerServices>();
-        service.AddScoped<IRepository<MicroController, DtoMicroController, MicroController>, MicroControllerRepository>();
+        service.AddSingleton<IMinio, Data.Minio.Minio>();
+        service.AddSingleton<IFileServices, FileServices>();
+        service.AddSingleton<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
+        service.AddSingleton<IMicroControllerServices, MicroControllerServices>();
+        service.AddSingleton<IRepository<MicroController, DtoMicroController, MicroController>, MicroControllerRepository>();
         service.AddSingleton<IScenarioServices, ScenarioServices>();
         service.AddSingleton<IRepository<Scenario, DtoScenario, Scenario>, ScenarioRepository>();
-        service.AddScoped<IMusicServices, MusicServices>();
-        service.AddScoped<IRepository<CreateMusic, DtoMusic, UpdateMusic>, MusicRepository>();
-        service.AddScoped<IRepository<User, DtoUser, User>, UserRepository>();
-        service.AddScoped<IUserServices, UserServices>();
-        service.AddScoped<IRepository<CreatePlayList, DtoPlayList, UpdatePlayList>, PlayListRepository>();
-        service.AddScoped<IPlayListServices, PlayListServices>();
-        service.AddScoped<IGeneratorTokenServices, GeneratorTokenServices>();
-        service.AddScoped<ILdapService, LdapService>();
-        service.AddScoped<ITimeCounterServices, TimeCounterServices>();
-        service.AddScoped<IHttpMicroControllerServices, HttpMicroControllerServices>();
-        service.AddScoped<HttpClient>();
+        service.AddSingleton<IMusicServices, MusicServices>();
+        service.AddSingleton<IRepository<CreateMusic, DtoMusic, UpdateMusic>, MusicRepository>();
+        service.AddSingleton<IRepository<User, DtoUser, User>, UserRepository>();
+        service.AddSingleton<IUserServices, UserServices>();
+        service.AddSingleton<IRepository<CreatePlayList, DtoPlayList, UpdatePlayList>, PlayListRepository>();
+        service.AddSingleton<IPlayListServices, PlayListServices>();
+        service.AddSingleton<IGeneratorTokenServices, GeneratorTokenServices>();
+        service.AddSingleton<ILdapService, LdapService>();
+        service.AddSingleton<ITimeCounterServices, TimeCounterServices>();
+        service.AddSingleton<IHttpMicroControllerServices, HttpMicroControllerServices>();
+        service.AddSingleton<HttpClient>();
         service.AddMemoryCache();
         service.AddStackExchangeRedisCache(options =>
         {
@@ -86,6 +87,7 @@ public static class ConfigFile
             options.InstanceName = "Redis";
         });
         service.AddSingleton<IHostedService, ScenarioTimeGetServices>();
+        service.AddSingleton<IHostedService, MicroControllerGetServices>();
     }
 
     public static void Jwt(IServiceCollection service)
@@ -117,9 +119,5 @@ public static class ConfigFile
                 policyBuilder.AllowAnyOrigin();
             });
         });
-    }
-
-    public static void Exception(WebApplication app)
-    {
     }
 }

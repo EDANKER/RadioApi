@@ -9,10 +9,8 @@ public class DtoMicroController(int id, string name, string ip, int port, int fl
     public string Name { get; set; } = name;
     [StringLength(64, MinimumLength = 3, ErrorMessage = "< 64 > 3")]
     public string Ip { get; set; } = ip;
-    [Required]
     [Range(0, 64, ErrorMessage = "< 64 > 3")]
     public int Port { get; set; } = port;
-    [Required]
     [Range(0, 64, ErrorMessage = "< 64 > 3")]
     public int Floor { get; set; } = floor;
     [Range(0, 64, ErrorMessage = "< 64 > 3")]

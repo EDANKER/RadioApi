@@ -2,27 +2,17 @@
 
 public class HebrideanCacheRepository(
     ILogger<HebrideanCacheRepository> logger,
-    ICacheRepository distributedCache,
-    ICacheRepository memoryCache)
+    ICacheRepository distributedCache)
 {
     private Selectively.Selectively _selectivelyD =
         new(distributedCache);
-    private Selectively.Selectively _selectivelyM =
-        new(memoryCache);
 
-    private static async Task<bool> Connect()
-    {
-        return true;
-    }
 
     public async Task<string?> GetId(string key)
     {
         try
         {
-            if (await Connect())
-                return await _selectivelyD.CacheRepository.GetId(key);
-
-            return await _selectivelyM.CacheRepository.GetId(key);
+            return await _selectivelyD.CacheRepository.GetId(key);
         }
         catch (Exception e)
         {
@@ -30,17 +20,12 @@ public class HebrideanCacheRepository(
             return null;
         }
     }
-    
+
     public async Task<bool> Refresh(string key)
     {
         try
         {
-            if (await Connect())
-                await _selectivelyD.CacheRepository.Refresh(key);
-
-            await _selectivelyM.CacheRepository.Refresh(key);
-
-            return true;
+            return await _selectivelyD.CacheRepository.Refresh(key);
         }
         catch (Exception e)
         {
@@ -53,12 +38,7 @@ public class HebrideanCacheRepository(
     {
         try
         {
-            if (await Connect())
-                await _selectivelyD.CacheRepository.DeleteId(key);
-
-            await _selectivelyM.CacheRepository.DeleteId(key);
-
-            return true;
+            return await _selectivelyD.CacheRepository.DeleteId(key);
         }
         catch (Exception e)
         {
@@ -67,16 +47,11 @@ public class HebrideanCacheRepository(
         }
     }
 
-    public async Task<bool> Put(string key, string? item)
+    public async Task<bool> Put(string key, string item)
     {
         try
         {
-            if (await Connect())
-                await _selectivelyD.CacheRepository.Put(key, item);
-
-            await _selectivelyM.CacheRepository.Put(key, item);
-
-            return true;
+            return await _selectivelyD.CacheRepository.Put(key, item);
         }
         catch (Exception e)
         {

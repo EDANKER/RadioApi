@@ -4,7 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 ConfigFile.Cors(builder.Services);
 ConfigFile.Jwt(builder.Services);
-ConfigFile.Registration(builder.Services, builder.Configuration.GetSection("Redis:url").Value);
+var value = builder.Configuration.GetSection("Redis:url").Value;
+if (value != null)
+    ConfigFile.Registration(builder.Services, value);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -22,8 +24,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
-
-ConfigFile.Exception(app);
 
 app.UseCors("Radio");
 

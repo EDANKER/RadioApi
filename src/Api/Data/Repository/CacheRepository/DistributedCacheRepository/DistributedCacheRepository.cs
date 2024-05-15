@@ -2,42 +2,67 @@
 
 namespace Api.Data.Repository.CacheRepository.DistributedCacheRepository;
 
-public class DistributedCacheRepository(IDistributedCache distributedCache) : ICacheRepository
+public class DistributedCacheRepository(IDistributedCache distributedCache, ILogger<DistributedCacheRepository> logger) : ICacheRepository
 {
     public async Task<string?> GetId(string key)
     {
-        string? get = await distributedCache.GetStringAsync(key);
-        if (get != null)
-            return get;
+        try
+        {
+            string? get = await distributedCache.GetStringAsync(key);
+            if (get != null)
+                return get;
 
-        return get;
+            return get;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
     }
     
-    public async Task? Refresh(string key)
+    public async Task<bool> Refresh(string key)
     {
-        await distributedCache.RefreshAsync(key);
-    }
-
-    public async Task DeleteId(string key)
-    {
-        await distributedCache.RemoveAsync(key);
-    }
-
-    public async Task Put(string key, string item)
-    {
-        await distributedCache.SetStringAsync(key, item, new DistributedCacheEntryOptions
+        try
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
-        });
+            await distributedCache.RefreshAsync(key);
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
+            return false;
+        }
     }
 
-    public async Task<bool> Search(string key)
+    public async Task<bool> DeleteId(string key)
     {
-        string? get = await distributedCache.GetStringAsync(key);
-
-        if (get != null)
+        try
+        {
+            await distributedCache.RemoveAsync(key);
             return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
+            return false;
+        }
+    }
 
-        return false;
+    public async Task<bool> Put(string key, string item)
+    {
+        try
+        {
+            await distributedCache.SetStringAsync(key, item, new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+            });
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
+            return false;
+        }
     }
 }

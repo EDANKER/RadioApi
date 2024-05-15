@@ -1,4 +1,5 @@
-﻿using Api.Model.ResponseModel.MicroController;
+﻿using Api.Model.Migrations.Scenario;
+using Api.Model.ResponseModel.MicroController;
 using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.PlayList;
 using Api.Model.ResponseModel.Scenario;
@@ -12,7 +13,7 @@ public class ApplicationContext(IConfiguration configuration) : DbContext
     public DbSet<DtoPlayList> PlayLists => Set<DtoPlayList>();
     public DbSet<DtoMusic> Musics => Set<DtoMusic>();
     public DbSet<DtoUser> Users => Set<DtoUser>();
-    public DbSet<DtoScenario> Scenario => Set<DtoScenario>();
+    public DbSet<MigrationsScenario> Scenario => Set<MigrationsScenario>();
     public DbSet<DtoMicroController> MicroControllers => Set<DtoMicroController>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

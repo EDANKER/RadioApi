@@ -137,7 +137,7 @@ public class PlayListRepository(
         }
     }
 
-    public async Task<List<DtoPlayList>?> GetLimit(string item, int limit)
+    public async Task<List<DtoPlayList>?> GetFloor(string item, int limit)
     {
         _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +

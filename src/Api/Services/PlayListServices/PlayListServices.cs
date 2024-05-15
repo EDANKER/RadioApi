@@ -42,7 +42,7 @@ public class PlayListServices(
     public async Task<List<DtoPlayList>?> GetLimit(string item, int limit)
     {
         List<DtoPlayList> getPlayLists = new List<DtoPlayList>();
-        List<DtoPlayList>? getPlayListRepo = await playListRepository.GetLimit(item, limit);
+        List<DtoPlayList>? getPlayListRepo = await playListRepository.GetFloor(item, limit);
         if (getPlayListRepo != null)
         {
             foreach (var data in getPlayListRepo)

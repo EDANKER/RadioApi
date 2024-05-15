@@ -139,7 +139,7 @@ public class UserRepository(
         }
     }
 
-    public async Task<List<DtoUser>?> GetLimit(string item, int limit)
+    public async Task<List<DtoUser>?> GetFloor(string item, int limit)
     {
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +

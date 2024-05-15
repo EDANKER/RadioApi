@@ -8,7 +8,7 @@ public interface IHebrideanCacheServices
     Task<bool> Refresh(string key);
     Task<bool> DeleteId(string key);
     Task<bool> Put(string key, string? item);
-    
+
 }
 
 public class HebrideanCacheServices(HebrideanCacheRepository hebrideanCacheRepository)
@@ -33,5 +33,4 @@ public class HebrideanCacheServices(HebrideanCacheRepository hebrideanCacheRepos
     {
         return await hebrideanCacheRepository.Put(key, item);
     }
-    
 }

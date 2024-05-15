@@ -49,7 +49,7 @@ public class MusicRepository(
         return true;
     }
 
-    public Task<List<DtoMusic>>? GetAll(string item)
+    public Task<List<DtoMusic>?> GetAll(string item)
     {
         throw new NotImplementedException();
     }
@@ -141,7 +141,7 @@ public class MusicRepository(
         }
     }
 
-    public async Task<List<DtoMusic>?> GetLimit(string item, int limit)
+    public async Task<List<DtoMusic>?> GetFloor(string item, int limit)
     {
         _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +

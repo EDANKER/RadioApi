@@ -15,9 +15,11 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        
+
         if (await scenarioServices.Search("Scenario", scenario.Name, "Name"))
             return BadRequest("Имя уже занято");
+        if (await scenarioServices.Search("Scenario", scenario.Time, "Time"))
+            return BadRequest("Время уже занято");
 
         return Ok(await scenarioServices.CreateOrSave("Scenario", scenario));
     }
@@ -56,7 +58,8 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
     }
 
     [HttpPut("UpdateScenario")]
-    public async Task<IActionResult> UpdateScenario([Required] [FromBody] Model.RequestModel.Scenario.Scenario scenario, [FromQuery] int id)
+    public async Task<IActionResult> UpdateScenario([Required] [FromBody] Model.RequestModel.Scenario.Scenario scenario,
+        [FromQuery] int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");

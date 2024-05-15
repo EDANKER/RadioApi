@@ -2,6 +2,7 @@
 using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.User;
 using Api.Services.UserServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -13,6 +14,7 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
 {
     [HttpPost("CreateUser")]
     [Consumes("application/json")]
+    [Authorize("Admin")]
     public async Task<IActionResult> CreateUser([FromBody] User user)
     {
         if (!ModelState.IsValid)

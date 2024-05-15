@@ -48,12 +48,52 @@ public class MicroControllerRepository(
         }
     }
 
-    public Task<List<DtoMicroController>>? GetAll(string item)
+    public async Task<List<DtoMicroController>?> GetAll(string item)
     {
-        throw new NotImplementedException();
+        _dtoMicroControllers = new List<DtoMicroController>();
+        string command = $"SELECT * FROM {item} ";
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string ip = _dataReader.GetString(2);
+                    int port = _dataReader.GetInt32(3);
+                    int cabinet = _dataReader.GetInt32(4);
+                    int floor = _dataReader.GetInt32(5);
+
+                    _dtoMicroController = new DtoMicroController(id, name, ip, port, cabinet, floor);
+                    _dtoMicroControllers.Add(_dtoMicroController);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await mySqlConnection.CloseAsync();
+            await _dataReader.CloseAsync();
+
+            return _dtoMicroControllers;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
     }
 
-    public async Task<List<DtoMicroController>?> GetLimit(string item, int floor)
+    public async Task<List<DtoMicroController>?> GetFloor(string item, int floor)
     {
         _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +

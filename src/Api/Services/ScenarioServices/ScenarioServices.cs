@@ -2,6 +2,8 @@
 using Api.Interface;
 using Api.Model.RequestModel.Scenario;
 using Api.Model.ResponseModel.Scenario;
+using Api.Services.HebrideanCacheServices;
+using Api.Services.JsonServices;
 
 namespace Api.Services.ScenarioServices;
 
@@ -16,11 +18,18 @@ public interface IScenarioServices
     Task<bool> Search(string item, string name, string field);
 }
 
-public class ScenarioServices(IRepository<Scenario, DtoScenario, Scenario> scenarioRepository) : IScenarioServices
+public class ScenarioServices(
+    IRepository<Scenario, DtoScenario, Scenario> scenarioRepository,
+    IHebrideanCacheServices hebrideanCacheServices,
+    IJsonServices<Scenario> jsonServices) : IScenarioServices
 {
     public async Task<bool> CreateOrSave(string item, Scenario scenario)
     {
-        return await scenarioRepository.CreateOrSave(item, scenario);
+        DateTime dataTime = DateTime.Now;
+        if (await scenarioRepository.CreateOrSave(item, scenario))
+            if(scenario.Days == dataTime.ToString("ddd"))
+                return await hebrideanCacheServices.Put(scenario.Time, jsonServices.SerJson(scenario));
+        return true;
     }
 
     public async Task<DtoScenario?> GetId(string item, int id)
@@ -35,9 +44,9 @@ public class ScenarioServices(IRepository<Scenario, DtoScenario, Scenario> scena
 
     public async Task<List<DtoScenario>?> GetLimit(string item, int limit)
     {
-        return await scenarioRepository.GetLimit(item, limit);
+        return await scenarioRepository.GetFloor(item, limit);
     }
-    
+
     public async Task<bool> DeleteId(string item, int id)
     {
         return await scenarioRepository.DeleteId(item, id);

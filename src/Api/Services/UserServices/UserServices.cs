@@ -25,7 +25,7 @@ public class UserServices(IRepository<User, DtoUser, User> userRepository) : IUs
 
     public async Task<List<DtoUser>?> GetLimit(string item, int limit)
     {
-        return await userRepository.GetLimit(item, limit);
+        return await userRepository.GetFloor(item, limit);
     }
 
     public async Task<DtoUser?> GetId(string item, int id)

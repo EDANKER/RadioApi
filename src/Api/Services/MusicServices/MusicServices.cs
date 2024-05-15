@@ -55,6 +55,7 @@ public class MusicServices(
         {
             foreach (var data in idController)
             {
+                Console.WriteLine(data);
                 if (data < 0)
                     continue;
                 DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
@@ -107,7 +108,7 @@ public class MusicServices(
 
     public async Task<List<DtoMusic>?> GetLimit(string item, int limit)
     {
-        return await musicRepository.GetLimit(item, limit);
+        return await musicRepository.GetFloor(item, limit);
     }
 
     public async Task<DtoMusic?> GetId(string item, int id)

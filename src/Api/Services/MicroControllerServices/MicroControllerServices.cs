@@ -9,6 +9,7 @@ namespace Api.Services.MicroControllerServices;
 public interface IMicroControllerServices
 {
     Task<bool> CreateOrSave(string item, MicroController microController);
+    Task<List<DtoMicroController>?> GetAll(string item);
     Task<List<DtoMicroController>?> GetFloor(string item, int floor);
     Task<DtoMicroController?> GetId(string item, int id);
     Task<bool> DeleteId(string item, int id);
@@ -17,34 +18,34 @@ public interface IMicroControllerServices
 }
 
 public class MicroControllerServices(
-    IJsonServices<DtoMicroController?> jsonServices,
+    IJsonServices<DtoMicroController?> dtoJsonServices,
+    IJsonServices<MicroController> jsonServices,
     IRepository<MicroController, DtoMicroController, MicroController> controllerRepository,
     IHebrideanCacheServices hebrideanCacheServices)
     : IMicroControllerServices
 {
     public async Task<bool> CreateOrSave(string item, MicroController microController)
     {
-        if (!await controllerRepository.CreateOrSave(item, microController))
-            return false;
-
-        List<DtoMicroController>? dtoMicroController =
-            await controllerRepository.GetString(item, microController.Name, "Name");
-        if (dtoMicroController != null)
+        if (await controllerRepository.CreateOrSave(item, microController))
         {
-            foreach (var data in dtoMicroController)
-            {
-                string? json = jsonServices.SerJson(data);
-                if (json != null)
-                    return await hebrideanCacheServices.Put(data.Id.ToString(), json);
-            }
+            List<DtoMicroController>? dtoMicroController =
+                await controllerRepository.GetString(item, microController.Name, "Name");
+            if (dtoMicroController != null)
+                foreach (var data in dtoMicroController)
+                    return await hebrideanCacheServices.Put(data.Id.ToString(), dtoJsonServices.SerJson(data));
         }
 
         return false;
     }
 
+    public async Task<List<DtoMicroController>?> GetAll(string item)
+    {
+        return await controllerRepository.GetAll(item);
+    }
+
     public async Task<List<DtoMicroController>?> GetFloor(string item, int floor)
     {
-        return await controllerRepository.GetLimit(item, floor);
+        return await controllerRepository.GetFloor(item, floor);
     }
 
     public async Task<DtoMicroController?> GetId(string item, int id)
@@ -52,22 +53,30 @@ public class MicroControllerServices(
         string? dtoMicroController = await hebrideanCacheServices.GetId(id.ToString());
 
         if (dtoMicroController != default)
-            return jsonServices.DesJson(dtoMicroController);
-        
+            return dtoJsonServices.DesJson(dtoMicroController);
+
         return await controllerRepository.GetId(item, id);
     }
 
     public async Task<bool> DeleteId(string item, int id)
     {
         bool isDelete = await hebrideanCacheServices.DeleteId(id.ToString());
-        if (!isDelete)
+        if (isDelete)
             return await controllerRepository.DeleteId(item, id);
         return false;
     }
 
     public async Task<bool> Update(string item, MicroController microController, int id)
     {
-        return await controllerRepository.UpdateId(item, microController, id);
+        if (await hebrideanCacheServices.DeleteId(id.ToString()))
+        {
+            if (await controllerRepository.UpdateId(item, microController, id))
+            {
+                return await hebrideanCacheServices.Put(id.ToString(), jsonServices.SerJson(microController));
+            }
+        }
+
+        return false;
     }
 
     public async Task<bool> Search(string item, string name, string field)
