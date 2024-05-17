@@ -3,11 +3,13 @@ using Api.Model.RequestModel.MicroController;
 using Api.Model.ResponseModel.MicroController;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.JsonServices;
+using Api.Services.MusicPlayerToMicroControllerServices;
 
 namespace Api.Services.MicroControllerServices;
 
 public interface IMicroControllerServices
 {
+    Task<bool> SoundVol(int[] idMicroControllers, int vol);
     Task<bool> CreateOrSave(string item, MicroController microController);
     Task<List<DtoMicroController>?> GetAll(string item);
     Task<List<DtoMicroController>?> GetFloor(string item, int floor);
@@ -20,10 +22,23 @@ public interface IMicroControllerServices
 public class MicroControllerServices(
     IJsonServices<DtoMicroController?> dtoJsonServices,
     IJsonServices<MicroController> jsonServices,
+    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
     IRepository<MicroController, DtoMicroController, MicroController> controllerRepository,
     IHebrideanCacheServices hebrideanCacheServices)
     : IMicroControllerServices
 {
+    public async Task<bool> SoundVol(int[] idMicroControllers, int vol)
+    {
+        foreach (var data in idMicroControllers)
+        {
+            DtoMicroController? microController = await GetId("MicroControllers", data);
+            if (microController != null)
+                return await musicPlayerToMicroControllerServices.SoundVol(microController, vol);
+        }
+
+        return false;
+    }
+
     public async Task<bool> CreateOrSave(string item, MicroController microController)
     {
         if (await controllerRepository.CreateOrSave(item, microController))

@@ -30,6 +30,7 @@ using Api.Services.HttpMicroControllerServices;
 using Api.Services.IFileServices;
 using Api.Services.JsonServices;
 using Api.Services.LdapService;
+using Api.Services.LoginUserServices;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
@@ -79,6 +80,7 @@ public static class ConfigFile
         service.AddSingleton<ILdapService, LdapService>();
         service.AddSingleton<ITimeCounterServices, TimeCounterServices>();
         service.AddSingleton<IHttpMicroControllerServices, HttpMicroControllerServices>();
+        service.AddSingleton<ILoginUserServices, LoginUserServices>();
         service.AddSingleton<HttpClient>();
         service.AddMemoryCache();
         service.AddStackExchangeRedisCache(options =>

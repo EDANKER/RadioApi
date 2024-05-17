@@ -21,6 +21,7 @@ public class ScenarioTimeGetServices(
             List<DtoScenario>? dtoScenarios = await scenarioServices.GetAll("Scenario");
             if (dtoScenarios != null)
             {
+                Console.WriteLine(days.ToString("ddd"));
                 foreach (var data in dtoScenarios)
                     if(data.Days == days.ToString("ddd"))
                         await hebrideanCacheServices.Put(data.Time, jsonServices.SerJson(data));

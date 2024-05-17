@@ -34,6 +34,15 @@ public class MicroControllersController(IMicroControllerServices microController
         return BadRequest("Таких данных нет");
     }
 
+    [HttpPost("SoundVol")]
+    public async Task<IActionResult> SoundVol([Required] [FromBody] int[] idMusicController, [FromQuery] [Required] int vol)
+    {
+        if (vol < 0)
+            return BadRequest("Некорректное значение id");
+
+        return Ok(await microControllerServices.SoundVol(idMusicController, vol));
+    }
+
     [HttpGet("GetMicroControllerId")]
     public async Task<IActionResult> GetMicroControllerId([Required] [FromQuery] int id)
     {
@@ -46,7 +55,7 @@ public class MicroControllersController(IMicroControllerServices microController
         return BadRequest("Таких данных нет");
     }
 
-    [HttpPut]
+    [HttpPut("UpdateMicroController")]
     public async Task<IActionResult> UpdateMicroController([Required] [FromQuery] int id, [FromBody] Model.RequestModel.MicroController.MicroController microController)
     {
         return Ok(await microControllerServices.Update("MicroControllers" , microController, id));

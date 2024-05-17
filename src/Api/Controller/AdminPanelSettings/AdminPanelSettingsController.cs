@@ -14,7 +14,6 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
 {
     [HttpPost("CreateUser")]
     [Consumes("application/json")]
-    [Authorize("Admin")]
     public async Task<IActionResult> CreateUser([FromBody] User user)
     {
         if (!ModelState.IsValid)

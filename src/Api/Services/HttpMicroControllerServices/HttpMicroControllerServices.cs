@@ -6,8 +6,9 @@ namespace Api.Services.HttpMicroControllerServices;
 
 public interface IHttpMicroControllerServices
 {
-    public Task<bool> PostVol(DtoMicroController dtoMicroController, int idMusic);
-    public Task<bool> PostByte(DtoMicroController dtoMicroController, Stream stream);
+    Task<bool> PostVol(DtoMicroController dtoMicroController, int idMusic);
+    Task<bool> PostByte(DtoMicroController dtoMicroController, Stream stream);
+    Task<bool> Stop(DtoMicroController dtoMicroController);
 }
 
 public class HttpMicroControllerServices(
@@ -26,8 +27,7 @@ public class HttpMicroControllerServices(
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("",
                 new StringContent(idMusic.ToString(), Encoding.UTF8,
                     "application/json"));
-            Console.WriteLine(httpResponseMessage.Content.ReadAsStringAsync().Result);
-            return true;
+            return httpResponseMessage.Content.ReadAsStringAsync().Result == "готово";
         }
         catch (Exception e)
         {
@@ -45,13 +45,30 @@ public class HttpMicroControllerServices(
             byte[]? arrayByte = await streamToByteArrayServices.StreamToByte(stream);
             if (arrayByte == null)
                 return false;
-            
-            
+
+
             httpClient.BaseAddress = new Uri($"https://{dtoMicroController.Ip}:{dtoMicroController.Port}");
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("", new ByteArrayContent(arrayByte));
             Console.WriteLine(await httpResponseMessage.Content.ReadAsStringAsync());
-            
+
             return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
+            return false;
+        }
+    }
+
+    public async Task<bool> Stop(DtoMicroController dtoMicroController)
+    {
+        try
+        {
+            httpClient = new HttpClient();
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("", 
+                new StringContent("stop", Encoding.UTF8,
+                    "application/json"));
+            return await httpResponseMessage.Content.ReadAsStringAsync() == "stop";
         }
         catch (Exception e)
         {

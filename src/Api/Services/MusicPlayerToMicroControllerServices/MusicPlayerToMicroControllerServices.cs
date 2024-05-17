@@ -7,7 +7,7 @@ public interface IMusicPlayerToMicroControllerServices
     Task<bool> SoundVol(DtoMicroController dtoMicroController, int vol);
     Task<bool> Play(DtoMicroController dtoMicroController, Stream stream);
     Task<bool> PlayLife(DtoMicroController dtoMicroController, Stream stream);
-    Task<bool> Stop();
+    Task<bool> Stop(DtoMicroController dtoMicroController);
 }
 
 public class MusicPlayerToMicroControllerServices(
@@ -29,8 +29,8 @@ public class MusicPlayerToMicroControllerServices(
         return await httpMicroControllerServices.PostByte(dtoMicroController, stream);
     }
 
-    public async Task<bool> Stop()
+    public async Task<bool> Stop(DtoMicroController dtoMicroController)
     {
-        return true;
+        return await httpMicroControllerServices.Stop(dtoMicroController);
     }
 }

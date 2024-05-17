@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using Api.Interface;
 using Api.Model.ResponseModel.User;
+using Api.Services.JsonServices;
 using MySql.Data.MySqlClient;
 
 namespace Api.Data.Repository.User;
@@ -9,7 +10,8 @@ public class UserRepository(
     IConfiguration configuration,
     ILogger<UserRepository> logger,
     MySqlConnection mySqlConnection,
-    MySqlCommand mySqlCommand) : IRepository<Model.RequestModel.User.User, DtoUser, Model.RequestModel.User.User>
+    MySqlCommand mySqlCommand,
+    IJsonServices<string[]> jsonServices) : IRepository<Model.RequestModel.User.User, DtoUser, Model.RequestModel.User.User>
 {
     private DbDataReader? _dataReader;
     private List<DtoUser>? _dtoUsers;
@@ -32,7 +34,7 @@ public class UserRepository(
 
             mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
             mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
-            mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = user.Role;
+            mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = jsonServices.SerJson(user.Role);
             
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
@@ -46,7 +48,7 @@ public class UserRepository(
         return true;
     }
 
-    public Task<List<DtoUser>>? GetAll(string item)
+    public Task<List<DtoUser>?> GetAll(string item)
     {
         throw new NotImplementedException();
     }
@@ -247,14 +249,14 @@ public class UserRepository(
     public async Task<bool> Search(string item, string name, string field)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +
-                         $"WHERE {field} = @Name)";
+                         $"WHERE {field} = @Login)";
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = name;
+            mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = name;
 
             object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);

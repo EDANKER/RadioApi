@@ -5,15 +5,12 @@ using Api.Model.ResponseModel.MicroController;
 using Api.Model.ResponseModel.Music;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
-using Api.Services.StreamToByteArrayServices;
 using Api.Services.TimeCounterServices;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Services.MusicServices;
 
 public interface IMusicServices
 {
-    Task<Stream?> GetMusicInMinio(int id);
     Task<bool> Play(int idMusic, int[] idController);
     Task<bool> PlayLife(IFormFile formFile, int[] idController);
     Task<bool> Stop(int[] idController);
@@ -31,10 +28,9 @@ public class MusicServices(
     IFileServices.IFileServices fileServices,
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
     IMicroControllerServices microControllerServices,
-    IStreamToByteArrayServices streamToByteArrayServices,
     ITimeCounterServices timeCounterServices) : IMusicServices
 {
-    public async Task<Stream?> GetMusicInMinio(int id)
+    private async Task<Stream?> GetMusicInMinio(int id)
     {
         DtoMusic? dtoMusic = await musicRepository.GetId("Musics", id);
         if (dtoMusic != null)
@@ -47,6 +43,7 @@ public class MusicServices(
 
         return null;
     }
+    
 
     public async Task<bool> Play(int idMusic, int[] idController)
     {
@@ -60,16 +57,12 @@ public class MusicServices(
                     continue;
                 DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
                 if (dtoMicroController != null)
-                    await musicPlayerToMicroControllerServices.Play(
+                    return await musicPlayerToMicroControllerServices.Play(
                         dtoMicroController, stream);
             }
         }
-        else
-        {
-            return false;
-        }
-        
-        return true;
+
+        return false;
     }
 
     public async Task<bool> PlayLife(IFormFile formFile, int[] idController)
@@ -80,16 +73,26 @@ public class MusicServices(
                 continue;
             DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
             if (dtoMicroController != null)
-                await musicPlayerToMicroControllerServices.PlayLife(
+                return await musicPlayerToMicroControllerServices.PlayLife(
                     dtoMicroController, formFile.OpenReadStream());
         }
 
-        return true;
+        return false;
     }
 
-    public async Task<bool> Stop( int[] idController)
+    public async Task<bool> Stop(int[] idController)
     {
-        return await musicPlayerToMicroControllerServices.Stop();
+        foreach (var data in idController)
+        {
+            if (data < 0)
+                continue;
+
+            DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
+            if (dtoMicroController != null)
+                return await musicPlayerToMicroControllerServices.Stop(dtoMicroController);
+        }
+
+        return false;
     }
 
     public async Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList)
