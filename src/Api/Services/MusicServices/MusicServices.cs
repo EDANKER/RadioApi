@@ -52,7 +52,6 @@ public class MusicServices(
         {
             foreach (var data in idController)
             {
-                Console.WriteLine(data);
                 if (data < 0)
                     continue;
                 DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);

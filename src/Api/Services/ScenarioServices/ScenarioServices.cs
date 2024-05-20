@@ -21,14 +21,21 @@ public interface IScenarioServices
 public class ScenarioServices(
     IRepository<Scenario, DtoScenario, Scenario> scenarioRepository,
     IHebrideanCacheServices hebrideanCacheServices,
-    IJsonServices<Scenario> jsonServices) : IScenarioServices
+    IJsonServices<DtoScenario> jsonServices) : IScenarioServices
 {
     public async Task<bool> CreateOrSave(string item, Scenario scenario)
     {
         DateTime dataTime = DateTime.Now;
         if (await scenarioRepository.CreateOrSave(item, scenario))
-            if(scenario.Days == dataTime.ToString("ddd"))
-                return await hebrideanCacheServices.Put(scenario.Time, jsonServices.SerJson(scenario));
+            if (scenario.Days == dataTime.ToString("ddd"))
+            {
+                List<DtoScenario>? dtoScenarios = await scenarioRepository.GetString("Scenario", scenario.Name, "Name");
+                if (dtoScenarios != null)
+                    foreach (var data in dtoScenarios)
+                        return await hebrideanCacheServices.Put(scenario.Time,
+                            jsonServices.SerJson(data));
+            }
+
         return true;
     }
 

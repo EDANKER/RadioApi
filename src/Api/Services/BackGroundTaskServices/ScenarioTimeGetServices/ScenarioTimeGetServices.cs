@@ -17,6 +17,7 @@ public class ScenarioTimeGetServices(
     {
         try
         {
+            int endeavors  = 0;
             DateTime days = DateTime.Now;
             List<DtoScenario>? dtoScenarios = await scenarioServices.GetAll("Scenario");
             if (dtoScenarios != null)
@@ -35,8 +36,11 @@ public class ScenarioTimeGetServices(
                     {
                         DtoScenario? dtoScenario = jsonServices.DesJson(json);
                         if (dtoScenario != null)
-                            if (await musicServices.Play(dtoScenario.IdMusic, dtoScenario.IdMicroControllers))
+                            if (await musicServices.Play(dtoScenario.IdMusic, dtoScenario.IdMicroControllers)
+                                || endeavors >= 3)
                                 await hebrideanCacheServices.DeleteId(dtoScenario.Time);
+                            else
+                                ++endeavors;
                     }
                     
                 }

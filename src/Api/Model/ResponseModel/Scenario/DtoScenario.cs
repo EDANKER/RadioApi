@@ -14,4 +14,9 @@ public class DtoScenario(int id, string name, int[] idMicroControllers, string t
     public string Days { get; set; } = days;
     [Range(0, 64, ErrorMessage = "< 64 > 3")]
     public int IdMusic { get; set; } = idMusic;
+
+    public override string ToString()
+    {
+        return $"{Id} {IdMicroControllers} {Time} {Days} {IdMusic}";
+    }
 }

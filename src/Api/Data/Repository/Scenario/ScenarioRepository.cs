@@ -160,7 +160,7 @@ public class ScenarioRepository(
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.AddWithValue("@Name", namePurpose);
+            mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.LongText).Value = namePurpose;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
@@ -170,9 +170,9 @@ public class ScenarioRepository(
                 {
                     int id = _dataReader.GetInt32(0);
                     string name = _dataReader.GetString(1);
-                    string idMicroController = _dataReader.GetString(3);
-                    string time = _dataReader.GetString(4);
-                    string days = _dataReader.GetString(5);
+                    string idMicroController = _dataReader.GetString(2);
+                    string time = _dataReader.GetString(3);
+                    string days = _dataReader.GetString(4);
                     int idMusic = _dataReader.GetInt32(5);
 
                     int[]? array = jsonServices.DesJson(idMicroController);
