@@ -5,17 +5,17 @@ namespace Api.Services.JsonServices;
 
 public interface IJsonServices<T>
 {
-    string? SerJson(T item);
-    T? DesJson(string item);
+    Task<string>? SerJson(T item);
+    Task<T?>? DesJson(string item);
 }
 
 public class JsonServices<T>(ILogger<JsonServices<T>> logger) : IJsonServices<T>
 {
-    public string? SerJson(T item)
+    public Task<string>? SerJson(T item)
     {
         try
         {
-            return JsonConvert.SerializeObject(item);
+            return Task.FromResult(JsonConvert.SerializeObject(item));
         }
         catch (Exception e)
         {
@@ -24,14 +24,11 @@ public class JsonServices<T>(ILogger<JsonServices<T>> logger) : IJsonServices<T>
         }
     }
 
-    public T? DesJson(string item)
+    public Task<T?>? DesJson(string item)
     {
         try
         {
-            if (item != null) 
-                return JsonConvert.DeserializeObject<T>(item);
-
-            return default;
+            return Task.FromResult(JsonConvert.DeserializeObject<T>(item));
         }
         catch (Exception e)
         {

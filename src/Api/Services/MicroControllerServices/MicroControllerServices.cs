@@ -44,10 +44,10 @@ public class MicroControllerServices(
         if (await controllerRepository.CreateOrSave(item, microController))
         {
             List<DtoMicroController>? dtoMicroController =
-                await controllerRepository.GetString(item, microController.Name, "Name");
+                await controllerRepository.GetUni(item, microController.Name, "Name");
             if (dtoMicroController != null)
                 foreach (var data in dtoMicroController)
-                    return await hebrideanCacheServices.Put(data.Id.ToString(), dtoJsonServices.SerJson(data));
+                    return await hebrideanCacheServices.Put(data.Id.ToString(), await dtoJsonServices.SerJson(data));
         }
 
         return false;
@@ -68,7 +68,7 @@ public class MicroControllerServices(
         string? dtoMicroController = await hebrideanCacheServices.GetId(id.ToString());
 
         if (dtoMicroController != default)
-            return dtoJsonServices.DesJson(dtoMicroController);
+            return await dtoJsonServices.DesJson(dtoMicroController);
 
         return await controllerRepository.GetId(item, id);
     }
@@ -87,7 +87,7 @@ public class MicroControllerServices(
         {
             if (await controllerRepository.UpdateId(item, microController, id))
             {
-                return await hebrideanCacheServices.Put(id.ToString(), jsonServices.SerJson(microController));
+                return await hebrideanCacheServices.Put(id.ToString(), await jsonServices.SerJson(microController));
             }
         }
 

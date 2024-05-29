@@ -43,7 +43,7 @@ public class MusicServices(
 
         return null;
     }
-    
+
 
     public async Task<bool> Play(int idMusic, int[] idController)
     {
@@ -96,15 +96,9 @@ public class MusicServices(
 
     public async Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList)
     {
-        if (await musicRepository.CreateOrSave(item,
-                new CreateMusic(formFile.FileName, namePlayList, await timeCounterServices.Time(formFile))))
-        {
-            List<DtoMusic>? dtoMusics = await musicRepository.GetString(item, formFile.FileName, "Name");
-            if (dtoMusics != null)
-                foreach (var data in dtoMusics)
-                    return await fileServices.Save(formFile, data.Name, "music", "audio/mpeg");
-        }
-
+        if (await musicRepository.CreateOrSave(item, new CreateMusic(formFile.FileName, namePlayList, await timeCounterServices.TimeToMinutes(formFile))))
+            return await fileServices.Save(formFile, formFile.FileName, "music", "audio/mpeg");
+        
         return false;
     }
 
@@ -120,7 +114,7 @@ public class MusicServices(
 
     public async Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field)
     {
-        return await musicRepository.GetString(item, namePurpose, field);
+        return await musicRepository.GetUni(item, namePurpose, field);
     }
 
     public async Task<bool> DeleteId(string item, int id, string path)

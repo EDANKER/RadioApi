@@ -95,7 +95,7 @@ public class PlayListRepository(
         }
     }
 
-    public async Task<List<DtoPlayList>?> GetString(string item, string namePurpose, string field)
+    public async Task<List<DtoPlayList>?> GetUni(string item, string namePurpose, string field)
     {
         _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
@@ -135,6 +135,11 @@ public class PlayListRepository(
             logger.LogError(e.ToString());
             return null;
         }
+    }
+
+    public Task<List<DtoPlayList>?> GetLike(string item, string namePurpose, string field)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<List<DtoPlayList>?> GetFloor(string item, int limit)

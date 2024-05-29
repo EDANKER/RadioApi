@@ -1,17 +1,23 @@
-﻿using Api.Data.Repository.Scenario;
+﻿using System.Globalization;
 using Api.Interface;
 using Api.Model.RequestModel.Scenario;
+using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.Scenario;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.JsonServices;
+using Api.Services.MusicServices;
+using Api.Services.TimeCounterServices;
 
 namespace Api.Services.ScenarioServices;
 
 public interface IScenarioServices
 {
+    Task<int?> ValidationTime(string time);
     Task<bool> CreateOrSave(string item, Scenario scenario);
     Task<DtoScenario?> GetId(string item, int id);
     Task<List<DtoScenario>?> GetAll(string item);
+    Task<List<DtoScenario>?> GetUni(string item, string namePurpose, string field);
+    public Task<List<DtoScenario>?> GetLike(string item, string namePurpose, string field);
     Task<List<DtoScenario>?> GetLimit(string item, int limit);
     Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, Scenario scenario, int id);
@@ -21,22 +27,69 @@ public interface IScenarioServices
 public class ScenarioServices(
     IRepository<Scenario, DtoScenario, Scenario> scenarioRepository,
     IHebrideanCacheServices hebrideanCacheServices,
-    IJsonServices<DtoScenario> jsonServices) : IScenarioServices
+    IJsonServices<DtoScenario> jsonServices,
+    IMusicServices musicServices) : IScenarioServices
 {
-    public async Task<bool> CreateOrSave(string item, Scenario scenario)
+    public async Task<int?> ValidationTime(string time)
     {
-        DateTime dataTime = DateTime.Now;
-        if (await scenarioRepository.CreateOrSave(item, scenario))
-            if (scenario.Days == dataTime.ToString("ddd"))
+        List<DtoScenario>? dtoScenarios = await scenarioRepository.GetUni("Scenario", time, "Time");
+        if (dtoScenarios != null)
+            foreach (var dataScenario in dtoScenarios)
             {
-                List<DtoScenario>? dtoScenarios = await scenarioRepository.GetString("Scenario", scenario.Name, "Name");
-                if (dtoScenarios != null)
-                    foreach (var data in dtoScenarios)
-                        return await hebrideanCacheServices.Put(scenario.Time,
-                            jsonServices.SerJson(data));
+                DtoMusic? dtoMusic = await musicServices.GetId("Musics", dataScenario.IdMusic);
+                if (dtoMusic != null)
+                    return dtoMusic.TimeMusic;
             }
 
-        return true;
+        return null;
+    }
+
+    public async Task<bool> CreateOrSave(string item, Scenario scenario)
+    {
+        List<DtoMusic>? dtoMusic = await musicServices.GetUni("Musics", scenario.IdMusic.ToString(), "Id");
+
+        if (dtoMusic != null)
+        {
+            int timeMin = dtoMusic[0].TimeMusic;
+            string[] time = scenario.Time.Split([':']);
+
+            int hours = int.Parse(time[0]);
+            int minutes = int.Parse(time[1]);
+
+            for (int i = 0; i < 1; i++)
+                if (int.Parse(time[1]) == 59)
+                {
+                    timeMin -= 1;
+                    hours += 1;
+                }
+                else minutes += timeMin;
+            
+            Scenario scenarioMap = new Scenario(scenario.Name, scenario.IdMicroController,
+                $"{scenario.Time}-{hours.ToString()}:{minutes}", scenario.Days,
+                scenario.IdMusic);
+
+            DateTime dataTime = DateTime.Now;
+            if (await scenarioRepository.CreateOrSave(item, scenarioMap))
+                foreach (var days in scenario.Days)
+                {
+                    if (days == dataTime.ToString("dddd"))
+                    {
+                        List<DtoScenario>? dtoScenarios =
+                            await scenarioRepository.GetUni("Scenario", scenario.Name, "Name");
+                        if (dtoScenarios != null)
+                            foreach (var data in dtoScenarios)
+                                return await hebrideanCacheServices.Put(
+                                    scenario.Time.ToString(CultureInfo.InvariantCulture),
+                                    await jsonServices.SerJson(data));
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+        }
+
+        return false;
     }
 
     public async Task<DtoScenario?> GetId(string item, int id)
@@ -47,6 +100,16 @@ public class ScenarioServices(
     public async Task<List<DtoScenario>?> GetAll(string item)
     {
         return await scenarioRepository.GetAll(item);
+    }
+
+    public async Task<List<DtoScenario>?> GetUni(string item, string namePurpose, string field)
+    {
+        return await scenarioRepository.GetUni(item, namePurpose, field);
+    }
+
+    public async Task<List<DtoScenario>?> GetLike(string item, string namePurpose, string field)
+    {
+        return await scenarioRepository.GetLike(item, namePurpose, field);
     }
 
     public async Task<List<DtoScenario>?> GetLimit(string item, int limit)

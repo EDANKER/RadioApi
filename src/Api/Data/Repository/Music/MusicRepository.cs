@@ -75,7 +75,7 @@ public class MusicRepository(
                 {
                     string name = _dataReader.GetString(1);
                     string namePlayList = _dataReader.GetString(2);
-                    string timeMusic = _dataReader.GetString(3);
+                    int timeMusic = _dataReader.GetInt32(3);
 
                     _dtoMusic = new DtoMusic(id, name, namePlayList, timeMusic);
                 }
@@ -97,7 +97,7 @@ public class MusicRepository(
         }
     }
 
-    public async Task<List<DtoMusic>?> GetString(string item, string namePurpose, string field)
+    public async Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field)
     {
         _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
@@ -118,7 +118,7 @@ public class MusicRepository(
                     int id = _dataReader.GetInt32(0);
                     string name = _dataReader.GetString(1);
                     string namePlayList = _dataReader.GetString(2);
-                    string timeMusic = _dataReader.GetString(3);
+                    int timeMusic = _dataReader.GetInt32(3);
 
                     _dtoMusic = new DtoMusic(id, name, namePlayList, timeMusic);
                     _dtoMusics.Add(_dtoMusic);
@@ -139,6 +139,11 @@ public class MusicRepository(
             logger.LogError(e.ToString());
             return null;
         }
+    }
+
+    public Task<List<DtoMusic>?> GetLike(string item, string namePurpose, string field)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<List<DtoMusic>?> GetFloor(string item, int limit)
@@ -164,7 +169,7 @@ public class MusicRepository(
                     int id = _dataReader.GetInt32(0);
                     string name = _dataReader.GetString(1);
                     string namePlayList = _dataReader.GetString(2);
-                    string timeMusic = _dataReader.GetString(3);
+                    int timeMusic = _dataReader.GetInt32(3);
 
                     _dtoMusic = new DtoMusic(id, name, namePlayList, timeMusic);
                     _dtoMusics.Add(_dtoMusic);

@@ -18,8 +18,9 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
 
         if (await scenarioServices.Search("Scenario", scenario.Name, "Name"))
             return BadRequest("Имя уже занято");
-        if (await scenarioServices.Search("Scenario", scenario.Time, "Time"))
-            return BadRequest("Время уже занято");
+        double? validationTime = await scenarioServices.ValidationTime(scenario.Time);
+        if (validationTime != null)
+            return BadRequest(validationTime);
 
         return Ok(await scenarioServices.CreateOrSave("Scenario", scenario));
     }

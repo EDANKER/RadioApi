@@ -24,17 +24,8 @@ public class PlayListServices(
 {
     public async Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile)
     {
-        if (await fileServices.Save(formFile, formFile.Name, "photo", "image/jpeg") &&
-            await playListRepository.CreateOrSave(item,
-                new CreatePlayList(name, description, formFile.FileName)))
-        {
-            List<DtoPlayList>? playLists = await playListRepository.GetString(item, name, "Name");
-            if (playLists != null)
-            {
-                foreach (var data in playLists)
-                    return await fileServices.CreateBucket(data.Id.ToString());
-            }
-        }
+        if (await playListRepository.CreateOrSave(item, new CreatePlayList(name, description, formFile.FileName)))
+            return await fileServices.Save(formFile, formFile.FileName, "photo", "image/jpeg");
 
         return false;
     }
@@ -75,7 +66,7 @@ public class PlayListServices(
 
     public async Task<List<DtoPlayList>?> GetString(string item, string namePurpose, string field)
     {
-        return await playListRepository.GetString(item, namePurpose, field);
+        return await playListRepository.GetUni(item, namePurpose, field);
     }
 
     public async Task<bool> DeleteId(string item, int id)

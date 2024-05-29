@@ -10,6 +10,7 @@ public class ScenarioTimeGetServices(
     IScenarioServices scenarioServices,
     IHebrideanCacheServices hebrideanCacheServices,
     IJsonServices<DtoScenario?> jsonServices,
+    IJsonServices<string[]?> jsonServicesS,
     IMusicServices musicServices,
     ILogger<ScenarioTimeGetServices> logger) : BackgroundService
 {
@@ -17,15 +18,18 @@ public class ScenarioTimeGetServices(
     {
         try
         {
-            int endeavors  = 0;
+            int endeavors = 0;
             DateTime days = DateTime.Now;
-            List<DtoScenario>? dtoScenarios = await scenarioServices.GetAll("Scenario");
+            List<DtoScenario>? dtoScenarios = await scenarioServices.GetLike("Scenario", days.ToString("dddd"), "Days");
             if (dtoScenarios != null)
             {
-                Console.WriteLine(days.ToString("ddd"));
                 foreach (var data in dtoScenarios)
-                    if(data.Days == days.ToString("ddd"))
-                        await hebrideanCacheServices.Put(data.Time, jsonServices.SerJson(data));
+                {
+                    Console.WriteLine(data);
+                    string[]? day = await jsonServicesS.DesJson(data.Days);
+                    if (day != null)
+                        await hebrideanCacheServices.Put(data.Time.Split('-')[0], await jsonServices.SerJson(data));
+                }
 
                 while (!stoppingToken.IsCancellationRequested)
                 {
@@ -34,20 +38,23 @@ public class ScenarioTimeGetServices(
                     string? json = await hebrideanCacheServices.GetId(time);
                     if (json != null)
                     {
-                        DtoScenario? dtoScenario = jsonServices.DesJson(json);
+                        DtoScenario? dtoScenario = await jsonServices.DesJson(json);
                         if (dtoScenario != null)
                             if (await musicServices.Play(dtoScenario.IdMusic, dtoScenario.IdMicroControllers)
                                 || endeavors >= 3)
-                                await hebrideanCacheServices.DeleteId(dtoScenario.Time);
+                            {
+                                Console.WriteLine("Hello");
+                                await hebrideanCacheServices.DeleteId(dtoScenario.Time.Split('-')[0]);
+
+                            }
                             else
                                 ++endeavors;
                     }
-                    
                 }
-            
+
                 if (stoppingToken.IsCancellationRequested)
                     foreach (var data in dtoScenarios)
-                        await hebrideanCacheServices.DeleteId(data.Time);
+                        await hebrideanCacheServices.DeleteId(data.Time.Split('-')[0]);
             }
         }
         catch (Exception e)

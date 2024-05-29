@@ -11,9 +11,8 @@ namespace Api.Controller.PlayList;
 public class PlayListController(IPlayListServices playListServices) : ControllerBase
 {
     [HttpPost("CreatePlayList")]
-    [Consumes("application/json")]
-    public async Task<IActionResult> CreatePlayList([Required] [FromQuery] string name,
-        [Required] [FromQuery] string description, [Required] [FromForm] IFormFile formFile)
+    public async Task<IActionResult> CreatePlayList([Required] IFormFile formFile, [Required] [FromQuery] string name,
+        [Required] [FromQuery] string description)
     {
         if (formFile.ContentType != "image/jpeg")
             return BadRequest("Это не фото");

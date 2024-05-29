@@ -181,7 +181,7 @@ public class MicroControllerRepository(
         return _dtoMicroController;
     }
 
-    public async Task<List<DtoMicroController>?> GetString(string item, string namePurpose, string field)
+    public async Task<List<DtoMicroController>?> GetUni(string item, string namePurpose, string field)
     {
         _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
@@ -225,7 +225,12 @@ public class MicroControllerRepository(
             return null;
         }
     }
-    
+
+    public Task<List<DtoMicroController>?> GetLike(string item, string namePurpose, string field)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<bool> DeleteId(string item, int id)
     {
         string command = $"DELETE FROM {item} " +

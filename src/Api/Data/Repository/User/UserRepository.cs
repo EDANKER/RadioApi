@@ -96,7 +96,7 @@ public class UserRepository(
         }
     }
 
-    public async Task<List<DtoUser>?> GetString(string item, string namePurpose, string field)
+    public async Task<List<DtoUser>?> GetUni(string item, string namePurpose, string field)
     {
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
@@ -139,6 +139,11 @@ public class UserRepository(
             logger.LogError(e.ToString());
             return null;
         }
+    }
+
+    public Task<List<DtoUser>?> GetLike(string item, string namePurpose, string field)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<List<DtoUser>?> GetFloor(string item, int limit)

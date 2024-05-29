@@ -2,7 +2,7 @@
 
 namespace Api.Model.RequestModel.Create.CreateMusic;
 
-public class CreateMusic(string name, string namePlayList, double timeMusic)
+public class CreateMusic(string name, string namePlayList, int timeMusic)
 {
     [Required]
     [StringLength(203, MinimumLength = 3, ErrorMessage = "< 203 > 3")]
@@ -12,5 +12,5 @@ public class CreateMusic(string name, string namePlayList, double timeMusic)
     public string NamePlayList { get; } = namePlayList;
     [Required]
     [StringLength(32, MinimumLength = 3, ErrorMessage = "< 32 > 3")]
-    public double TimeMusic {get; } = timeMusic;
+    public int TimeMusic {get; } = timeMusic;
 }

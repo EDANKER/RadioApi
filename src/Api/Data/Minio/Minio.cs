@@ -7,7 +7,6 @@ namespace Api.Data.Minio;
 
 public interface IMinio
 {
-    Task<bool> CreateBucket(string nameBucket);
     Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type);
     Task<bool> Delete(MinioModel minioModel);
     Task<bool> UpdateName(MinioModel minioModel, string newName, string type);
@@ -22,25 +21,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         .WithCredentials(configuration.GetSection("Minio:user").Value,
             configuration.GetSection("Minio:pass").Value)
         .Build();
-
-
-    public async Task<bool> CreateBucket(string nameBucket)
-    {
-        try
-        {
-            if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs()
-                    .WithBucket(nameBucket)))
-                await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(nameBucket));
-            
-            return true;
-        }
-        catch (MinioException e)
-        {
-           logger.LogError(e.ToString());
-           return false;
-        }
-    }
-
+    
     public async Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type)
     {
         try

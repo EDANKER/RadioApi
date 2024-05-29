@@ -5,7 +5,6 @@ namespace Api.Services.IFileServices;
 
 public interface IFileServices
 {
-    Task<bool> CreateBucket(string nameBucket);
     Task<bool> Save(IFormFile formFile, string name, string bucketName, string type);
     Task<bool> Delete(string path, string bucketName);
     Task<bool> UpdateName(string oldName, string newName, string bucketName, string type);
@@ -17,11 +16,6 @@ public class FileServices(
     IMinio minio)
     : IFileServices
 {
-    public async Task<bool> CreateBucket(string nameBucket)
-    {
-        return await minio.CreateBucket(nameBucket);
-    }
-
     public async Task<bool> Save(IFormFile formFile, string name, string bucketName, string type)
     {
         if (await minio.Save(new MinioModel(name,
