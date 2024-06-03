@@ -45,7 +45,7 @@ public class MusicController(IMusicServices musicServices)
         if (dtoMusics != null)
             return Ok(dtoMusics);
         
-        return BadRequest("Таких данных нет");
+        return NoContent();
     }
 
     [HttpGet("GetMusicId")]
@@ -57,7 +57,7 @@ public class MusicController(IMusicServices musicServices)
         if (dtoMusic != null)
             return Ok(dtoMusic);
         
-        return BadRequest("Таких данных нет");
+        return NoContent();
     }
 
     [HttpDelete("DeleteMusicId")]
@@ -88,7 +88,7 @@ public class MusicController(IMusicServices musicServices)
         List<DtoMusic>? dtoMusic = await musicServices.GetUni("Musics", name, "NamePlayList");
         if (dtoMusic != null)
             return Ok(dtoMusic);
-        
-        return BadRequest("Таких данных нет");
+
+        return NoContent();
     }
 }

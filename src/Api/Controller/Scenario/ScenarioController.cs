@@ -34,7 +34,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
-        return BadRequest("Таких данных нет");
+        return NoContent();
     }
 
     [HttpGet("GetScenarioId")]
@@ -46,7 +46,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
-        return BadRequest("Таких данных нет");
+        return NoContent();
     }
 
     [HttpDelete("DeleteScenarioId")]

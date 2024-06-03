@@ -31,7 +31,7 @@ public class MicroControllersController(IMicroControllerServices microController
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         
-        return BadRequest("Таких данных нет");
+        return NoContent();
     }
 
     [HttpPost("SoundVol")]
@@ -52,7 +52,7 @@ public class MicroControllersController(IMicroControllerServices microController
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         
-        return BadRequest("Таких данных нет");
+        return NoContent();
     }
 
     [HttpPut("UpdateMicroController")]

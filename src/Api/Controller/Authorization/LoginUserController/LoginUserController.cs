@@ -16,6 +16,6 @@ public class LoginUserController(ILoginUserServices loginUserServices)
         if (authenticationUser != null)
             return Ok(authenticationUser);
 
-        return BadRequest("Такого пользователя нет");
+        return NoContent();
     }
 }
