@@ -61,12 +61,12 @@ public class MusicController(IMusicServices musicServices)
     }
 
     [HttpDelete("DeleteMusicId")]
-    public async Task<IActionResult> DeleteMusicId([Required] [FromQuery] int id, [Required] [FromBody] string path)
+    public async Task<IActionResult> DeleteMusicId([Required] [FromQuery] int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await musicServices.DeleteId("Musics", id, path));
+        return Ok(await musicServices.DeleteId("Musics", id));
     }
 
     [HttpPut("UpdateMusic")]

@@ -26,9 +26,9 @@ public class ScenarioTimeGetServices(
                 foreach (var data in dtoScenarios)
                 {
                     Console.WriteLine(data);
-                    string[]? day = await jsonServicesS.DesJson(data.Days);
+                    string[]? day = jsonServicesS.DesJson(data.Days);
                     if (day != null)
-                        await hebrideanCacheServices.Put(data.Time.Split('-')[0], await jsonServices.SerJson(data));
+                        await hebrideanCacheServices.Put(data.Time.Split('-')[0],  jsonServices.SerJson(data));
                 }
 
                 while (!stoppingToken.IsCancellationRequested)
@@ -38,7 +38,7 @@ public class ScenarioTimeGetServices(
                     string? json = await hebrideanCacheServices.GetId(time);
                     if (json != null)
                     {
-                        DtoScenario? dtoScenario = await jsonServices.DesJson(json);
+                        DtoScenario? dtoScenario = jsonServices.DesJson(json);
                         if (dtoScenario != null)
                             if (await musicServices.Play(dtoScenario.IdMusic, dtoScenario.IdMicroControllers)
                                 || endeavors >= 3)

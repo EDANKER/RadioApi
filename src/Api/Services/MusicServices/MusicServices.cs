@@ -18,7 +18,7 @@ public interface IMusicServices
     Task<List<DtoMusic>?> GetLimit(string item, int limit);
     Task<DtoMusic?> GetId(string item, int id);
     Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field);
-    Task<bool> DeleteId(string item, int id, string path);
+    Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, UpdateMusic updateMusic, int id);
     Task<bool> Search(string item, string name, string field);
 }
@@ -56,8 +56,12 @@ public class MusicServices(
                     continue;
                 DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
                 if (dtoMicroController != null)
+                {
+                    Console.WriteLine(dtoMicroController.Name);
                     return await musicPlayerToMicroControllerServices.Play(
                         dtoMicroController, stream);
+                }
+                
             }
         }
 
@@ -117,9 +121,10 @@ public class MusicServices(
         return await musicRepository.GetUni(item, namePurpose, field);
     }
 
-    public async Task<bool> DeleteId(string item, int id, string path)
+    public async Task<bool> DeleteId(string item, int id)
     {
-        if (await fileServices.Delete(id.ToString(), "music"))
+        DtoMusic? dtoMusic = await GetId(item, id);
+        if (dtoMusic != null && await fileServices.Delete(dtoMusic.Name, "music"))
             return await musicRepository.DeleteId(item, id);
 
         return false;

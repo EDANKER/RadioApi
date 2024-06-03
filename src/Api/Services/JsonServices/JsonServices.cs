@@ -1,21 +1,20 @@
-﻿using Api.Model.ResponseModel.MicroController;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Api.Services.JsonServices;
 
 public interface IJsonServices<T>
 {
-    Task<string>? SerJson(T item);
-    Task<T?>? DesJson(string item);
+    string? SerJson(T item);
+    T? DesJson(string item);
 }
 
 public class JsonServices<T>(ILogger<JsonServices<T>> logger) : IJsonServices<T>
 {
-    public Task<string>? SerJson(T item)
+    public string? SerJson(T item)
     {
         try
         {
-            return Task.FromResult(JsonConvert.SerializeObject(item));
+            return JsonConvert.SerializeObject(item);
         }
         catch (Exception e)
         {
@@ -24,11 +23,11 @@ public class JsonServices<T>(ILogger<JsonServices<T>> logger) : IJsonServices<T>
         }
     }
 
-    public Task<T?>? DesJson(string item)
+    public T? DesJson(string item)
     {
         try
         {
-            return Task.FromResult(JsonConvert.DeserializeObject<T>(item));
+            return JsonConvert.DeserializeObject<T>(item);
         }
         catch (Exception e)
         {

@@ -42,13 +42,8 @@ public class HttpMicroControllerServices(
 
         try
         {
-            byte[]? arrayByte = await streamToByteArrayServices.StreamToByte(stream);
-            if (arrayByte == null)
-                return false;
-
-
             httpClient.BaseAddress = new Uri($"https://{dtoMicroController.Ip}:{dtoMicroController.Port}");
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("", new ByteArrayContent(arrayByte));
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("", new StreamContent(stream));
             Console.WriteLine(await httpResponseMessage.Content.ReadAsStringAsync());
 
             return true;

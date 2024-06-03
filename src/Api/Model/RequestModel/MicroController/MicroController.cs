@@ -11,7 +11,6 @@ public class MicroController(string name, string ip, int port, int floor, int ca
     [StringLength(64, MinimumLength = 3, ErrorMessage = "< 64 > 3")]
     public string Ip { get; } = ip;
     [Required]
-    [Range(0, 64)]
     public int Port { get; } = port;
     [Required]
     [Range(0, 64)]

@@ -32,13 +32,17 @@ public class ScenarioServices(
 {
     public async Task<int?> ValidationTime(string time)
     {
-        List<DtoScenario>? dtoScenarios = await scenarioRepository.GetUni("Scenario", time, "Time");
+        DateTime dateTime = DateTime.Now;
+        List<DtoScenario>? dtoScenarios = await scenarioRepository.GetLike("Scenario", dateTime.ToString("dddd"), "Days");
         if (dtoScenarios != null)
             foreach (var dataScenario in dtoScenarios)
             {
                 DtoMusic? dtoMusic = await musicServices.GetId("Musics", dataScenario.IdMusic);
                 if (dtoMusic != null)
-                    return dtoMusic.TimeMusic;
+                {
+                    
+                }
+                    
             }
 
         return null;
@@ -56,13 +60,14 @@ public class ScenarioServices(
             int hours = int.Parse(time[0]);
             int minutes = int.Parse(time[1]);
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < timeMin; i++)
                 if (int.Parse(time[1]) == 59)
                 {
                     timeMin -= 1;
                     hours += 1;
+                    minutes = 0;
                 }
-                else minutes += timeMin;
+                else minutes += 1;
             
             Scenario scenarioMap = new Scenario(scenario.Name, scenario.IdMicroController,
                 $"{scenario.Time}-{hours.ToString()}:{minutes}", scenario.Days,
@@ -79,8 +84,8 @@ public class ScenarioServices(
                         if (dtoScenarios != null)
                             foreach (var data in dtoScenarios)
                                 return await hebrideanCacheServices.Put(
-                                    scenario.Time.ToString(CultureInfo.InvariantCulture),
-                                    await jsonServices.SerJson(data));
+                                    scenario.Time,
+                                     jsonServices.SerJson(data));
                     }
                     else
                     {
@@ -124,7 +129,50 @@ public class ScenarioServices(
 
     public async Task<bool> UpdateId(string item, Scenario scenario, int id)
     {
-        return await scenarioRepository.UpdateId(item, scenario, id);
+        List<DtoMusic>? dtoMusic = await musicServices.GetUni("Musics", scenario.IdMusic.ToString(), "Id");
+
+        if (dtoMusic != null)
+        {
+            int timeMin = dtoMusic[0].TimeMusic;
+            string[] time = scenario.Time.Split([':']);
+
+            int hours = int.Parse(time[0]);
+            int minutes = int.Parse(time[1]);
+
+            for (int i = 0; i < 1; i++)
+                if (int.Parse(time[1]) == 59)
+                {
+                    timeMin -= 1;
+                    hours += 1;
+                }
+                else minutes += timeMin;
+            
+            Scenario scenarioMap = new Scenario(scenario.Name, scenario.IdMicroController,
+                $"{scenario.Time}-{hours.ToString()}:{minutes}", scenario.Days,
+                scenario.IdMusic);
+
+            DateTime dataTime = DateTime.Now;
+            if (await scenarioRepository.UpdateId(item, scenarioMap, id))
+                foreach (var days in scenario.Days)
+                {
+                    if (days == dataTime.ToString("dddd"))
+                    {
+                        List<DtoScenario>? dtoScenarios =
+                            await scenarioRepository.GetUni("Scenario", scenario.Name, "Name");
+                        if (dtoScenarios != null)
+                            foreach (var data in dtoScenarios)
+                                return await hebrideanCacheServices.Put(
+                                    scenario.Time,
+                                    jsonServices.SerJson(data));
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+        }
+
+        return false;
     }
 
     public async Task<bool> Search(string item, string name, string field)
