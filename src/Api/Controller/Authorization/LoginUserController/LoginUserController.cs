@@ -16,6 +16,6 @@ public class LoginUserController(ILoginUserServices loginUserServices)
         if (authenticationUser != null)
             return Ok(authenticationUser);
 
-        return NoContent();
+        return Content("status 204");
     }
 }

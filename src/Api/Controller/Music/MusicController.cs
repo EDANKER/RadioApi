@@ -45,7 +45,7 @@ public class MusicController(IMusicServices musicServices)
         if (dtoMusics != null)
             return Ok(dtoMusics);
         
-        return NoContent();
+        return Content("status 204");
     }
 
     [HttpGet("GetMusicId")]
@@ -57,7 +57,7 @@ public class MusicController(IMusicServices musicServices)
         if (dtoMusic != null)
             return Ok(dtoMusic);
         
-        return NoContent();
+        return Content("status 204");
     }
 
     [HttpDelete("DeleteMusicId")]
@@ -89,6 +89,6 @@ public class MusicController(IMusicServices musicServices)
         if (dtoMusic != null)
             return Ok(dtoMusic);
 
-        return NoContent();
+        return Content("status 204");
     }
 }

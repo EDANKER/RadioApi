@@ -55,7 +55,7 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
-        return NoContent();
+        return Content("status 204");
     }
 
     [HttpGet("GetUserId")]
@@ -68,6 +68,6 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
-        return NoContent();
+        return Content("status 204");
     }
 }

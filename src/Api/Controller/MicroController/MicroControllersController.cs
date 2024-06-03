@@ -31,7 +31,7 @@ public class MicroControllersController(IMicroControllerServices microController
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         
-        return NoContent();
+        return Content("status 204");
     }
 
     [HttpPost("SoundVol")]
@@ -52,7 +52,7 @@ public class MicroControllersController(IMicroControllerServices microController
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         
-        return NoContent();
+        return Content("status 204");
     }
 
     [HttpPut("UpdateMicroController")]

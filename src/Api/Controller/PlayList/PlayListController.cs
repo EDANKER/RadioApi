@@ -51,7 +51,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
         if (dtoPlayList != null)
             return Ok(dtoPlayList);
 
-        return NoContent();
+        return Content("status 204");
     }
 
     [HttpGet("GetPlayListLimit")]
@@ -63,6 +63,6 @@ public class PlayListController(IPlayListServices playListServices) : Controller
         if (dtoPlayList != null)
             return Ok(dtoPlayList);
 
-        return NoContent();
+        return Content("status 204");
     }
 }
