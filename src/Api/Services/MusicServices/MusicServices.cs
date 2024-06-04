@@ -17,7 +17,7 @@ public interface IMusicServices
     Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList);
     Task<List<DtoMusic>?> GetLimit(string item, int limit);
     Task<DtoMusic?> GetId(string item, int id);
-    Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field);
+    Task<List<DtoMusic>?> GetField(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, UpdateMusic updateMusic, int id);
     Task<bool> Search(string item, string name, string field);
@@ -108,7 +108,7 @@ public class MusicServices(
 
     public async Task<List<DtoMusic>?> GetLimit(string item, int limit)
     {
-        return await musicRepository.GetFloor(item, limit);
+        return await musicRepository.GetLimit(item, limit);
     }
 
     public async Task<DtoMusic?> GetId(string item, int id)
@@ -116,9 +116,9 @@ public class MusicServices(
         return await musicRepository.GetId(item, id);
     }
 
-    public async Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field)
+    public async Task<List<DtoMusic>?> GetField(string item, string namePurpose, string field)
     {
-        return await musicRepository.GetUni(item, namePurpose, field);
+        return await musicRepository.GetField(item, namePurpose, field);
     }
 
     public async Task<bool> DeleteId(string item, int id)

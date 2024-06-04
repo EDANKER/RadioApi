@@ -22,12 +22,12 @@ public class MicroControllersController(IMicroControllerServices microController
         return Ok(await microControllerServices.CreateOrSave("MicroControllers", microController));
     }
     
-    [HttpGet("GetMicroControllerFloor")]
-    public async Task<IActionResult> GetMicroControllerFloor([Required] [FromQuery] int floor)
+    [HttpGet("GetAllMicroController")]
+    public async Task<IActionResult> GetAllMicroController([Required] [FromQuery] int floor)
     {
         if (floor < 0)
             return BadRequest("Некорректное значение floor");
-        List<DtoMicroController>? dtoMicroController = await microControllerServices.GetFloor("MicroControllers", floor);
+        List<DtoMicroController>? dtoMicroController = await microControllerServices.GetAll("MicroControllers");
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         

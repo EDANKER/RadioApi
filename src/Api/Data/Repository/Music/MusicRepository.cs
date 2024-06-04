@@ -49,14 +49,50 @@ public class MusicRepository(
         return true;
     }
 
-    public Task<List<DtoMusic>?> GetAll(string item)
+    public async Task<List<DtoMusic>?> GetAll(string item)
     {
-        throw new NotImplementedException();
+        _dtoMusics = new List<DtoMusic>();
+        string command = $"SELECT * FROM {item} ";
+
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string namePlayList = _dataReader.GetString(2);
+                    int timeMusic = _dataReader.GetInt32(3);
+
+                    _dtoMusic = new DtoMusic(id, name, namePlayList, timeMusic);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
+            return _dtoMusics;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
     }
 
     public async Task<DtoMusic?> GetId(string item, int id)
     {
-        _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
 
@@ -97,7 +133,7 @@ public class MusicRepository(
         }
     }
 
-    public async Task<List<DtoMusic>?> GetUni(string item, string namePurpose, string field)
+    public async Task<List<DtoMusic>?> GetField(string item, string namePurpose, string field)
     {
         _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
@@ -141,16 +177,56 @@ public class MusicRepository(
         }
     }
 
-    public Task<List<DtoMusic>?> GetLike(string item, string namePurpose, string field)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<List<DtoMusic>?> GetFloor(string item, int limit)
+    public async Task<List<DtoMusic>?> GetLike(string item, string namePurpose, string field)
     {
         _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
-                         $"LIMIT  @Limit";
+                         $"WHERE {field} LIKE @NamePurpose ";
+        
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.String).Value = $"%{namePurpose}%";
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string namePlayList = _dataReader.GetString(2);
+                    int timeMusic = _dataReader.GetInt32(3);
+
+                    _dtoMusic = new DtoMusic(id, name, namePlayList, timeMusic);
+                    _dtoMusics.Add(_dtoMusic);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
+            return _dtoMusics;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
+    }
+
+    public async Task<List<DtoMusic>?> GetLimit(string item, int limit)
+    {
+        _dtoMusics = new List<DtoMusic>();
+        string command = $"SELECT * FROM {item} " +
+                         $"LIMIT  @Limit ";
 
         try
         {

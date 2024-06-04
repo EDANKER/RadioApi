@@ -2,9 +2,7 @@
 using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.User;
 using Api.Services.UserServices;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Controller.AdminPanelSettings;
 

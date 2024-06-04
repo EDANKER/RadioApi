@@ -48,9 +48,48 @@ public class UserRepository(
         return true;
     }
 
-    public Task<List<DtoUser>?> GetAll(string item)
+    public async Task<List<DtoUser>?> GetAll(string item)
     {
-        throw new NotImplementedException();
+        _dtoUsers = new List<DtoUser>();
+        string command = $"SELECT * FROM {item} " +
+                         "WHERE id = @Id";
+        
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string fullname = _dataReader.GetString(1);
+                    string login = _dataReader.GetString(2);
+                    string role = _dataReader.GetString(3);
+
+                    _dtoUser = new DtoUser(id, fullname, login, role);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await mySqlConnection.CloseAsync();
+            await _dataReader.CloseAsync();
+
+            return _dtoUsers;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
     }
 
     public async Task<DtoUser?> GetId(string item, int id)
@@ -96,7 +135,7 @@ public class UserRepository(
         }
     }
 
-    public async Task<List<DtoUser>?> GetUni(string item, string namePurpose, string field)
+    public async Task<List<DtoUser>?> GetField(string item, string namePurpose, string field)
     {
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
@@ -141,12 +180,53 @@ public class UserRepository(
         }
     }
 
-    public Task<List<DtoUser>?> GetLike(string item, string namePurpose, string field)
+    public async Task<List<DtoUser>?> GetLike(string item, string namePurpose, string field)
     {
-        throw new NotImplementedException();
+        _dtoUsers = new List<DtoUser>();
+        string command = $"SELECT * FROM {item} " +
+                         $"WHERE {field} LIKE @NamePurpose ";
+        
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.String).Value = $"%{namePurpose}%";
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string fullname = _dataReader.GetString(1);
+                    string login = _dataReader.GetString(2);
+                    string role = _dataReader.GetString(3);
+
+                    _dtoUser = new DtoUser(id, fullname, login, role);
+                    _dtoUsers.Add(_dtoUser);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await mySqlConnection.CloseAsync();
+            await _dataReader.CloseAsync();
+
+            return _dtoUsers;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
     }
 
-    public async Task<List<DtoUser>?> GetFloor(string item, int limit)
+    public async Task<List<DtoUser>?> GetLimit(string item, int limit)
     {
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +

@@ -33,7 +33,7 @@ public class PlayListServices(
     public async Task<List<DtoPlayList>?> GetLimit(string item, int limit)
     {
         List<DtoPlayList> getPlayLists = new List<DtoPlayList>();
-        List<DtoPlayList>? getPlayListRepo = await playListRepository.GetFloor(item, limit);
+        List<DtoPlayList>? getPlayListRepo = await playListRepository.GetLimit(item, limit);
         if (getPlayListRepo != null)
         {
             foreach (var data in getPlayListRepo)
@@ -66,7 +66,7 @@ public class PlayListServices(
 
     public async Task<List<DtoPlayList>?> GetString(string item, string namePurpose, string field)
     {
-        return await playListRepository.GetUni(item, namePurpose, field);
+        return await playListRepository.GetField(item, namePurpose, field);
     }
 
     public async Task<bool> DeleteId(string item, int id)

@@ -12,7 +12,8 @@ public interface IMicroControllerServices
     Task<bool> SoundVol(int[] idMicroControllers, int vol);
     Task<bool> CreateOrSave(string item, MicroController microController);
     Task<List<DtoMicroController>?> GetAll(string item);
-    Task<List<DtoMicroController>?> GetFloor(string item, int floor);
+    Task<List<DtoMicroController>?> GetLimit(string item, int floor);
+    Task<List<DtoMicroController>?> GetField(string item, string namePurpose, string field);
     Task<DtoMicroController?> GetId(string item, int id);
     Task<bool> DeleteId(string item, int id);
     Task<bool> Update(string item, MicroController microController, int id);
@@ -44,7 +45,7 @@ public class MicroControllerServices(
         if (await controllerRepository.CreateOrSave(item, microController))
         {
             List<DtoMicroController>? dtoMicroController =
-                await controllerRepository.GetUni(item, microController.Name, "Name");
+                await controllerRepository.GetField(item, microController.Name, "Name");
             if (dtoMicroController != null)
                 foreach (var data in dtoMicroController)
                     return await hebrideanCacheServices.Put(data.Id.ToString(),  dtoJsonServices.SerJson(data));
@@ -58,9 +59,14 @@ public class MicroControllerServices(
         return await controllerRepository.GetAll(item);
     }
 
-    public async Task<List<DtoMicroController>?> GetFloor(string item, int floor)
+    public async Task<List<DtoMicroController>?> GetLimit(string item, int floor)
     {
-        return await controllerRepository.GetFloor(item, floor);
+        return await controllerRepository.GetLimit(item, floor);
+    }
+
+    public async Task<List<DtoMicroController>?> GetField(string item, string namePurpose, string field)
+    {
+        return await controllerRepository.GetField(item, namePurpose, item);
     }
 
     public async Task<DtoMicroController?> GetId(string item, int id)

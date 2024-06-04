@@ -151,7 +151,7 @@ public class ScenarioRepository(
         }
     }
 
-    public async Task<List<DtoScenario>?> GetUni(string item, string namePurpose, string field)
+    public async Task<List<DtoScenario>?> GetField(string item, string namePurpose, string field)
     {
         _dtoScenarios = new List<DtoScenario>();
         string command = $"SELECT * FROM {item} " +
@@ -250,7 +250,7 @@ public class ScenarioRepository(
         }
     }
 
-    public async Task<List<DtoScenario>?> GetFloor(string item, int limit)
+    public async Task<List<DtoScenario>?> GetLimit(string item, int limit)
     {
         _dtoScenarios = new List<DtoScenario>();
         string command = $"SELECT * FROM {item} " +

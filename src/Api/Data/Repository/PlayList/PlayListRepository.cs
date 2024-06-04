@@ -46,14 +46,48 @@ public class PlayListRepository(
         }
     }
 
-    public Task<List<DtoPlayList>>? GetAll(string item)
+    public async Task<List<DtoPlayList>?> GetAll(string item)
     {
-        throw new NotImplementedException();
+        _dtoPlayLists = new List<DtoPlayList>();
+        string command = $"SELECT * FROM {item} ";
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string description = _dataReader.GetString(2);
+                    string imgPath = _dataReader.GetString(3);
+
+                    _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
+                    _dtoPlayLists.Add(_dtoPlayList);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await mySqlConnection.CloseAsync();
+            await _dataReader.CloseAsync();
+
+            return _dtoPlayLists;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
     }
 
     public async Task<DtoPlayList?> GetId(string item, int id)
     {
-        _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE Id = @Id";
 
@@ -95,7 +129,7 @@ public class PlayListRepository(
         }
     }
 
-    public async Task<List<DtoPlayList>?> GetUni(string item, string namePurpose, string field)
+    public async Task<List<DtoPlayList>?> GetField(string item, string namePurpose, string field)
     {
         _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
@@ -137,12 +171,52 @@ public class PlayListRepository(
         }
     }
 
-    public Task<List<DtoPlayList>?> GetLike(string item, string namePurpose, string field)
+    public async Task<List<DtoPlayList>?> GetLike(string item, string namePurpose, string field)
     {
-        throw new NotImplementedException();
+        _dtoPlayLists = new List<DtoPlayList>();
+        string command = $"SELECT * FROM {item} " +
+                         $"WHERE {field} LIKE @NamePurpose ";
+        
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.String).Value = $"%{namePurpose}%";
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string description = _dataReader.GetString(2);
+                    string imgPath = _dataReader.GetString(3);
+
+                    _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
+                    _dtoPlayLists.Add(_dtoPlayList);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await _dataReader.CloseAsync();
+            await mySqlConnection.CloseAsync();
+
+            return _dtoPlayLists;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
     }
 
-    public async Task<List<DtoPlayList>?> GetFloor(string item, int limit)
+    public async Task<List<DtoPlayList>?> GetLimit(string item, int limit)
     {
         _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +

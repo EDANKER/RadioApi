@@ -93,18 +93,17 @@ public class MicroControllerRepository(
         }
     }
 
-    public async Task<List<DtoMicroController>?> GetFloor(string item, int floor)
+    public async Task<List<DtoMicroController>?> GetLimit(string item, int limit)
     {
         _dtoMicroControllers = new List<DtoMicroController>();
-        string command = $"SELECT * FROM {item} " +
-                         " WHERE Floor = @Floor";
+        string command = $"SELECT * FROM {item} LIMIT @LIMIT";
         
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Floor", MySqlDbType.Int32).Value = floor;
+            mySqlCommand.Parameters.Add("@Floor", MySqlDbType.Int32).Value = limit;
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)
             {
@@ -115,10 +114,10 @@ public class MicroControllerRepository(
                     string ip = _dataReader.GetString(2);
                     int port = _dataReader.GetInt32(3);
                     int cabinet = _dataReader.GetInt32(4);
-                    floor = _dataReader.GetInt32(5);
+                    limit = _dataReader.GetInt32(5);
 
                     _dtoMicroController = new DtoMicroController(id, name, ip,
-                        port, floor, cabinet);
+                        port, limit, cabinet);
                     _dtoMicroControllers.Add(_dtoMicroController);
                 }
             }
@@ -181,7 +180,7 @@ public class MicroControllerRepository(
         return _dtoMicroController;
     }
 
-    public async Task<List<DtoMicroController>?> GetUni(string item, string namePurpose, string field)
+    public async Task<List<DtoMicroController>?> GetField(string item, string namePurpose, string field)
     {
         _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
@@ -226,9 +225,53 @@ public class MicroControllerRepository(
         }
     }
 
-    public Task<List<DtoMicroController>?> GetLike(string item, string namePurpose, string field)
+    public async Task<List<DtoMicroController>?> GetLike(string item, string namePurpose, string field)
     {
-        throw new NotImplementedException();
+        _dtoMicroControllers = new List<DtoMicroController>();
+        string command = $"SELECT * FROM {item} " +
+                         $"WHERE {field} LIKE @NamePurpose ";
+
+        try
+        {
+            mySqlConnection = new MySqlConnection(_connect);
+            await mySqlConnection.OpenAsync();
+
+            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.String).Value = $"%{namePurpose}%";
+
+            _dataReader = await mySqlCommand.ExecuteReaderAsync();
+
+            if (_dataReader.HasRows)
+            {
+                while (await _dataReader.ReadAsync())
+                {
+                    int id = _dataReader.GetInt32(0);
+                    string name = _dataReader.GetString(1);
+                    string ip = _dataReader.GetString(2);
+                    int port = _dataReader.GetInt32(3);
+                    int cabinet = _dataReader.GetInt32(4);
+                    int floor = _dataReader.GetInt32(5);
+
+                    _dtoMicroController = new DtoMicroController(id, name, ip, port, cabinet, floor);
+                    _dtoMicroControllers.Add(_dtoMicroController);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            await mySqlConnection.CloseAsync();
+            await _dataReader.CloseAsync();
+
+            return _dtoMicroControllers;
+        }
+
+        catch(MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return null;
+        }
     }
 
     public async Task<bool> DeleteId(string item, int id)

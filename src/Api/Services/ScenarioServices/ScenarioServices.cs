@@ -1,12 +1,10 @@
-﻿using System.Globalization;
-using Api.Interface;
+﻿using Api.Interface;
 using Api.Model.RequestModel.Scenario;
 using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.Scenario;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.JsonServices;
 using Api.Services.MusicServices;
-using Api.Services.TimeCounterServices;
 
 namespace Api.Services.ScenarioServices;
 
@@ -16,7 +14,7 @@ public interface IScenarioServices
     Task<bool> CreateOrSave(string item, Scenario scenario);
     Task<DtoScenario?> GetId(string item, int id);
     Task<List<DtoScenario>?> GetAll(string item);
-    Task<List<DtoScenario>?> GetUni(string item, string namePurpose, string field);
+    Task<List<DtoScenario>?> GetField(string item, string namePurpose, string field);
     public Task<List<DtoScenario>?> GetLike(string item, string namePurpose, string field);
     Task<List<DtoScenario>?> GetLimit(string item, int limit);
     Task<bool> DeleteId(string item, int id);
@@ -50,7 +48,7 @@ public class ScenarioServices(
 
     public async Task<bool> CreateOrSave(string item, Scenario scenario)
     {
-        List<DtoMusic>? dtoMusic = await musicServices.GetUni("Musics", scenario.IdMusic.ToString(), "Id");
+        List<DtoMusic>? dtoMusic = await musicServices.GetField("Musics", scenario.IdMusic.ToString(), "Id");
 
         if (dtoMusic != null)
         {
@@ -80,7 +78,7 @@ public class ScenarioServices(
                     if (days == dataTime.ToString("dddd"))
                     {
                         List<DtoScenario>? dtoScenarios =
-                            await scenarioRepository.GetUni("Scenario", scenario.Name, "Name");
+                            await scenarioRepository.GetField("Scenario", scenario.Name, "Name");
                         if (dtoScenarios != null)
                             foreach (var data in dtoScenarios)
                                 return await hebrideanCacheServices.Put(
@@ -107,9 +105,9 @@ public class ScenarioServices(
         return await scenarioRepository.GetAll(item);
     }
 
-    public async Task<List<DtoScenario>?> GetUni(string item, string namePurpose, string field)
+    public async Task<List<DtoScenario>?> GetField(string item, string namePurpose, string field)
     {
-        return await scenarioRepository.GetUni(item, namePurpose, field);
+        return await scenarioRepository.GetField(item, namePurpose, field);
     }
 
     public async Task<List<DtoScenario>?> GetLike(string item, string namePurpose, string field)
@@ -119,7 +117,7 @@ public class ScenarioServices(
 
     public async Task<List<DtoScenario>?> GetLimit(string item, int limit)
     {
-        return await scenarioRepository.GetFloor(item, limit);
+        return await scenarioRepository.GetLimit(item, limit);
     }
 
     public async Task<bool> DeleteId(string item, int id)
@@ -129,7 +127,7 @@ public class ScenarioServices(
 
     public async Task<bool> UpdateId(string item, Scenario scenario, int id)
     {
-        List<DtoMusic>? dtoMusic = await musicServices.GetUni("Musics", scenario.IdMusic.ToString(), "Id");
+        List<DtoMusic>? dtoMusic = await musicServices.GetField("Musics", scenario.IdMusic.ToString(), "Id");
 
         if (dtoMusic != null)
         {
@@ -158,7 +156,7 @@ public class ScenarioServices(
                     if (days == dataTime.ToString("dddd"))
                     {
                         List<DtoScenario>? dtoScenarios =
-                            await scenarioRepository.GetUni("Scenario", scenario.Name, "Name");
+                            await scenarioRepository.GetField("Scenario", scenario.Name, "Name");
                         if (dtoScenarios != null)
                             foreach (var data in dtoScenarios)
                                 return await hebrideanCacheServices.Put(

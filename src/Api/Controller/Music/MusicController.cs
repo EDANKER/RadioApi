@@ -85,7 +85,7 @@ public class MusicController(IMusicServices musicServices)
     [HttpGet("GetMusicPlayListTag")]
     public async Task<IActionResult> GetMusicPlayListTag([Required] [FromQuery] string name)
     {
-        List<DtoMusic>? dtoMusic = await musicServices.GetUni("Musics", name, "NamePlayList");
+        List<DtoMusic>? dtoMusic = await musicServices.GetField("Musics", name, "NamePlayList");
         if (dtoMusic != null)
             return Ok(dtoMusic);
 
