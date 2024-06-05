@@ -12,7 +12,7 @@ public interface IMicroControllerServices
     Task<bool> SoundVol(int[] idMicroControllers, int vol);
     Task<bool> CreateOrSave(string item, MicroController microController);
     Task<List<DtoMicroController>?> GetAll(string item);
-    Task<List<DtoMicroController>?> GetLimit(string item, int floor);
+    Task<List<DtoMicroController>?> GetLimit(string item, int currentPage, int floor);
     Task<List<DtoMicroController>?> GetField(string item, string namePurpose, string field);
     Task<DtoMicroController?> GetId(string item, int id);
     Task<bool> DeleteId(string item, int id);
@@ -59,9 +59,9 @@ public class MicroControllerServices(
         return await controllerRepository.GetAll(item);
     }
 
-    public async Task<List<DtoMicroController>?> GetLimit(string item, int floor)
+    public async Task<List<DtoMicroController>?> GetLimit(string item, int currentPage, int floor)
     {
-        return await controllerRepository.GetLimit(item, floor);
+        return await controllerRepository.GetLimit(item, currentPage, floor);
     }
 
     public async Task<List<DtoMicroController>?> GetField(string item, string namePurpose, string field)

@@ -9,9 +9,9 @@ namespace Api.Services.PlayListServices;
 public interface IPlayListServices
 {
     Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile);
-    Task<List<DtoPlayList>?> GetLimit(string item, int limit);
+    Task<List<DtoPlayList>?> GetLimit(string item, int currentPage, int limit);
     Task<DtoPlayList?> GetId(string item, int id, bool isActiveGetUrl);
-    Task<List<DtoPlayList>?> GetString(string item, string namePurpose, string field);
+    Task<List<DtoPlayList>?> GetField(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, UpdatePlayList updatePlayList, int id);
     Task<bool> Search(string item, string name, string field);
@@ -30,10 +30,10 @@ public class PlayListServices(
         return false;
     }
 
-    public async Task<List<DtoPlayList>?> GetLimit(string item, int limit)
+    public async Task<List<DtoPlayList>?> GetLimit(string item, int currentPage, int limit)
     {
         List<DtoPlayList> getPlayLists = new List<DtoPlayList>();
-        List<DtoPlayList>? getPlayListRepo = await playListRepository.GetLimit(item, limit);
+        List<DtoPlayList>? getPlayListRepo = await playListRepository.GetLimit(item, currentPage, limit);
         if (getPlayListRepo != null)
         {
             foreach (var data in getPlayListRepo)
@@ -64,7 +64,7 @@ public class PlayListServices(
         return dtoPlayListRepo;
     }
 
-    public async Task<List<DtoPlayList>?> GetString(string item, string namePurpose, string field)
+    public async Task<List<DtoPlayList>?> GetField(string item, string namePurpose, string field)
     {
         return await playListRepository.GetField(item, namePurpose, field);
     }

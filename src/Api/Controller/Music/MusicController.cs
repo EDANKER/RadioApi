@@ -37,11 +37,11 @@ public class MusicController(IMusicServices musicServices)
     }
 
     [HttpGet("GetMusicLimit")]
-    public async Task<IActionResult> GetMusicLimit([Required] [FromQuery] int limit)
+    public async Task<IActionResult> GetMusicLimit([Required] [FromQuery] int limit, [Required] [FromQuery] int currentPage)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
-        List<DtoMusic>? dtoMusics = await musicServices.GetLimit("Musics", limit);
+        List<DtoMusic>? dtoMusics = await musicServices.GetLimit("Musics", currentPage, limit);
         if (dtoMusics != null)
             return Ok(dtoMusics);
         

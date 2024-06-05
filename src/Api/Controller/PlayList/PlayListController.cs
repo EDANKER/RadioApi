@@ -55,11 +55,11 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     }
 
     [HttpGet("GetPlayListLimit")]
-    public async Task<IActionResult> GetPlayListLimit([Required] [FromQuery] int limit)
+    public async Task<IActionResult> GetPlayListLimit([Required] [FromQuery] int limit, int currentPage)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
-        List<DtoPlayList>? dtoPlayList = await playListServices.GetLimit("PlayLists", limit);
+        List<DtoPlayList>? dtoPlayList = await playListServices.GetLimit("PlayLists", currentPage, limit);
         if (dtoPlayList != null)
             return Ok(dtoPlayList);
 

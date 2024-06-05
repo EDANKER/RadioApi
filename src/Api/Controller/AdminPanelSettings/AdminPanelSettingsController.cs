@@ -44,12 +44,12 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
     }
 
     [HttpGet("GetUserLimit")]
-    public async Task<IActionResult> GetUserLimit([Required] [FromQuery] int limit)
+    public async Task<IActionResult> GetUserLimit([Required] [FromQuery] int limit, [Required] [FromQuery] int currentPage)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение id");
         
-        List<DtoUser>? dtoScenario = await userServices.GetLimit("Users", limit);
+        List<DtoUser>? dtoScenario = await userServices.GetLimit("Users", currentPage, limit);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 

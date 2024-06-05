@@ -19,7 +19,24 @@ public class ScenarioRepository(
     private List<DtoScenario>? _dtoScenarios;
     private DtoScenario? _dtoScenario;
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
+    
+    public async Task<int> GetCount(string item)
+    {
+        string command = $"SELECT COUNT(*) FROM {item}";
 
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
+
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        object? count = await mySqlCommand.ExecuteScalarAsync();
+        await mySqlConnection.CloseAsync();
+
+        if (count != null)
+            return Convert.ToInt32(count);
+        
+        return -1;
+    }
+    
     public async Task<bool> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario)
     {
         string command = $"INSERT INTO {item} " +
@@ -250,11 +267,13 @@ public class ScenarioRepository(
         }
     }
 
-    public async Task<List<DtoScenario>?> GetLimit(string item, int limit)
+    public async Task<List<DtoScenario>?> GetLimit(string item, int currentPage, int limit)
     {
         _dtoScenarios = new List<DtoScenario>();
         string command = $"SELECT * FROM {item} " +
-                         "LIMIT @Limit";
+                         $"LIMIT @Limit " +
+                         $"OFFSET @Sum";;
+
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -262,6 +281,7 @@ public class ScenarioRepository(
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+            mySqlCommand.Parameters.Add("@Sum", MySqlDbType.Int32).Value = (currentPage - 1) * limit;
 
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();

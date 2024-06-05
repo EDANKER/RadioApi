@@ -16,7 +16,7 @@ public interface IScenarioServices
     Task<List<DtoScenario>?> GetAll(string item);
     Task<List<DtoScenario>?> GetField(string item, string namePurpose, string field);
     public Task<List<DtoScenario>?> GetLike(string item, string namePurpose, string field);
-    Task<List<DtoScenario>?> GetLimit(string item, int limit);
+    Task<List<DtoScenario>?> GetLimit(string item, int currentPage, int limit);
     Task<bool> DeleteId(string item, int id);
     Task<bool> UpdateId(string item, Scenario scenario, int id);
     Task<bool> Search(string item, string name, string field);
@@ -115,9 +115,9 @@ public class ScenarioServices(
         return await scenarioRepository.GetLike(item, namePurpose, field);
     }
 
-    public async Task<List<DtoScenario>?> GetLimit(string item, int limit)
+    public async Task<List<DtoScenario>?> GetLimit(string item, int currentPage, int limit)
     {
-        return await scenarioRepository.GetLimit(item, limit);
+        return await scenarioRepository.GetLimit(item, currentPage, limit);
     }
 
     public async Task<bool> DeleteId(string item, int id)

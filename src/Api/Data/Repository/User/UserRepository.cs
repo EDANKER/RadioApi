@@ -19,6 +19,23 @@ public class UserRepository(
 
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
+    public async Task<int> GetCount(string item)
+    {
+        string command = $"SELECT COUNT(*) FROM {item}";
+
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
+
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        object? count = await mySqlCommand.ExecuteScalarAsync();
+        await mySqlConnection.CloseAsync();
+
+        if (count != null)
+            return Convert.ToInt32(count);
+        
+        return -1;
+    }
+    
     public async Task<bool> CreateOrSave(string item, Api.Model.RequestModel.User.User user)
     {
         string command = $"INSERT INTO {item} " +
@@ -226,12 +243,13 @@ public class UserRepository(
         }
     }
 
-    public async Task<List<DtoUser>?> GetLimit(string item, int limit)
+    public async Task<List<DtoUser>?> GetLimit(string item, int currentPage, int limit)
     {
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
-                         "LIMIT @Limit";
-        
+                         $"LIMIT @Limit " +
+                         $"OFFSET @Sum";;
+
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -239,6 +257,7 @@ public class UserRepository(
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+            mySqlCommand.Parameters.Add("@Sum", MySqlDbType.Int32).Value = (currentPage - 1) * limit;
 
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();

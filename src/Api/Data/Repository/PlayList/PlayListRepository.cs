@@ -18,6 +18,24 @@ public class PlayListRepository(
     private DtoPlayList? _dtoPlayList;
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
+    
+    public async Task<int> GetCount(string item)
+    {
+        string command = $"SELECT COUNT(*) FROM {item}";
+
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
+
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        object? count = await mySqlCommand.ExecuteScalarAsync();
+        await mySqlConnection.CloseAsync();
+
+        if (count != null)
+            return Convert.ToInt32(count);
+        
+        return -1;
+    }
+    
     public async Task<bool> CreateOrSave(string item, CreatePlayList createPlayList)
     {
         string command = $"INSERT INTO {item} " +
@@ -216,11 +234,12 @@ public class PlayListRepository(
         }
     }
 
-    public async Task<List<DtoPlayList>?> GetLimit(string item, int limit)
+    public async Task<List<DtoPlayList>?> GetLimit(string item, int currentPage, int limit)
     {
         _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
-                         $"LIMIT @Limit";
+                         $"LIMIT @Limit " +
+                         $"OFFSET @Sum";;
 
         try
         {
@@ -229,6 +248,7 @@ public class PlayListRepository(
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
+            mySqlCommand.Parameters.Add("@Sum", MySqlDbType.Int32).Value = (currentPage - 1) * limit;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)

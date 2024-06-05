@@ -15,7 +15,7 @@ public interface IMusicServices
     Task<bool> PlayLife(IFormFile formFile, int[] idController);
     Task<bool> Stop(int[] idController);
     Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList);
-    Task<List<DtoMusic>?> GetLimit(string item, int limit);
+    Task<List<DtoMusic>?> GetLimit(string item, int currentPage, int limit);
     Task<DtoMusic?> GetId(string item, int id);
     Task<List<DtoMusic>?> GetField(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id);
@@ -106,9 +106,9 @@ public class MusicServices(
         return false;
     }
 
-    public async Task<List<DtoMusic>?> GetLimit(string item, int limit)
+    public async Task<List<DtoMusic>?> GetLimit(string item, int currentPage, int limit)
     {
-        return await musicRepository.GetLimit(item, limit);
+        return await musicRepository.GetLimit(item, currentPage, limit);
     }
 
     public async Task<DtoMusic?> GetId(string item, int id)

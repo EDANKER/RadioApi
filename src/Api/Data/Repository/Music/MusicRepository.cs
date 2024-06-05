@@ -20,6 +20,24 @@ public class MusicRepository(
 
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
 
+    public async Task<int> GetCount(string item)
+    { 
+        string command = $"SELECT COUNT(*) FROM {item}";
+
+        mySqlConnection = new MySqlConnection(_connect);
+        await mySqlConnection.OpenAsync();
+
+        mySqlCommand = new MySqlCommand(command, mySqlConnection);
+        
+        object? count = await mySqlCommand.ExecuteScalarAsync();
+        await mySqlConnection.CloseAsync();
+
+        if (count != null)
+            return Convert.ToInt32(count);
+        
+        return -1;
+    }
+    
     public async Task<bool> CreateOrSave(string item, CreateMusic createMusic)
     {
         string command = $"INSERT INTO {item} " +
@@ -222,11 +240,12 @@ public class MusicRepository(
         }
     }
 
-    public async Task<List<DtoMusic>?> GetLimit(string item, int limit)
+    public async Task<List<DtoMusic>?> GetLimit(string item, int currentPage, int limit)
     {
         _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
-                         $"LIMIT  @Limit ";
+                         $"LIMIT @Limit " +
+                         $"OFFSET @Sum";;
 
         try
         {
@@ -235,7 +254,7 @@ public class MusicRepository(
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
-
+            mySqlCommand.Parameters.Add("@Sum", MySqlDbType.Int32).Value = (currentPage - 1) * limit;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)
