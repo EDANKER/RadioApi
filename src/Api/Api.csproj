@@ -25,7 +25,7 @@
         <PackageReference Include="MySql.Data" Version="8.3.0" />
         <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="4.0.0-alpha2" />
+        <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="4.0.0-beta5" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.0" />
         <PackageReference Include="TagLib.Audio" Version="1.1.0" />

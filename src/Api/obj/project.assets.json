@@ -1287,18 +1287,18 @@
           }
         }
       },
-      "Novell.Directory.Ldap.NETStandard/4.0.0-alpha2": {
+      "Novell.Directory.Ldap.NETStandard/4.0.0-beta5": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         },
         "compile": {
-          "lib/net5.0/Novell.Directory.Ldap.NETStandard.dll": {
+          "lib/net8.0/Novell.Directory.Ldap.NETStandard.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net5.0/Novell.Directory.Ldap.NETStandard.dll": {
+          "lib/net8.0/Novell.Directory.Ldap.NETStandard.dll": {
             "related": ".xml"
           }
         }
@@ -5076,22 +5076,24 @@
         "packageIcon.png"
       ]
     },
-    "Novell.Directory.Ldap.NETStandard/4.0.0-alpha2": {
-      "sha512": "C9GTYqH0d4ZjeLlDo0u+C1pB9x2OtDleMB1Ecns/RADySR0kJx7zafuQjVX94vEzO1nbKSwBH5bhOJ3BDhoovw==",
+    "Novell.Directory.Ldap.NETStandard/4.0.0-beta5": {
+      "sha512": "CsO57xTAhlyRcr+Tub+ajjUOyzbY9ErNngjwoblFyfs4gB5rZcTjafkbcgeWCU9us0zs9PMSDlMA3yBx/XTN6w==",
       "type": "package",
-      "path": "novell.directory.ldap.netstandard/4.0.0-alpha2",
+      "path": "novell.directory.ldap.netstandard/4.0.0-beta5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "lib/net5.0/Novell.Directory.Ldap.NETStandard.dll",
-        "lib/net5.0/Novell.Directory.Ldap.NETStandard.xml",
-        "lib/netstandard1.3/Novell.Directory.Ldap.NETStandard.dll",
-        "lib/netstandard1.3/Novell.Directory.Ldap.NETStandard.xml",
+        "lib/net6.0/Novell.Directory.Ldap.NETStandard.dll",
+        "lib/net6.0/Novell.Directory.Ldap.NETStandard.xml",
+        "lib/net7.0/Novell.Directory.Ldap.NETStandard.dll",
+        "lib/net7.0/Novell.Directory.Ldap.NETStandard.xml",
+        "lib/net8.0/Novell.Directory.Ldap.NETStandard.dll",
+        "lib/net8.0/Novell.Directory.Ldap.NETStandard.xml",
         "lib/netstandard2.0/Novell.Directory.Ldap.NETStandard.dll",
         "lib/netstandard2.0/Novell.Directory.Ldap.NETStandard.xml",
         "lib/netstandard2.1/Novell.Directory.Ldap.NETStandard.dll",
         "lib/netstandard2.1/Novell.Directory.Ldap.NETStandard.xml",
-        "novell.directory.ldap.netstandard.4.0.0-alpha2.nupkg.sha512",
+        "novell.directory.ldap.netstandard.4.0.0-beta5.nupkg.sha512",
         "novell.directory.ldap.netstandard.nuspec"
       ]
     },
@@ -9311,7 +9313,7 @@
       "MySql.Data >= 8.3.0",
       "MySql.EntityFrameworkCore >= 8.0.0",
       "Newtonsoft.Json >= 13.0.3",
-      "Novell.Directory.Ldap.NETStandard >= 4.0.0-alpha2",
+      "Novell.Directory.Ldap.NETStandard >= 4.0.0-beta5",
       "Swashbuckle.AspNetCore >= 6.4.0",
       "System.IdentityModel.Tokens.Jwt >= 7.3.0",
       "TagLib.Audio >= 1.1.0"
@@ -9410,7 +9412,7 @@
           },
           "Novell.Directory.Ldap.NETStandard": {
             "target": "Package",
-            "version": "[4.0.0-alpha2, )"
+            "version": "[4.0.0-beta5, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

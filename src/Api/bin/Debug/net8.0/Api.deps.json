@@ -21,7 +21,7 @@
           "MySql.Data": "8.3.0",
           "MySql.EntityFrameworkCore": "8.0.0",
           "Newtonsoft.Json": "13.0.3",
-          "Novell.Directory.Ldap.NETStandard": "4.0.0-alpha2",
+          "Novell.Directory.Ldap.NETStandard": "4.0.0-beta5",
           "Swashbuckle.AspNetCore": "6.4.0",
           "System.IdentityModel.Tokens.Jwt": "7.3.0",
           "TagLib.Audio": "1.1.0"
@@ -965,12 +965,12 @@
           }
         }
       },
-      "Novell.Directory.Ldap.NETStandard/4.0.0-alpha2": {
+      "Novell.Directory.Ldap.NETStandard/4.0.0-beta5": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "9.0.0-preview.1.24080.9"
         },
         "runtime": {
-          "lib/net5.0/Novell.Directory.Ldap.NETStandard.dll": {
+          "lib/net8.0/Novell.Directory.Ldap.NETStandard.dll": {
             "assemblyVersion": "4.0.0.0",
             "fileVersion": "4.0.0.0"
           }
@@ -2291,12 +2291,12 @@
       "path": "newtonsoft.json/13.0.3",
       "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
     },
-    "Novell.Directory.Ldap.NETStandard/4.0.0-alpha2": {
+    "Novell.Directory.Ldap.NETStandard/4.0.0-beta5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-C9GTYqH0d4ZjeLlDo0u+C1pB9x2OtDleMB1Ecns/RADySR0kJx7zafuQjVX94vEzO1nbKSwBH5bhOJ3BDhoovw==",
-      "path": "novell.directory.ldap.netstandard/4.0.0-alpha2",
-      "hashPath": "novell.directory.ldap.netstandard.4.0.0-alpha2.nupkg.sha512"
+      "sha512": "sha512-CsO57xTAhlyRcr+Tub+ajjUOyzbY9ErNngjwoblFyfs4gB5rZcTjafkbcgeWCU9us0zs9PMSDlMA3yBx/XTN6w==",
+      "path": "novell.directory.ldap.netstandard/4.0.0-beta5",
+      "hashPath": "novell.directory.ldap.netstandard.4.0.0-beta5.nupkg.sha512"
     },
     "Pipelines.Sockets.Unofficial/2.2.8": {
       "type": "package",
