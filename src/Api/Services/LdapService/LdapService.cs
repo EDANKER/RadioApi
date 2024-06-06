@@ -1,5 +1,5 @@
-﻿using System.DirectoryServices.Protocols;
-using System.Net;
+﻿using System.Net;
+using Novell.Directory.Ldap;
 using Authorization = Api.Model.RequestModel.Authorization.Authorization;
 
 namespace Api.Services.LdapService;
@@ -11,27 +11,20 @@ public interface ILdapService
 
 public class LdapService(ILogger<LdapService> logger, IConfiguration configuration) : ILdapService
 {
-    public Task<bool> Validation(Authorization authorization)
+    public async Task<bool> Validation(Authorization authorization)
     {
-        LdapDirectoryIdentifier directoryIdentifier =
-            new LdapDirectoryIdentifier(configuration.GetSection("Ldap:url").Value, false, false);
-        NetworkCredential networkCredential =
-            new NetworkCredential("uid=" + authorization.Login + configuration.GetSection("Ldap:searchBase").Value,
-                authorization.Password);
-
-        LdapConnection ldapConnection = new LdapConnection(directoryIdentifier, networkCredential, AuthType.Basic);
-        ldapConnection.SessionOptions.SecureSocketLayer = false;
-        ldapConnection.SessionOptions.ProtocolVersion = 3;
-
+        LdapConnection ldapConnection = new LdapConnection();
+        await ldapConnection.ConnectAsync("10.3.15.204", 389);
+        
         try
         {
-            ldapConnection.Bind();
-            return Task.FromResult(true);
+            await ldapConnection.BindAsync(",cn=users,dc=it-college,dc=ru", authorization.Password);
+            return true;
         }
         catch (LdapException e)
         {
             logger.LogError(e.ToString());
-            return Task.FromResult(false);
+            return false;
         }
     }
 }

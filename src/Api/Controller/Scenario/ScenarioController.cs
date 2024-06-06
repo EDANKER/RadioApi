@@ -26,7 +26,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
     }
 
     [HttpGet("GetScenarioLimit")]
-    public async Task<IActionResult> GetScenarioLimit([Required] [FromQuery] int limit, int currentPage)
+    public async Task<IActionResult> GetScenarioLimit([Required] [FromQuery] int limit, [Required] [FromQuery] int currentPage)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");

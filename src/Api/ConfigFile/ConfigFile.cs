@@ -91,7 +91,7 @@ public static class ConfigFile
         service.AddSingleton<IHostedService, ScenarioTimeGetServices>();
         service.AddSingleton<IHostedService, MicroControllerGetServices>();
     }
-
+    
     public static void Jwt(IServiceCollection service)
     {
         service.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
