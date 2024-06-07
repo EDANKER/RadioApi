@@ -16,11 +16,11 @@ public class LdapService(ILogger<LdapService> logger,
     {
         LdapConnection ldapConnection = new LdapConnection(new LdapConnectionOptions());
         ldapConnection.SecureSocketLayer = false;
-        await ldapConnection.ConnectAsync("10.3.15.204", 389);
+        await ldapConnection.ConnectAsync("10.3.0.33", 389);
         
         try
         {
-            await ldapConnection.BindAsync("uid=" + authorization.Login + ",cn=users,dc=it-college,dc=ru", authorization.Password);
+            await ldapConnection.BindAsync(2,"uid=" + authorization.Login + ",cn=users,dc=it-college,dc=ru", authorization.Password);
             return true;
         }
         catch (LdapException e)
