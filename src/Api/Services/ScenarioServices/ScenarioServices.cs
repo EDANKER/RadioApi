@@ -59,13 +59,16 @@ public class ScenarioServices(
             int minutes = int.Parse(time[1]);
 
             for (int i = 0; i < timeMin; i++)
-                if (int.Parse(time[1]) == 59)
+            {
+                Console.WriteLine(minutes);
+                if (minutes >= 59)
                 {
                     timeMin -= 1;
                     hours += 1;
                     minutes = 0;
                 }
                 else minutes += 1;
+            }
             
             Scenario scenarioMap = new Scenario(scenario.Name, scenario.IdMicroController,
                 $"{scenario.Time}-{hours.ToString()}:{minutes}", scenario.Days,

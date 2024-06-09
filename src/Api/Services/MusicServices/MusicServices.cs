@@ -3,6 +3,7 @@ using Api.Model.RequestModel.Create.CreateMusic;
 using Api.Model.RequestModel.Update.UpdateMusic;
 using Api.Model.ResponseModel.MicroController;
 using Api.Model.ResponseModel.Music;
+using Api.Services.HebrideanCacheServices;
 using Api.Services.MicroControllerServices;
 using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.TimeCounterServices;
@@ -28,7 +29,8 @@ public class MusicServices(
     IFileServices.IFileServices fileServices,
     IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
     IMicroControllerServices microControllerServices,
-    ITimeCounterServices timeCounterServices) : IMusicServices
+    ITimeCounterServices timeCounterServices,
+    IHebrideanCacheServices hebrideanCacheServices) : IMusicServices
 {
     private async Task<Stream?> GetMusicInMinio(int id)
     {
@@ -56,12 +58,9 @@ public class MusicServices(
                     continue;
                 DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
                 if (dtoMicroController != null)
-                {
-                    Console.WriteLine(dtoMicroController.Name);
-                    return await musicPlayerToMicroControllerServices.Play(
-                        dtoMicroController, stream);
-                }
-                
+                    if (await musicPlayerToMicroControllerServices.Play(
+                            dtoMicroController, stream))
+                        await hebrideanCacheServices.Put(idMusic.ToString(), "Играет");
             }
         }
 
