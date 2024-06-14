@@ -1,6 +1,14 @@
 ﻿namespace Api.Services.RadioServices;
 
-public class RadioServices
+public interface IRadioServices
 {
-    
+    Task<bool> PostStream();
+}
+
+public class RadioServices : IRadioServices
+{
+    public Task<bool> PostStream()
+    {
+        throw new NotImplementedException();
+    }
 }
