@@ -1,4 +1,5 @@
 using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.RequestModel.MicroController;
 using Api.Model.ResponseModel.MicroController;
 using Api.Services.HebrideanCacheServices;
@@ -9,6 +10,7 @@ namespace Api.Services.MicroControllerServices;
 
 public interface IMicroControllerServices
 {
+    Task<int> GetCountPage(string item, int currentPage, int limit);
     Task<bool> SoundVol(int[] idMicroControllers, int vol);
     Task<bool> CreateOrSave(string item, MicroController microController);
     Task<List<DtoMicroController>?> GetAll(string item);
@@ -28,6 +30,20 @@ public class MicroControllerServices(
     IHebrideanCacheServices hebrideanCacheServices)
     : IMicroControllerServices
 {
+    public async Task<int> GetCountPage(string item, int currentPage, int limit)
+    {
+        while (true)
+        {
+            List<DtoMicroController>? list = await GetLimit(item, currentPage, limit);
+            if (list != null)
+                ++currentPage;
+            else
+                break;
+        }
+
+        return --currentPage;
+    }
+
     public async Task<bool> SoundVol(int[] idMicroControllers, int vol)
     {
         foreach (var data in idMicroControllers)

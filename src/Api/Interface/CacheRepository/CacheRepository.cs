@@ -1,4 +1,4 @@
-﻿namespace Api.Data.Repository.CacheRepository;
+﻿namespace Api.Interface.CacheRepository;
 
 public interface ICacheRepository
 {

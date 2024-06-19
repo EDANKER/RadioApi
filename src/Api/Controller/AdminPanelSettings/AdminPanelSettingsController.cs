@@ -49,10 +49,17 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
         if (limit < 0)
             return BadRequest("Некорректное значение id");
         
-        List<DtoUser>? dtoScenario = await userServices.GetLimit("Users", currentPage, limit);
-        if (dtoScenario != null)
-            return Ok(dtoScenario);
-
+        List<DtoUser>? dtoUsers = await userServices.GetLimit("Users", currentPage, limit);
+        if (dtoUsers != null)
+        {
+            var response = new
+            {
+                Head = await userServices.GetCountPage("Users", currentPage, limit),
+                Body = dtoUsers
+            };
+            
+            return Ok(response);
+        }
         return Content("status 204");
     }
 

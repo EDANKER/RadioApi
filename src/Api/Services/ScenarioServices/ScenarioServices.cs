@@ -1,4 +1,5 @@
 ﻿using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.RequestModel.Scenario;
 using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.Scenario;
@@ -10,6 +11,7 @@ namespace Api.Services.ScenarioServices;
 
 public interface IScenarioServices
 {
+    Task<int> GetCountPage(string item, int currentPage, int limit);
     Task<int?> ValidationTime(string time);
     Task<bool> CreateOrSave(string item, Scenario scenario);
     Task<DtoScenario?> GetId(string item, int id);
@@ -28,6 +30,20 @@ public class ScenarioServices(
     IJsonServices<DtoScenario> jsonServices,
     IMusicServices musicServices) : IScenarioServices
 {
+    public async Task<int> GetCountPage(string item, int currentPage, int limit)
+    {
+        while (true)
+        {
+            List<DtoScenario>? list = await GetLimit(item, currentPage, limit);
+            if (list != null)
+                ++currentPage;
+            else
+                break;
+        }
+
+        return --currentPage;
+    }
+
     public async Task<int?> ValidationTime(string time)
     {
         DateTime dateTime = DateTime.Now;

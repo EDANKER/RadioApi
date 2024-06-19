@@ -61,7 +61,15 @@ public class PlayListController(IPlayListServices playListServices) : Controller
             return BadRequest("Некорректное значение limit");
         List<DtoPlayList>? dtoPlayList = await playListServices.GetLimit("PlayLists", currentPage, limit);
         if (dtoPlayList != null)
-            return Ok(dtoPlayList);
+        {
+            var response = new
+            {
+                Head = await playListServices.GetCountPage("PlayLists", currentPage, limit),
+                Body = dtoPlayList
+            };
+            
+            return Ok(response);
+        }
 
         return Content("status 204");
     }

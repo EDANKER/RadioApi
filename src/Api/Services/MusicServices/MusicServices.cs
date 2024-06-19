@@ -1,4 +1,5 @@
 ﻿using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.RequestModel.Create.CreateMusic;
 using Api.Model.RequestModel.Update.UpdateMusic;
 using Api.Model.ResponseModel.MicroController;
@@ -12,6 +13,8 @@ namespace Api.Services.MusicServices;
 
 public interface IMusicServices
 {
+    Task<int> GetCountPage(string item, int currentPage, int limit);
+    Task<List<DtoMusic>?> GetAll(string item);
     Task<bool> Play(int idMusic, int[] idController);
     Task<bool> PlayLife(IFormFile formFile, int[] idController);
     Task<bool> Stop(int[] idController);
@@ -46,6 +49,24 @@ public class MusicServices(
         return null;
     }
 
+    public async Task<int> GetCountPage(string item, int currentPage, int limit)
+    {
+        while (true)
+        {
+            List<DtoMusic>? list = await GetLimit(item, currentPage, limit);
+            if (list != null)
+                ++currentPage;
+            else
+                break;
+        }
+
+        return --currentPage;
+    }
+
+    public async Task<List<DtoMusic>?> GetAll(string item)
+    {
+        return await musicRepository.GetAll(item);
+    }
 
     public async Task<bool> Play(int idMusic, int[] idController)
     {
@@ -99,9 +120,10 @@ public class MusicServices(
 
     public async Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList)
     {
-        if (await musicRepository.CreateOrSave(item, new CreateMusic(formFile.FileName, namePlayList, await timeCounterServices.TimeToMinutes(formFile))))
+        if (await musicRepository.CreateOrSave(item,
+                new CreateMusic(formFile.FileName, namePlayList, await timeCounterServices.TimeToMinutes(formFile))))
             return await fileServices.Save(formFile, formFile.FileName, "music", "audio/mpeg");
-        
+
         return false;
     }
 

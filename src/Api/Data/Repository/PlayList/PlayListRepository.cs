@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.RequestModel.Create.CreatePlayList;
 using Api.Model.RequestModel.Update.UpdatePlayList;
 using Api.Model.ResponseModel.PlayList;
@@ -17,7 +18,6 @@ public class PlayListRepository(
     private List<DtoPlayList>? _dtoPlayLists;
     private DtoPlayList? _dtoPlayList;
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
-
     
     public async Task<int> GetCount(string item)
     {
@@ -32,10 +32,10 @@ public class PlayListRepository(
 
         if (count != null)
             return Convert.ToInt32(count);
-        
+
         return -1;
     }
-    
+
     public async Task<bool> CreateOrSave(string item, CreatePlayList createPlayList)
     {
         string command = $"INSERT INTO {item} " +
@@ -126,7 +126,7 @@ public class PlayListRepository(
                     string name = _dataReader.GetString(1);
                     string description = _dataReader.GetString(2);
                     string imgPath = _dataReader.GetString(3);
-                    
+
                     _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
                 }
             }
@@ -194,7 +194,7 @@ public class PlayListRepository(
         _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} LIKE @NamePurpose ";
-        
+
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -236,10 +236,12 @@ public class PlayListRepository(
 
     public async Task<List<DtoPlayList>?> GetLimit(string item, int currentPage, int limit)
     {
+        int sumFullPage = 0;
         _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit " +
-                         $"OFFSET @Sum";;
+                         $"OFFSET @Sum";
+        ;
 
         try
         {
@@ -255,6 +257,7 @@ public class PlayListRepository(
             {
                 while (await _dataReader.ReadAsync())
                 {
+                    ++sumFullPage;
                     int id = _dataReader.GetInt32(0);
                     string name = _dataReader.GetString(1);
                     string description = _dataReader.GetString(2);
@@ -271,6 +274,7 @@ public class PlayListRepository(
 
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
+
 
             return _dtoPlayLists;
         }

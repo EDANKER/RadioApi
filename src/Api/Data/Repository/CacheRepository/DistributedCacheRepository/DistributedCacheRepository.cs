@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using Api.Interface.CacheRepository;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Api.Data.Repository.CacheRepository.DistributedCacheRepository;
 

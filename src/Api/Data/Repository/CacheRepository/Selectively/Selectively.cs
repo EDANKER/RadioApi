@@ -1,4 +1,6 @@
-﻿namespace Api.Data.Repository.CacheRepository.Selectively;
+﻿using Api.Interface.CacheRepository;
+
+namespace Api.Data.Repository.CacheRepository.Selectively;
 
 public class Selectively(ICacheRepository cacheRepository)
 {

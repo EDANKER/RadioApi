@@ -43,7 +43,14 @@ public class MusicController(IMusicServices musicServices)
             return BadRequest("Некорректное значение limit");
         List<DtoMusic>? dtoMusics = await musicServices.GetLimit("Musics", currentPage, limit);
         if (dtoMusics != null)
-            return Ok(dtoMusics);
+        {
+            var response = new
+            {
+                Head = await musicServices.GetCountPage("Musics", currentPage, limit),
+                Body = dtoMusics
+            };
+            return Ok(response);
+        }
         
         return Content("status 204");
     }

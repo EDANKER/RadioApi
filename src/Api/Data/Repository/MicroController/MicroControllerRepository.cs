@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.ResponseModel.MicroController;
 using MySql.Data.MySqlClient;
 
@@ -16,8 +17,7 @@ public class MicroControllerRepository(
     private DbDataReader? _dataReader;
     private List<DtoMicroController>? _dtoMicroControllers;
     private DtoMicroController? _dtoMicroController;
-
-
+    
     public async Task<int> GetCount(string item)
     {
         string command = $"SELECT COUNT(*) FROM {item}";

@@ -1,4 +1,4 @@
-﻿namespace Api.Interface;
+﻿namespace Api.Interface.Repository;
 
 public interface IRepository<in T, K, U>
 {

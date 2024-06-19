@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.ResponseModel.Scenario;
 using Api.Services.JsonServices;
 using MySql.Data.MySqlClient;
@@ -282,8 +283,7 @@ public class ScenarioRepository(
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
             mySqlCommand.Parameters.Add("@Sum", MySqlDbType.Int32).Value = (currentPage - 1) * limit;
-
-
+            
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
             if (_dataReader.HasRows)

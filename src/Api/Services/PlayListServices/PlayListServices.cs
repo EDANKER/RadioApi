@@ -1,4 +1,5 @@
 ﻿using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.RequestModel.Create.CreatePlayList;
 using Api.Model.RequestModel.Update.UpdatePlayList;
 using Api.Model.ResponseModel.PlayList;
@@ -8,6 +9,7 @@ namespace Api.Services.PlayListServices;
 
 public interface IPlayListServices
 {
+    Task<int> GetCountPage(string item, int currentPage, int limit);
     Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile);
     Task<List<DtoPlayList>?> GetLimit(string item, int currentPage, int limit);
     Task<DtoPlayList?> GetId(string item, int id, bool isActiveGetUrl);
@@ -22,6 +24,20 @@ public class PlayListServices(
     IFileServices.IFileServices fileServices)
     : IPlayListServices
 {
+    public async Task<int> GetCountPage(string item, int currentPage, int limit)
+    {
+        while (true)
+        {
+            List<DtoPlayList>? list = await GetLimit(item, currentPage, limit);
+            if (list != null)
+                ++currentPage;
+            else
+                break;
+        }
+
+        return --currentPage;
+    }
+
     public async Task<bool> CreateOrSave(string item, string name, string description, IFormFile formFile)
     {
         if (await playListRepository.CreateOrSave(item, new CreatePlayList(name, description, formFile.FileName)))

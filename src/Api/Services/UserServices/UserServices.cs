@@ -1,5 +1,6 @@
 ﻿using Api.Data.Repository.User;
 using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.RequestModel.User;
 using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.User;
@@ -8,6 +9,7 @@ namespace Api.Services.UserServices;
 
 public interface IUserServices
 {
+    Task<int> GetCountPage(string item, int currentPage, int limit);
     Task<bool> CreateOrSave(string item, User user);
     Task<List<DtoUser>?> GetLimit(string item, int currentPage, int limit);
     Task<DtoUser?> GetId(string item, int id);
@@ -18,6 +20,20 @@ public interface IUserServices
 
 public class UserServices(IRepository<User, DtoUser, User> userRepository) : IUserServices
 {
+    public async Task<int> GetCountPage(string item, int currentPage, int limit)
+    {
+        while (true)
+        {
+            List<DtoUser>? list = await GetLimit(item, currentPage, limit);
+            if (list != null)
+                ++currentPage;
+            else
+                break;
+        }
+
+        return --currentPage;
+    }
+
     public async Task<bool> CreateOrSave(string item, User user)
     {
         return await userRepository.CreateOrSave(item, user);

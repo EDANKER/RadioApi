@@ -9,6 +9,8 @@ using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenario;
 using Api.Data.Repository.User;
 using Api.Interface;
+using Api.Interface.CacheRepository;
+using Api.Interface.Repository;
 using Api.Model.JwtTokenConfig;
 using Api.Model.RequestModel.Create.CreateMusic;
 using Api.Model.RequestModel.Create.CreatePlayList;

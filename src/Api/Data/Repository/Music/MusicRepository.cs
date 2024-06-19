@@ -1,5 +1,5 @@
 ﻿using System.Data.Common;
-using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.RequestModel.Create.CreateMusic;
 using Api.Model.RequestModel.Update.UpdateMusic;
 using Api.Model.ResponseModel.Music;
@@ -19,25 +19,25 @@ public class MusicRepository(
     private DtoMusic? _dtoMusic;
 
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
-
+    
     public async Task<int> GetCount(string item)
-    { 
+    {
         string command = $"SELECT COUNT(*) FROM {item}";
 
         mySqlConnection = new MySqlConnection(_connect);
         await mySqlConnection.OpenAsync();
 
         mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        
+
         object? count = await mySqlCommand.ExecuteScalarAsync();
         await mySqlConnection.CloseAsync();
 
         if (count != null)
             return Convert.ToInt32(count);
-        
+
         return -1;
     }
-    
+
     public async Task<bool> CreateOrSave(string item, CreateMusic createMusic)
     {
         string command = $"INSERT INTO {item} " +
@@ -160,10 +160,10 @@ public class MusicRepository(
         {
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
-            
+
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
             mySqlCommand.Parameters.AddWithValue("@NamePurpose", namePurpose);
-            
+
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)
             {
@@ -200,7 +200,7 @@ public class MusicRepository(
         _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} LIKE @NamePurpose ";
-        
+
         try
         {
             mySqlConnection = new MySqlConnection(_connect);
@@ -245,7 +245,7 @@ public class MusicRepository(
         _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit " +
-                         $"OFFSET @Sum";;
+                         $"OFFSET @Sum";
 
         try
         {
@@ -315,7 +315,7 @@ public class MusicRepository(
     {
         string command = $"UPDATE {item} " +
                          $"SET Name = @Name, " +
-                         $"NamePlayList = @NamePlayList "+
+                         $"NamePlayList = @NamePlayList " +
                          $"WHERE id = @Id";
 
         try
@@ -340,7 +340,6 @@ public class MusicRepository(
         return true;
     }
 
-  
 
     public async Task<bool> Search(string item, string name, string field)
     {

@@ -32,7 +32,15 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
             return BadRequest("Некорректное значение limit");
         List<DtoScenario>? dtoScenario = await scenarioServices.GetLimit("Scenario", currentPage, limit);
         if (dtoScenario != null)
-            return Ok(dtoScenario);
+        {
+            var response = new
+            {
+                Head = await scenarioServices.GetCountPage("Scenario", currentPage, limit),
+                Body = dtoScenario
+            };
+            
+            return Ok(response);
+        }
 
         return Content("status 204");
     }

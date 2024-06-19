@@ -1,4 +1,6 @@
-﻿namespace Api.Data.Repository.CacheRepository.HebrideanCacheRepository;
+﻿using Api.Interface.CacheRepository;
+
+namespace Api.Data.Repository.CacheRepository.HebrideanCacheRepository;
 
 public class HebrideanCacheRepository(
     ILogger<HebrideanCacheRepository> logger,

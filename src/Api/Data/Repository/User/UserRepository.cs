@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Api.Interface;
+using Api.Interface.Repository;
 using Api.Model.ResponseModel.User;
 using Api.Services.JsonServices;
 using MySql.Data.MySqlClient;
