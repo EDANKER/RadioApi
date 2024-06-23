@@ -15,18 +15,17 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-
         if (await scenarioServices.Search("Scenario", scenario.Name, "Name"))
             return BadRequest("Имя уже занято");
-        double? validationTime = await scenarioServices.ValidationTime(scenario.Time);
-        if (validationTime != null)
-            return BadRequest(validationTime);
+        if (!await scenarioServices.ValidationTime(scenario.Time, scenario.Days))
+            return BadRequest("Такое время уже занято");
 
         return Ok(await scenarioServices.CreateOrSave("Scenario", scenario));
     }
 
     [HttpGet("GetScenarioLimit")]
-    public async Task<IActionResult> GetScenarioLimit([Required] [FromQuery] int limit, [Required] [FromQuery] int currentPage)
+    public async Task<IActionResult> GetScenarioLimit([Required] [FromQuery] int limit,
+        [Required] [FromQuery] int currentPage)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
@@ -38,7 +37,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
                 Head = await scenarioServices.GetCountPage("Scenario", currentPage, limit),
                 Body = dtoScenario
             };
-            
+
             return Ok(response);
         }
 

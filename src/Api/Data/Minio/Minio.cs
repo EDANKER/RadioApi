@@ -113,7 +113,6 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
 
         try
         {
-            
             await _minioClient.GetObjectAsync(new GetObjectArgs()
                 .WithBucket(minioModel.BucketName)
                 .WithObject(minioModel.Name)

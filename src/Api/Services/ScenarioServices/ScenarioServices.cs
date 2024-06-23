@@ -12,7 +12,7 @@ namespace Api.Services.ScenarioServices;
 public interface IScenarioServices
 {
     Task<int> GetCountPage(string item, int currentPage, int limit);
-    Task<int?> ValidationTime(string time);
+    Task<bool> ValidationTime(string time, string[] days);
     Task<bool> CreateOrSave(string item, Scenario scenario);
     Task<DtoScenario?> GetId(string item, int id);
     Task<List<DtoScenario>?> GetAll(string item);
@@ -44,22 +44,57 @@ public class ScenarioServices(
         return --currentPage;
     }
 
-    public async Task<int?> ValidationTime(string time)
+    public async Task<bool> ValidationTime(string time, string[] days)
     {
-        DateTime dateTime = DateTime.Now;
-        List<DtoScenario>? dtoScenarios = await scenarioRepository.GetLike("Scenario", dateTime.ToString("dddd"), "Days");
-        if (dtoScenarios != null)
-            foreach (var dataScenario in dtoScenarios)
-            {
-                DtoMusic? dtoMusic = await musicServices.GetId("Musics", dataScenario.IdMusic);
-                if (dtoMusic != null)
-                {
-                    
-                }
-                    
-            }
+        foreach (var data in days)
+        {
+            List<DtoScenario>? dtoScenarios =
+                await scenarioRepository.GetLike("Scenario", data, "Days");
 
-        return null;
+            if (dtoScenarios != null)
+            {
+                foreach (var dataScenario in dtoScenarios)
+                {
+                    DtoMusic? dtoMusic = await musicServices.GetId("Musics", dataScenario.IdMusic);
+
+                    if (dtoMusic != null)
+                    {
+                        int timeMin = dtoMusic.TimeMusic;
+                        string[] scnearioTime = time.Split([':']);
+
+                        int hoursScenarioFirstTime = int.Parse(scnearioTime[0]);
+                        int minutesScenarioFirstTime = int.Parse(scnearioTime[1]);
+
+                        int hoursScenarioLastTime = int.Parse(scnearioTime[0]);
+                        int minutesScenarioLastTime = int.Parse(scnearioTime[1]);
+
+                        for (int i = 0; i < timeMin; i++)
+                        {
+                            if (minutesScenarioLastTime >= 59)
+                            {
+                                timeMin -= 1;
+                                hoursScenarioLastTime += 1;
+                                minutesScenarioLastTime = 0;
+                            }
+                            else minutesScenarioLastTime += 1;
+                        }
+
+                        string[] timeDtoScenario = dataScenario.Time.Split(['-']);
+                        string[] dtoFirstTime = timeDtoScenario[0].Split([':']);
+                        string[] dtoLastTime = timeDtoScenario[1].Split(':');
+                        
+                        if (minutesScenarioFirstTime < int.Parse(dtoFirstTime[1]))
+                            return true;
+                        if (minutesScenarioFirstTime >= int.Parse(dtoFirstTime[1]))
+                            return false;
+                        if (minutesScenarioLastTime >= int.Parse(dtoFirstTime[1]))
+                            return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     public async Task<bool> CreateOrSave(string item, Scenario scenario)
@@ -76,7 +111,6 @@ public class ScenarioServices(
 
             for (int i = 0; i < timeMin; i++)
             {
-                Console.WriteLine(minutes);
                 if (minutes >= 59)
                 {
                     timeMin -= 1;
@@ -85,7 +119,7 @@ public class ScenarioServices(
                 }
                 else minutes += 1;
             }
-            
+
             Scenario scenarioMap = new Scenario(scenario.Name, scenario.IdMicroController,
                 $"{scenario.Time}-{hours.ToString()}:{minutes}", scenario.Days,
                 scenario.IdMusic);
@@ -102,7 +136,7 @@ public class ScenarioServices(
                             foreach (var data in dtoScenarios)
                                 return await hebrideanCacheServices.Put(
                                     scenario.Time,
-                                     jsonServices.SerJson(data));
+                                    jsonServices.SerJson(data));
                     }
                     else
                     {
@@ -163,7 +197,7 @@ public class ScenarioServices(
                     hours += 1;
                 }
                 else minutes += timeMin;
-            
+
             Scenario scenarioMap = new Scenario(scenario.Name, scenario.IdMicroController,
                 $"{scenario.Time}-{hours.ToString()}:{minutes}", scenario.Days,
                 scenario.IdMusic);

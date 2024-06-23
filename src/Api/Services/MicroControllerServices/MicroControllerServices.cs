@@ -3,8 +3,8 @@ using Api.Interface.Repository;
 using Api.Model.RequestModel.MicroController;
 using Api.Model.ResponseModel.MicroController;
 using Api.Services.HebrideanCacheServices;
+using Api.Services.HttpMicroControllerServices;
 using Api.Services.JsonServices;
-using Api.Services.MusicPlayerToMicroControllerServices;
 
 namespace Api.Services.MicroControllerServices;
 
@@ -25,7 +25,7 @@ public interface IMicroControllerServices
 public class MicroControllerServices(
     IJsonServices<DtoMicroController?> dtoJsonServices,
     IJsonServices<MicroController> jsonServices,
-    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
+    IHttpMicroControllerServices httpMicroControllerServices,
     IRepository<MicroController, DtoMicroController, MicroController> controllerRepository,
     IHebrideanCacheServices hebrideanCacheServices)
     : IMicroControllerServices
@@ -50,7 +50,7 @@ public class MicroControllerServices(
         {
             DtoMicroController? microController = await GetId("MicroControllers", data);
             if (microController != null)
-                return await musicPlayerToMicroControllerServices.SoundVol(microController, vol);
+                return await httpMicroControllerServices.PostVol(microController, vol);
         }
 
         return false;

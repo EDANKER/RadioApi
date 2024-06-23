@@ -5,7 +5,7 @@ public interface IStreamToByteArrayServices
     Task<byte[]?> StreamToByte(Stream stream);
 }
 
-public class StreamToByteArrayServices : IStreamToByteArrayServices
+public class StreamToByteArrayServices(ILogger<StreamToByteArrayServices> logger) : IStreamToByteArrayServices
 {
     public async Task<byte[]?> StreamToByte(Stream stream)
     {
@@ -20,6 +20,7 @@ public class StreamToByteArrayServices : IStreamToByteArrayServices
         }
         catch (Exception e)
         {
+            logger.LogError(e.ToString());
             return null;
         }
     }

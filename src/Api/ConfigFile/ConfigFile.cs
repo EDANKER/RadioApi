@@ -1,6 +1,6 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using Api.Data.Minio;
-using Api.Data.Repository.CacheRepository;
 using Api.Data.Repository.CacheRepository.DistributedCacheRepository;
 using Api.Data.Repository.CacheRepository.HebrideanCacheRepository;
 using Api.Data.Repository.MicroController;
@@ -8,7 +8,6 @@ using Api.Data.Repository.Music;
 using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenario;
 using Api.Data.Repository.User;
-using Api.Interface;
 using Api.Interface.CacheRepository;
 using Api.Interface.Repository;
 using Api.Model.JwtTokenConfig;
@@ -34,9 +33,9 @@ using Api.Services.JsonServices;
 using Api.Services.LdapService;
 using Api.Services.LoginUserServices;
 using Api.Services.MicroControllerServices;
-using Api.Services.MusicPlayerToMicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
+using Api.Services.RadioServices;
 using Api.Services.ScenarioServices;
 using Api.Services.StreamToByteArrayServices;
 using Api.Services.TimeCounterServices;
@@ -62,12 +61,12 @@ public static class ConfigFile
         service.AddSingleton<IJsonServices<DtoMicroController>, JsonServices<DtoMicroController>>();
         service.AddSingleton<IJsonServices<MicroController>, JsonServices<MicroController>>();
         service.AddSingleton<IStreamToByteArrayServices, StreamToByteArrayServices>();
+        service.AddTransient<HttpClient>();
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
         service.AddTransient<IMinioClient, MinioClient>();
         service.AddSingleton<IMinio, Data.Minio.Minio>();
         service.AddSingleton<IFileServices, FileServices>();
-        service.AddSingleton<IMusicPlayerToMicroControllerServices, MusicPlayerToMicroControllerServices>();
         service.AddSingleton<IMicroControllerServices, MicroControllerServices>();
         service.AddSingleton<IRepository<MicroController, DtoMicroController, MicroController>, MicroControllerRepository>();
         service.AddSingleton<IScenarioServices, ScenarioServices>();
@@ -83,7 +82,7 @@ public static class ConfigFile
         service.AddSingleton<ITimeCounterServices, TimeCounterServices>();
         service.AddSingleton<IHttpMicroControllerServices, HttpMicroControllerServices>();
         service.AddSingleton<ILoginUserServices, LoginUserServices>();
-        service.AddSingleton<HttpClient>();
+        service.AddSingleton<IRadioServices, RadioServices>();
         service.AddMemoryCache();
         service.AddStackExchangeRedisCache(options =>
         {

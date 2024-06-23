@@ -1,14 +1,16 @@
-﻿namespace Api.Services.RadioServices;
+﻿using Api.Services.HttpMicroControllerServices;
+
+namespace Api.Services.RadioServices;
 
 public interface IRadioServices
 {
-    Task<bool> PostStream();
+    Task<bool> PostStream(Stream stream);
 }
 
-public class RadioServices : IRadioServices
+public class RadioServices(IHttpMicroControllerServices httpMicroControllerServices) : IRadioServices
 {
-    public Task<bool> PostStream()
+    public async Task<bool> PostStream(Stream stream)
     {
-        throw new NotImplementedException();
+        return await httpMicroControllerServices.PostStream(stream);
     }
 }

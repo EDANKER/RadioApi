@@ -1,12 +1,11 @@
-﻿using Api.Interface;
-using Api.Interface.Repository;
+﻿using Api.Interface.Repository;
 using Api.Model.RequestModel.Create.CreateMusic;
 using Api.Model.RequestModel.Update.UpdateMusic;
 using Api.Model.ResponseModel.MicroController;
 using Api.Model.ResponseModel.Music;
-using Api.Services.HebrideanCacheServices;
+using Api.Services.HttpMicroControllerServices;
 using Api.Services.MicroControllerServices;
-using Api.Services.MusicPlayerToMicroControllerServices;
+using Api.Services.RadioServices;
 using Api.Services.TimeCounterServices;
 
 namespace Api.Services.MusicServices;
@@ -30,10 +29,10 @@ public interface IMusicServices
 public class MusicServices(
     IRepository<CreateMusic, DtoMusic, UpdateMusic> musicRepository,
     IFileServices.IFileServices fileServices,
-    IMusicPlayerToMicroControllerServices musicPlayerToMicroControllerServices,
+    IHttpMicroControllerServices httpMicroControllerServices,
     IMicroControllerServices microControllerServices,
     ITimeCounterServices timeCounterServices,
-    IHebrideanCacheServices hebrideanCacheServices) : IMusicServices
+    IRadioServices radioServices) : IMusicServices
 {
     private async Task<Stream?> GetMusicInMinio(int id)
     {
@@ -73,15 +72,18 @@ public class MusicServices(
         Stream? stream = await GetMusicInMinio(idMusic);
         if (stream != null)
         {
-            foreach (var data in idController)
+            if (await radioServices.PostStream(stream))
             {
-                if (data < 0)
-                    continue;
-                DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
-                if (dtoMicroController != null)
-                    if (await musicPlayerToMicroControllerServices.Play(
-                            dtoMicroController, stream))
-                        await hebrideanCacheServices.Put(idMusic.ToString(), "Играет");
+                foreach (var data in idController)
+                {
+                    if (data < 0)
+                        continue;
+                    DtoMicroController? dtoMicroController =
+                        await microControllerServices.GetId("MicroControllers", data);
+                    if (dtoMicroController != null)
+                        if (await httpMicroControllerServices.Play(
+                                dtoMicroController));
+                }
             }
         }
 
@@ -90,14 +92,17 @@ public class MusicServices(
 
     public async Task<bool> PlayLife(IFormFile formFile, int[] idController)
     {
-        foreach (var data in idController)
+        if (await radioServices.PostStream(formFile.OpenReadStream()))
         {
-            if (data < 0)
-                continue;
-            DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
-            if (dtoMicroController != null)
-                return await musicPlayerToMicroControllerServices.PlayLife(
-                    dtoMicroController, formFile.OpenReadStream());
+            foreach (var data in idController)
+            {
+                if (data < 0)
+                    continue;
+                DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
+                if (dtoMicroController != null)
+                    return await httpMicroControllerServices.Play(
+                        dtoMicroController);
+            }
         }
 
         return false;
@@ -112,7 +117,7 @@ public class MusicServices(
 
             DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
             if (dtoMicroController != null)
-                return await musicPlayerToMicroControllerServices.Stop(dtoMicroController);
+                return await httpMicroControllerServices.Stop(dtoMicroController);
         }
 
         return false;

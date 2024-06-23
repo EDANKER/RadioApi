@@ -22,16 +22,18 @@ public class ScenarioTimeGetServices(
         {
             DateTime oldDataTime = DateTime.Now;
             string oldTime = $"{oldDataTime.Hour}:{oldDataTime.Minute}";
-            
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 DateTime newDataTime = DateTime.Now;
                 string newTime = $"{newDataTime.Hour}:{newDataTime.Minute}";
 
-                if (true)
+                if (newTime != oldTime)
                 {
+                    oldTime = newTime;
                     List<DtoScenario>? dtoScenarios = await scenarioServices.GetLike("Scenario", newTime, "Time");
-                    
+
+
                     if (dtoScenarios != null)
                     {
                         foreach (var data in dtoScenarios)
@@ -58,7 +60,7 @@ public class ScenarioTimeGetServices(
                     }
                 }
             }
-            
+
             if (stoppingToken.IsCancellationRequested)
             {
                 List<DtoScenario>? dtoScenarios = await scenarioServices.GetAll("Scenario");

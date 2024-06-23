@@ -229,42 +229,42 @@
           "runtimes/win-x64/native/libcrypto-3-x64.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "3.1.0.0"
           },
           "runtimes/win-x64/native/libcurl.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "7.80.0.0"
           },
           "runtimes/win-x64/native/libmediainfo.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "21.9.0.0"
           },
           "runtimes/win-x64/native/libssl-3-x64.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "3.1.0.0"
           },
           "runtimes/win-x86/native/libcrypto-3.dll": {
             "rid": "win-x86",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "3.1.0.0"
           },
           "runtimes/win-x86/native/libcurl.dll": {
             "rid": "win-x86",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "7.80.0.0"
           },
           "runtimes/win-x86/native/libmediainfo.dll": {
             "rid": "win-x86",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "21.9.0.0"
           },
           "runtimes/win-x86/native/libssl-3.dll": {
             "rid": "win-x86",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "3.1.0.0"
           }
         }
       },
@@ -872,27 +872,27 @@
           "runtimes/win-x64/native/comerr64.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "4.1.0.0"
           },
           "runtimes/win-x64/native/gssapi64.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "4.1.0.0"
           },
           "runtimes/win-x64/native/k5sprt64.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "4.1.0.0"
           },
           "runtimes/win-x64/native/krb5_64.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "4.1.0.0"
           },
           "runtimes/win-x64/native/krbcc64.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "4.1.0.0"
           }
         }
       },
@@ -1851,7 +1851,7 @@
         "runtime": {
           "lib/net6.0/TagLib.Audio.dll": {
             "assemblyVersion": "2.2.0.0",
-            "fileVersion": "0.0.0.0"
+            "fileVersion": "2.2.0.0"
           }
         }
       },
