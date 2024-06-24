@@ -54,24 +54,35 @@ public class HttpMicroControllerServices(
     {
         string au = "source:hackme";
         byte[] bytes = Encoding.ASCII.GetBytes(au);
-        
+
         try
         {
-            HttpWebRequest httpResponseMessage = (HttpWebRequest)WebRequest.Create("http://10.3.16.220:8000/example.mp3");
+            HttpWebRequest httpResponseMessage =
+                (HttpWebRequest)WebRequest.Create("http://10.3.16.220:8000/example.mp3");
             httpResponseMessage.Headers.Add("Content-Type", "audio/mpeg");
             httpResponseMessage.Method = "PUT";
             httpResponseMessage.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(bytes));
             httpResponseMessage.ContentType = "audio/mpeg";
 
-            Stream netStream = httpResponseMessage.GetRequestStream();
-            stream.CopyTo(netStream);
+            Stream netStream = await httpResponseMessage.GetRequestStreamAsync();
+            byte[] buffer = new byte[4096];
+            int byteRead;
+           
+            while ((byteRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                Console.WriteLine(byteRead);
+                await netStream.WriteAsync(buffer, 0, byteRead);
+            }
 
-            HttpWebResponse httpWebResponse = (HttpWebResponse)httpResponseMessage.GetResponse();
+            using HttpWebResponse httpWebResponse = (HttpWebResponse)await httpResponseMessage.GetResponseAsync();
             Console.WriteLine(httpWebResponse.StatusCode);
             if (httpWebResponse.StatusCode.ToString() == "OK")
             {
+                stream.Close();
                 return true;
             }
+            
+            stream.Close();
             return false;
         }
         catch (Exception e)

@@ -1,3 +1,4 @@
+using System.IO.Pipelines;
 using Api.Model.MinioModel;
 using Minio;
 using Minio.DataModel.Args;
@@ -21,7 +22,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
         .WithCredentials(configuration.GetSection("Minio:user").Value,
             configuration.GetSection("Minio:pass").Value)
         .Build();
-    
+
     public async Task<bool> Save(MinioModel minioModel, IFormFile formFile, string type)
     {
         try
@@ -120,7 +121,7 @@ public class Minio(ILogger<Minio> logger, IConfiguration configuration) : IMinio
                 {
                     stream1.CopyTo(stream);
                 }));
-            
+
             stream.Seek(0, SeekOrigin.Begin);
             return stream;
         }

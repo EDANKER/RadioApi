@@ -16,6 +16,8 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     {
         if (formFile.ContentType != "image/jpeg")
             return BadRequest("Это не фото");
+        if (formFile.ContentType != "image/png")
+            return BadRequest("Это не фото");
         if (await playListServices.Search("PlayLists", name, "Name"))
             return BadRequest("Такие данные уже есть");
 
