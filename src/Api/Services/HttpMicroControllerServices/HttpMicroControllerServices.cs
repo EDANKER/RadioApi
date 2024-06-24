@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using Api.Model.ResponseModel.MicroController;
 
@@ -52,39 +53,25 @@ public class HttpMicroControllerServices(
 
     public async Task<bool> PostStream(Stream stream)
     {
-        string au = "source:hackme";
-        byte[] bytes = Encoding.ASCII.GetBytes(au);
-
         try
         {
-            HttpWebRequest httpResponseMessage =
-                (HttpWebRequest)WebRequest.Create("http://10.3.16.220:8000/example.mp3");
-            httpResponseMessage.Headers.Add("Content-Type", "audio/mpeg");
-            httpResponseMessage.Method = "PUT";
-            httpResponseMessage.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(bytes));
-            httpResponseMessage.ContentType = "audio/mpeg";
-
-            Stream netStream = await httpResponseMessage.GetRequestStreamAsync();
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(IPAddress.Parse("10.3.16.220"), 8000);
+            string request =
+                $"SOURCE /example.mp3 HTTP/1.0\r\n Authorization: Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes("source:hackme"))}\r\n Content-Type: audio/mpeg\r\n\r\n";
+            byte[] au = Encoding.ASCII.GetBytes(request);
+            socket.Send(au, 0, au.Length, SocketFlags.None);
             byte[] buffer = new byte[4096];
             int byteRead;
-           
-            while ((byteRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+
+            while ((byteRead = stream.Read(buffer, 0, buffer.Length)) > 0)
             {
-                Console.WriteLine(byteRead);
-                await netStream.WriteAsync(buffer, 0, byteRead);
+                socket.Send(buffer, byteRead, SocketFlags.None);
             }
 
-            using (HttpWebResponse httpWebResponse = (HttpWebResponse)await httpResponseMessage.GetResponseAsync())
-            {
-                Console.WriteLine(httpWebResponse.StatusCode);
-                if (httpWebResponse.StatusCode == HttpStatusCode.OK)
-                {
-                    Console.WriteLine(netStream.ToString());
-                    return true;
-                }
+            socket.Close();
 
-                return false;
-            }
+            return true;
         }
         catch (Exception e)
         {
