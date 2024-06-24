@@ -54,44 +54,52 @@ public class HttpMicroControllerServices(
 
     public async Task<bool> PostStream(Stream stream)
     {
-        Thread.Sleep(10);
-        string au = "source:hackme";
-        byte[] bytes = Encoding.ASCII.GetBytes(au);
- 
-        try
+        int count = 0;
+        while (count < 5)
         {
-            HttpWebRequest httpResponseMessage =
-                (HttpWebRequest)WebRequest.Create("http://10.3.16.220:8000/example.mp3");
-            httpResponseMessage.Headers.Add("Content-Type", "audio/mpeg");
-            httpResponseMessage.Method = "PUT";
-            httpResponseMessage.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(bytes));
-            httpResponseMessage.ContentType = "audio/mpeg";
- 
-            Stream netStream = await httpResponseMessage.GetRequestStreamAsync();
-            byte[] buffer = new byte[4096];
-            int byteRead;
-           
-            while ((byteRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            ++count;
+            Thread.Sleep(10);
+            string au = "source:hackme";
+            byte[] bytes = Encoding.ASCII.GetBytes(au);
+
+            try
             {
-                await netStream.WriteAsync(buffer, 0, byteRead);
-            }
- 
-            using HttpWebResponse httpWebResponse = (HttpWebResponse)await httpResponseMessage.GetResponseAsync();
-            Console.WriteLine(httpWebResponse.StatusCode);
-            if (httpWebResponse.StatusCode.ToString() == "OK")
-            {
+                HttpWebRequest httpResponseMessage =
+                    (HttpWebRequest)WebRequest.Create("http://10.3.16.220:8000/example.mp3");
+                httpResponseMessage.Headers.Add("Content-Type", "audio/mpeg");
+                httpResponseMessage.Method = "PUT";
+                httpResponseMessage.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(bytes));
+                httpResponseMessage.ContentType = "audio/mpeg";
+
+                Stream netStream = await httpResponseMessage.GetRequestStreamAsync();
+                byte[] buffer = new byte[4096];
+                int byteRead;
+
+                while ((byteRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    await netStream.WriteAsync(buffer, 0, byteRead);
+                }
+
+                using HttpWebResponse httpWebResponse = (HttpWebResponse)await httpResponseMessage.GetResponseAsync();
+                Console.WriteLine(httpWebResponse.StatusCode);
+                if (httpWebResponse.StatusCode.ToString() == "OK")
+                {
+                    stream.Close();
+                    return true;
+                }
+
                 stream.Close();
-                return true;
+                return false;
+
             }
-            
-            stream.Close();
-            return false;
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+                return false;
+            }
         }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
-            return false;
-        }
+
+        return false;
     }
 
     public async Task<bool> Stop(DtoMicroController dtoMicroController)
