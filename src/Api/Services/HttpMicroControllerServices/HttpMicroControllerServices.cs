@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using Api.Model.ResponseModel.MicroController;
 
 namespace Api.Services.HttpMicroControllerServices;
@@ -56,20 +57,21 @@ public class HttpMicroControllerServices(
         
         try
         {
-            httpClient.BaseAddress = new Uri("http://10.3.16.220:8080");
-            StreamContent streamContent = new StreamContent(stream);
-            streamContent.Headers.Add("Content-Type", "audio/mpeg");
-            httpClient.DefaultRequestHeaders.Add("Authorization", "Basic " + Convert.ToBase64String(bytes));
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("/stream", streamContent);
+            HttpWebRequest httpResponseMessage = (HttpWebRequest)WebRequest.Create("http://10.3.16.220:8000/example.mp3");
+            httpResponseMessage.Headers.Add("Content-Type", "audio/mpeg");
+            httpResponseMessage.Method = "PUT";
+            httpResponseMessage.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(bytes));
+            httpResponseMessage.ContentType = "audio/mpeg";
 
-            Console.WriteLine(httpResponseMessage.StatusCode);
-            if (httpResponseMessage.StatusCode.ToString() == "OK")
+            Stream netStream = httpResponseMessage.GetRequestStream();
+            stream.CopyTo(netStream);
+
+            HttpWebResponse httpWebResponse = (HttpWebResponse)httpResponseMessage.GetResponse();
+            Console.WriteLine(httpWebResponse.StatusCode);
+            if (httpWebResponse.StatusCode.ToString() == "OK")
             {
-                stream.Close();
                 return true;
             }
-
-            stream.Close();
             return false;
         }
         catch (Exception e)
