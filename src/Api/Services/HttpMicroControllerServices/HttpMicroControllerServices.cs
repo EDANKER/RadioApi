@@ -74,16 +74,17 @@ public class HttpMicroControllerServices(
                 await netStream.WriteAsync(buffer, 0, byteRead);
             }
 
-            using HttpWebResponse httpWebResponse = (HttpWebResponse)await httpResponseMessage.GetResponseAsync();
-            Console.WriteLine(httpWebResponse.StatusCode);
-            if (httpWebResponse.StatusCode.ToString() == "OK")
+            using (HttpWebResponse httpWebResponse = (HttpWebResponse)await httpResponseMessage.GetResponseAsync())
             {
-                stream.Close();
-                return true;
+                Console.WriteLine(httpWebResponse.StatusCode);
+                if (httpWebResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    Console.WriteLine(netStream.ToString());
+                    return true;
+                }
+
+                return false;
             }
-            
-            stream.Close();
-            return false;
         }
         catch (Exception e)
         {
