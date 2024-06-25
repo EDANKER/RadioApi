@@ -14,7 +14,8 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     public async Task<IActionResult> CreatePlayList([Required] IFormFile formFile, [Required] [FromQuery] string name,
         [Required] [FromQuery] string description)
     {
-        if (formFile.ContentType != "image/jpeg")
+        if (formFile.ContentType != "image/jpeg" 
+            && formFile.ContentType != "image/png")
             return BadRequest("Это не фото");
         if (await playListServices.Search("PlayLists", name, "Name"))
             return BadRequest("Такие данные уже есть");
