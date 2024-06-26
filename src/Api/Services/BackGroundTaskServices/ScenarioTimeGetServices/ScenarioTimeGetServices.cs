@@ -23,6 +23,19 @@ public class ScenarioTimeGetServices(
             DateTime oldDataTime = DateTime.Now;
             string oldTime = $"{oldDataTime.Hour}:{oldDataTime.Minute}";
 
+            List<DtoScenario>? dtoScenarios =
+                await scenarioServices.GetLike("Scenario", oldDataTime.Day.ToString("dddd"), "Days");
+
+            if (dtoScenarios != null)
+            {
+                foreach (var data in dtoScenarios)
+                {
+                    string[]? day = jsonServicesS.DesJson(data.Days);
+                    if (day != null)
+                        await hebrideanCacheServices.Put(data.Time.Split('-')[0], jsonServices.SerJson(data));
+                }
+            }
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 DateTime newDataTime = DateTime.Now;
@@ -31,39 +44,27 @@ public class ScenarioTimeGetServices(
                 if (newTime != oldTime)
                 {
                     oldTime = newTime;
-                    List<DtoScenario>? dtoScenarios = await scenarioServices.GetLike("Scenario", newTime, "Time");
-
-
-                    if (dtoScenarios != null)
+                    
+                    string? json = await hebrideanCacheServices.GetId(newTime);
+                    if (json != null)
                     {
-                        foreach (var data in dtoScenarios)
-                        {
-                            string[]? day = jsonServicesS.DesJson(data.Days);
-                            if (day != null)
-                                await hebrideanCacheServices.Put(data.Time.Split('-')[0], jsonServices.SerJson(data));
-                        }
-
-                        string? json = await hebrideanCacheServices.GetId(newTime);
-                        if (json != null)
-                        {
-                            DtoScenario? dtoScenario = jsonServices.DesJson(json);
-                            if (dtoScenario != null)
-                                if (await musicServices.Play(dtoScenario.IdMusic, dtoScenario.IdMicroControllers)
-                                    || endeavors >= 3)
-                                {
-                                    Console.WriteLine("Hello");
-                                    await hebrideanCacheServices.DeleteId(dtoScenario.Time.Split('-')[0]);
-                                }
-                                else
-                                    ++endeavors;
-                        }
+                        DtoScenario? dtoScenario = jsonServices.DesJson(json);
+                        if (dtoScenario != null)
+                            if (await musicServices.Play(dtoScenario.IdMusic, dtoScenario.IdMicroControllers)
+                                || endeavors >= 3)
+                            {
+                                Console.WriteLine("Hello");
+                                await hebrideanCacheServices.DeleteId(dtoScenario.Time.Split('-')[0]);
+                            }
+                            else
+                                ++endeavors;
                     }
                 }
             }
 
             if (stoppingToken.IsCancellationRequested)
             {
-                List<DtoScenario>? dtoScenarios = await scenarioServices.GetAll("Scenario");
+                dtoScenarios = await scenarioServices.GetAll("Scenario");
                 if (dtoScenarios != null)
                     foreach (var data in dtoScenarios)
                         await hebrideanCacheServices.DeleteId(data.Time.Split('-')[0]);

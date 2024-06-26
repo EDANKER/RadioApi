@@ -1,4 +1,3 @@
-using System.IO.Pipelines;
 using Api.Model.MinioModel;
 using Minio;
 using Minio.DataModel.Args;

@@ -82,13 +82,16 @@ public class ScenarioServices(
                         string[] timeDtoScenario = dataScenario.Time.Split(['-']);
                         string[] dtoFirstTime = timeDtoScenario[0].Split([':']);
                         string[] dtoLastTime = timeDtoScenario[1].Split(':');
-                        
-                        if (minutesScenarioFirstTime < int.Parse(dtoFirstTime[1]))
-                            return true;
-                        if (minutesScenarioFirstTime >= int.Parse(dtoFirstTime[1]))
-                            return false;
-                        if (minutesScenarioLastTime >= int.Parse(dtoFirstTime[1]))
-                            return false;
+
+                        if (hoursScenarioFirstTime == int.Parse(dtoFirstTime[0]))
+                        {
+                            if (minutesScenarioFirstTime >= int.Parse(dtoFirstTime[1]) &&
+                                minutesScenarioFirstTime <= int.Parse(dtoLastTime[1]))
+                                return false;
+                            if (minutesScenarioLastTime >= int.Parse(dtoFirstTime[1]) &&
+                                minutesScenarioLastTime <= int.Parse(dtoLastTime[1]))
+                                return false;
+                        }
                     }
                 }
             }

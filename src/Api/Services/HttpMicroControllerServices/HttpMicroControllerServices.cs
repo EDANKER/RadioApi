@@ -23,7 +23,7 @@ public class HttpMicroControllerServices(
     {
         try
         {
-            httpClient.BaseAddress = new Uri($"https://{dtoMicroController.Ip}:{dtoMicroController.Port}");
+            httpClient.BaseAddress = new Uri($"http://{dtoMicroController.Ip}:{dtoMicroController.Port}");
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("",
                 new StringContent(vol.ToString(), Encoding.UTF8,
                     "text/plain"));
@@ -40,7 +40,7 @@ public class HttpMicroControllerServices(
     {
         try
         {
-            httpClient.BaseAddress = new Uri($"https://{dtoMicroController.Ip}:{dtoMicroController.Port}");
+            httpClient.BaseAddress = new Uri($"http://{dtoMicroController.Ip}:{dtoMicroController.Port}");
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("", new StringContent("start"));
 
             return await httpResponseMessage.Content.ReadAsStringAsync() == "start";
@@ -59,32 +59,22 @@ public class HttpMicroControllerServices(
  
         try
         {
-            HttpWebRequest httpResponseMessage =
-                (HttpWebRequest)WebRequest.Create("http://10.3.16.220:8000/example.mp3");
-            httpResponseMessage.Headers.Add("Content-Type", "audio/mpeg");
-            httpResponseMessage.Method = "PUT";
-            httpResponseMessage.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(bytes));
-            httpResponseMessage.ContentType = "audio/mpeg";
- 
-            Stream netStream = await httpResponseMessage.GetRequestStreamAsync();
+            TcpClient tcpClient = new TcpClient("10.3.16.220", 8000);
+            NetworkStream networkStream = tcpClient.GetStream();
+
+            string request = $"SOURCE /example.mp3 ICE/1.0\r\n Authorization: Basic {bytes}\r\n\r\n";
+            byte[] requestData = Encoding.ASCII.GetBytes(request);
+            await networkStream.WriteAsync(requestData, 0, requestData.Length);
+
             byte[] buffer = new byte[4096];
             int byteRead;
-           
+            
             while ((byteRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
             {
-                await netStream.WriteAsync(buffer, 0, byteRead);
-            }
- 
-            using HttpWebResponse httpWebResponse = (HttpWebResponse)await httpResponseMessage.GetResponseAsync();
-            Console.WriteLine(httpWebResponse.StatusCode);
-            if (httpWebResponse.StatusCode.ToString() == "OK")
-            {
-                stream.Close();
-                return true;
+                await networkStream.WriteAsync(buffer, 0, byteRead);
             }
             
-            stream.Close();
-            return false;
+            return true;
         }
         catch (Exception e)
         {
