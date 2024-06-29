@@ -50,7 +50,7 @@ public class DistributedCacheRepository(IDistributedCache distributedCache, ILog
         }
     }
 
-    public async Task<bool> Put(string key, string item)
+    public async Task<bool> Put(string key, string? item)
     {
         try
         {

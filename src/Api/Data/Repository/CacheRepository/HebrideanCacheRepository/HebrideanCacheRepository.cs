@@ -49,7 +49,7 @@ public class HebrideanCacheRepository(
         }
     }
 
-    public async Task<bool> Put(string key, string item)
+    public async Task<bool> Put(string key, string? item)
     {
         try
         {
