@@ -26,10 +26,8 @@ public class MicroControllersController(IMicroControllerServices microController
     }
     
     [HttpGet("GetAllMicroController")]
-    public async Task<IActionResult> GetAllMicroController([Required] [FromQuery] int floor)
+    public async Task<IActionResult> GetAllMicroController()
     {
-        if (floor < 0)
-            return BadRequest("Некорректное значение floor");
         List<DtoMicroController>? dtoMicroController = await microControllerServices.GetAll("MicroControllers");
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
