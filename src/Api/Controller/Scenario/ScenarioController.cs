@@ -19,8 +19,12 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
             return BadRequest("Имя уже занято");
         if (!await scenarioServices.ValidationTime(scenario.Time, scenario.Days))
             return BadRequest("Такое время уже занято");
+        
+        DtoScenario? dtoScenario = await scenarioServices.CreateOrSave("Scenario", scenario);
+        if (dtoScenario != null)
+            return Ok(dtoScenario);
 
-        return Ok(await scenarioServices.CreateOrSave("Scenario", scenario));
+        return BadRequest();
     }
 
     [HttpGet("GetScenarioLimit")]
@@ -71,7 +75,11 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
+        
+        DtoScenario? dtoScenario = await scenarioServices.UpdateId("Scenario", scenario, id);
+        if (dtoScenario != null)
+            return Ok(dtoScenario);
 
-        return Ok(await scenarioServices.UpdateId("Scenario", scenario, id));
+        return BadRequest();
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System.Net;
 using System.Text;
 using Api.Data.Minio;
+using Api.Data.Repository.Admin;
 using Api.Data.Repository.CacheRepository.DistributedCacheRepository;
 using Api.Data.Repository.CacheRepository.HebrideanCacheRepository;
 using Api.Data.Repository.MicroController;
 using Api.Data.Repository.Music;
 using Api.Data.Repository.PlayList;
 using Api.Data.Repository.Scenario;
-using Api.Data.Repository.User;
 using Api.Interface.CacheRepository;
 using Api.Interface.Repository;
 using Api.Model.JwtTokenConfig;
@@ -73,8 +73,8 @@ public static class ConfigFile
         service.AddSingleton<IRepository<Scenario, DtoScenario, Scenario>, ScenarioRepository>();
         service.AddSingleton<IMusicServices, MusicServices>();
         service.AddSingleton<IRepository<CreateMusic, DtoMusic, UpdateMusic>, MusicRepository>();
-        service.AddSingleton<IRepository<User, DtoUser, User>, UserRepository>();
-        service.AddSingleton<IUserServices, UserServices>();
+        service.AddSingleton<IRepository<User, DtoUser, User>, AdminPanelSettingsRepository>();
+        service.AddSingleton<IUserServices, AdminPanelSettingsServices>();
         service.AddSingleton<IRepository<CreatePlayList, DtoPlayList, UpdatePlayList>, PlayListRepository>();
         service.AddSingleton<IPlayListServices, PlayListServices>();
         service.AddSingleton<IGeneratorTokenServices, GeneratorTokenServices>();

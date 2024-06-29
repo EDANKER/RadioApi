@@ -36,7 +36,7 @@ public class PlayListRepository(
         return -1;
     }
 
-    public async Task<bool> CreateOrSave(string item, CreatePlayList createPlayList)
+    public async Task<DtoPlayList?> CreateOrSave(string item, CreatePlayList createPlayList)
     {
         string command = $"INSERT INTO {item} " +
                          "(name, description ,imgPath)" +
@@ -55,12 +55,13 @@ public class PlayListRepository(
 
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
-            return true;
+            
+            return await GetField(item, createPlayList.Name, "Name");
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            return false;
+            return null;
         }
     }
 
@@ -147,9 +148,8 @@ public class PlayListRepository(
         }
     }
 
-    public async Task<List<DtoPlayList>?> GetField(string item, string namePurpose, string field)
+    public async Task<DtoPlayList?> GetField(string item, string namePurpose, string field)
     {
-        _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
         try
@@ -169,7 +169,6 @@ public class PlayListRepository(
                     string imgPath = _dataReader.GetString(3);
 
                     _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
-                    _dtoPlayLists.Add(_dtoPlayList);
                 }
             }
             else
@@ -180,7 +179,7 @@ public class PlayListRepository(
             await mySqlConnection.CloseAsync();
             await _dataReader.CloseAsync();
 
-            return _dtoPlayLists;
+            return _dtoPlayList;
         }
         catch (MySqlException e)
         {
@@ -310,7 +309,7 @@ public class PlayListRepository(
         return true;
     }
 
-    public async Task<bool> UpdateId(string item, UpdatePlayList model, int id)
+    public async Task<DtoPlayList?> UpdateId(string item, UpdatePlayList updatePlayList, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET Name = @Name," +
@@ -323,8 +322,8 @@ public class PlayListRepository(
             await mySqlConnection.OpenAsync();
 
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = model.Name;
-            mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = model.Description;
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = updatePlayList.Name;
+            mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = updatePlayList.Description;
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             await mySqlCommand.ExecuteNonQueryAsync();
@@ -333,12 +332,11 @@ public class PlayListRepository(
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            return false;
+            return null;
         }
 
-        return true;
+        return await GetField(item, updatePlayList.Name, "Name");
     }
-
     public async Task<bool> Search(string item, string namePurpose, string field)
     {
         string command = $"SELECT EXISTS(SELECT * FROM {item} " +

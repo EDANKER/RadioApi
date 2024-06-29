@@ -38,7 +38,7 @@ public class MusicRepository(
         return -1;
     }
 
-    public async Task<bool> CreateOrSave(string item, CreateMusic createMusic)
+    public async Task<DtoMusic?> CreateOrSave(string item, CreateMusic createMusic)
     {
         string command = $"INSERT INTO {item} " +
                          $"(name, namePlayList, timeMusic) " +
@@ -57,14 +57,14 @@ public class MusicRepository(
 
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
+            
+            return await GetField(item, createMusic.Name, "Name");
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            return false;
+            return null;
         }
-
-        return true;
     }
 
     public async Task<List<DtoMusic>?> GetAll(string item)
@@ -151,9 +151,8 @@ public class MusicRepository(
         }
     }
 
-    public async Task<List<DtoMusic>?> GetField(string item, string namePurpose, string field)
+    public async Task<DtoMusic?> GetField(string item, string namePurpose, string field)
     {
-        _dtoMusics = new List<DtoMusic>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
         try
@@ -175,7 +174,6 @@ public class MusicRepository(
                     int timeMusic = _dataReader.GetInt32(3);
 
                     _dtoMusic = new DtoMusic(id, name, namePlayList, timeMusic);
-                    _dtoMusics.Add(_dtoMusic);
                 }
             }
             else
@@ -186,7 +184,7 @@ public class MusicRepository(
             await mySqlConnection.CloseAsync();
             await _dataReader.CloseAsync();
 
-            return _dtoMusics;
+            return _dtoMusic;
         }
         catch (MySqlException e)
         {
@@ -311,7 +309,7 @@ public class MusicRepository(
         }
     }
 
-    public async Task<bool> UpdateId(string item, UpdateMusic model, int id)
+    public async Task<DtoMusic?> UpdateId(string item, UpdateMusic model, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET Name = @Name, " +
@@ -334,10 +332,10 @@ public class MusicRepository(
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            return false;
+            return null;
         }
 
-        return true;
+        return await GetId(item, id);
     }
 
 

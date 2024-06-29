@@ -35,7 +35,7 @@ public class MicroControllerRepository(
         return -1;
     }
     
-    public async Task<bool> CreateOrSave(string item,
+    public async Task<DtoMicroController?> CreateOrSave(string item,
         Model.RequestModel.MicroController.MicroController microController)
     {
         string command = $"INSERT INTO {item} (Name, Ip, Port, Cabinet, Floor) " +
@@ -57,12 +57,12 @@ public class MicroControllerRepository(
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
 
-            return true;
+            return await GetField(item, microController.Name, "Name");
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            return false;
+            return null;
         }
     }
 
@@ -202,9 +202,8 @@ public class MicroControllerRepository(
         return _dtoMicroController;
     }
 
-    public async Task<List<DtoMicroController>?> GetField(string item, string namePurpose, string field)
+    public async Task<DtoMicroController?> GetField(string item, string namePurpose, string field)
     {
-        _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
         
@@ -227,7 +226,6 @@ public class MicroControllerRepository(
                     int floor = _dataReader.GetInt32(5);
 
                     _dtoMicroController = new DtoMicroController(id, name, ip, port, cabinet, floor);
-                    _dtoMicroControllers.Add(_dtoMicroController);
                 }
             }
             else
@@ -238,7 +236,7 @@ public class MicroControllerRepository(
             await mySqlConnection.CloseAsync();
             await _dataReader.CloseAsync();
 
-            return _dtoMicroControllers;
+            return _dtoMicroController;
         }
         catch (MySqlException e)
         {
@@ -321,7 +319,7 @@ public class MicroControllerRepository(
         }
     }
 
-    public async Task<bool> UpdateId(string item, Model.RequestModel.MicroController.MicroController model, int id)
+    public async Task<DtoMicroController?> UpdateId(string item, Model.RequestModel.MicroController.MicroController model, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET Name = @Name," +
@@ -346,14 +344,14 @@ public class MicroControllerRepository(
 
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
+            
+            return await GetId(item, id);
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            return false;
+            return null;
         }
-
-        return true;
     }
 
     public async Task<bool> Search(string item, string name, string field)

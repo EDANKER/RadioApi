@@ -14,24 +14,32 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     public async Task<IActionResult> CreatePlayList([Required] IFormFile formFile, [Required] [FromQuery] string name,
         [Required] [FromQuery] string description)
     {
-        if (formFile.ContentType != "image/jpeg" 
+        if (formFile.ContentType != "image/jpeg"
             && formFile.ContentType != "image/png")
             return BadRequest("Это не фото");
         if (await playListServices.Search("PlayLists", name, "Name"))
             return BadRequest("Такие данные уже есть");
+        DtoPlayList? dtoMusic = await playListServices.CreateOrSave("PlayLists", name, description, formFile);
 
-        return Ok(await playListServices.CreateOrSave("PlayLists", name, description, formFile));
+        if (dtoMusic != null)
+            return Ok(dtoMusic);
+
+        return BadRequest();
     }
 
     [HttpPut("UpdatePlayList")]
-    public async Task<IActionResult> UpdatePlayList([FromBody] UpdatePlayList updatePlayList, [Required] [FromQuery] int id)
+    public async Task<IActionResult> UpdatePlayList([FromBody] UpdatePlayList updatePlayList,
+        [Required] [FromQuery] int id)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         if (id < 0)
             return BadRequest("Некорректное значение id");
 
-        return Ok(await playListServices.UpdateId("PlayLists", updatePlayList, id));
+        DtoPlayList? dtoPlayList = await playListServices.UpdateId("PlayLists", updatePlayList, id);
+        if (dtoPlayList != null)
+            return Ok(dtoPlayList);
+        return BadRequest();
     }
 
     [HttpDelete("DeletePlayList")]
@@ -56,7 +64,8 @@ public class PlayListController(IPlayListServices playListServices) : Controller
     }
 
     [HttpGet("GetPlayListLimit")]
-    public async Task<IActionResult> GetPlayListLimit([Required] [FromQuery] int limit, [Required] [FromQuery] int currentPage)
+    public async Task<IActionResult> GetPlayListLimit([Required] [FromQuery] int limit,
+        [Required] [FromQuery] int currentPage)
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
@@ -68,7 +77,7 @@ public class PlayListController(IPlayListServices playListServices) : Controller
                 Head = await playListServices.GetCountPage("PlayLists", currentPage, limit),
                 Body = dtoPlayList
             };
-            
+
             return Ok(response);
         }
 

@@ -30,8 +30,11 @@ public class MusicController(IMusicServices musicServices)
             return BadRequest(ModelState);
         if (await musicServices.Search("Musics", formFile.FileName, "Name"))
             return BadRequest("Такие данные уже есть или данные пусты");
-
-        return Ok(await musicServices.CreateOrSave("Musics", formFile, namePlayList));
+        
+        DtoMusic? dtoMusic = await musicServices.CreateOrSave("Musics", formFile, namePlayList);
+        if (dtoMusic != null)
+            return Ok(dtoMusic);
+        return Content("status 204");
     }
 
     [HttpGet("GetMusicLimit")]
@@ -84,13 +87,16 @@ public class MusicController(IMusicServices musicServices)
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await musicServices.UpdateId("Musics", updateMusic, id));
+        DtoMusic? dtoMusic = await musicServices.UpdateId("Musics", updateMusic, id);
+        if (dtoMusic != null)
+            return Ok(dtoMusic);
+        return Content("status 204");
     }
 
     [HttpGet("GetMusicPlayListTag")]
     public async Task<IActionResult> GetMusicPlayListTag([Required] [FromQuery] string name)
     {
-        List<DtoMusic>? dtoMusic = await musicServices.GetField("Musics", name, "NamePlayList");
+        DtoMusic? dtoMusic = await musicServices.GetField("Musics", name, "NamePlayList");
         if (dtoMusic != null)
             return Ok(dtoMusic);
 

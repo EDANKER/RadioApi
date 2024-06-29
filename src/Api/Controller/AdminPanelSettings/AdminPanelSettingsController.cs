@@ -20,7 +20,10 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
         if (await userServices.Search("Users", user.FullName, "FullName"))
             return BadRequest("Такие данные уже есть");
 
-        return Ok(await userServices.CreateOrSave("Users", user));
+        DtoUser? dtoUser = await userServices.CreateOrSave("Users", user);
+        if (dtoUser != null)
+            return Ok(dtoUser);
+        return BadRequest();
     }
 
     [HttpDelete("DeleteUserId")]
@@ -40,7 +43,10 @@ public class AdminPanelSettingsController(IUserServices userServices) : Controll
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        return Ok(await userServices.UpdateId("Users", user, id));
+        DtoUser? dtoUser = await userServices.UpdateId("Users", user, id);
+        if (dtoUser != null)
+            return Ok(dtoUser);
+        return BadRequest();
     }
 
     [HttpGet("GetUserLimit")]

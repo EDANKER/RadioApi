@@ -38,7 +38,7 @@ public class ScenarioRepository(
         return -1;
     }
     
-    public async Task<bool> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario)
+    public async Task<DtoScenario?> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario)
     {
         string command = $"INSERT INTO {item} " +
                          "(Name, IdMicroControllers, " +
@@ -65,10 +65,10 @@ public class ScenarioRepository(
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            return false;
+            return null;
         }
 
-        return true;
+        return await GetField(item, scenario.Name, "Name");
     }
 
     public async Task<List<DtoScenario>?> GetAll(string item)
@@ -169,9 +169,8 @@ public class ScenarioRepository(
         }
     }
 
-    public async Task<List<DtoScenario>?> GetField(string item, string namePurpose, string field)
+    public async Task<DtoScenario?> GetField(string item, string namePurpose, string field)
     {
-        _dtoScenarios = new List<DtoScenario>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
         try
@@ -198,9 +197,6 @@ public class ScenarioRepository(
                     if (array != null)
                         _dtoScenario = new DtoScenario(id, name, array,
                             time, days, idMusic);
-                    if (_dtoScenarios != null)
-                        if (_dtoScenario != null)
-                            _dtoScenarios.Add(_dtoScenario);
                 }
             }
             else
@@ -211,7 +207,7 @@ public class ScenarioRepository(
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
 
-            return _dtoScenarios;
+            return _dtoScenario;
         }
         catch (MySqlException e)
         {
@@ -349,7 +345,7 @@ public class ScenarioRepository(
         return true;
     }
 
-    public async Task<bool> UpdateId(string item, Model.RequestModel.Scenario.Scenario scenario, int id)
+    public async Task<DtoScenario?> UpdateId(string item, Model.RequestModel.Scenario.Scenario scenario, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET " +
@@ -380,10 +376,10 @@ public class ScenarioRepository(
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
-            return false;
+            return null;
         }
 
-        return true;
+        return await GetField(item, scenario.Name, "Name");
     }
 
     public async Task<bool> Search(string item, string name, string field)

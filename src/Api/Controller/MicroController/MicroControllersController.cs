@@ -18,8 +18,11 @@ public class MicroControllersController(IMicroControllerServices microController
             return BadRequest(ModelState);
         if (await microControllerServices.Search("MicroControllers", microController.Name, "Name")) 
             return BadRequest("Такой уже есть");
-        
-        return Ok(await microControllerServices.CreateOrSave("MicroControllers", microController));
+
+        DtoMicroController? dtoMicroController = await microControllerServices.CreateOrSave("MicroControllers", microController);
+        if (dtoMicroController != null)
+            return Ok(dtoMicroController);
+        return BadRequest();
     }
     
     [HttpGet("GetAllMicroController")]
@@ -58,7 +61,10 @@ public class MicroControllersController(IMicroControllerServices microController
     [HttpPut("UpdateMicroController")]
     public async Task<IActionResult> UpdateMicroController([Required] [FromQuery] int id, [FromBody] Model.RequestModel.MicroController.MicroController microController)
     {
-        return Ok(await microControllerServices.Update("MicroControllers" , microController, id));
+        DtoMicroController? dtoMicroController = await microControllerServices.UpdateId("MicroControllers", microController, id);
+        if (dtoMicroController != null)
+            return Ok(dtoMicroController);
+        return BadRequest();
     }
 
     [HttpDelete("DeleteMicroControllerId")]

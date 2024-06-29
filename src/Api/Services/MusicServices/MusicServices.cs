@@ -17,12 +17,12 @@ public interface IMusicServices
     Task<bool> Play(int idMusic, int[] idController);
     Task<bool> PlayLife(IFormFile formFile, int[] idController);
     Task<bool> Stop(int[] idController);
-    Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList);
+    Task<DtoMusic?> CreateOrSave(string item, IFormFile formFile, string namePlayList);
     Task<List<DtoMusic>?> GetLimit(string item, int currentPage, int limit);
     Task<DtoMusic?> GetId(string item, int id);
-    Task<List<DtoMusic>?> GetField(string item, string namePurpose, string field);
+    Task<DtoMusic?> GetField(string item, string namePurpose, string field);
     Task<bool> DeleteId(string item, int id);
-    Task<bool> UpdateId(string item, UpdateMusic updateMusic, int id);
+    Task<DtoMusic?> UpdateId(string item, UpdateMusic updateMusic, int id);
     Task<bool> Search(string item, string name, string field);
 }
 
@@ -82,7 +82,8 @@ public class MusicServices(
                         await microControllerServices.GetId("MicroControllers", data);
                     if (dtoMicroController != null)
                         if (await httpMicroControllerServices.Play(
-                                dtoMicroController));
+                                dtoMicroController))
+                            ;
                 }
             }
         }
@@ -123,13 +124,13 @@ public class MusicServices(
         return false;
     }
 
-    public async Task<bool> CreateOrSave(string item, IFormFile formFile, string namePlayList)
+    public async Task<DtoMusic?> CreateOrSave(string item, IFormFile formFile, string namePlayList)
     {
-        if (await musicRepository.CreateOrSave(item,
-                new CreateMusic(formFile.FileName, namePlayList, await timeCounterServices.TimeToMinutes(formFile))))
-            return await fileServices.Save(formFile, formFile.FileName, "music", "audio/mpeg");
+        if (await fileServices.Save(formFile, formFile.FileName, "music", "audio/mpeg"))
+            return await musicRepository.CreateOrSave(item,
+                new CreateMusic(formFile.FileName, namePlayList, await timeCounterServices.TimeToMinutes(formFile)));
 
-        return false;
+        return null;
     }
 
     public async Task<List<DtoMusic>?> GetLimit(string item, int currentPage, int limit)
@@ -142,7 +143,7 @@ public class MusicServices(
         return await musicRepository.GetId(item, id);
     }
 
-    public async Task<List<DtoMusic>?> GetField(string item, string namePurpose, string field)
+    public async Task<DtoMusic?> GetField(string item, string namePurpose, string field)
     {
         return await musicRepository.GetField(item, namePurpose, field);
     }
@@ -156,7 +157,7 @@ public class MusicServices(
         return false;
     }
 
-    public async Task<bool> UpdateId(string item, UpdateMusic updateMusic, int id)
+    public async Task<DtoMusic?> UpdateId(string item, UpdateMusic updateMusic, int id)
     {
         return await musicRepository.UpdateId(item, updateMusic, id);
     }

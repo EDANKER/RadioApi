@@ -1,15 +1,14 @@
 ﻿using System.Data.Common;
-using Api.Interface;
 using Api.Interface.Repository;
 using Api.Model.ResponseModel.User;
 using Api.Services.JsonServices;
 using MySql.Data.MySqlClient;
 
-namespace Api.Data.Repository.User;
+namespace Api.Data.Repository.Admin;
 
-public class UserRepository(
+public class AdminPanelSettingsRepository(
     IConfiguration configuration,
-    ILogger<UserRepository> logger,
+    ILogger<AdminPanelSettingsRepository> logger,
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand,
     IJsonServices<string[]> jsonServices) : IRepository<Model.RequestModel.User.User, DtoUser, Model.RequestModel.User.User>
@@ -37,7 +36,7 @@ public class UserRepository(
         return -1;
     }
     
-    public async Task<bool> CreateOrSave(string item, Api.Model.RequestModel.User.User user)
+    public async Task<DtoUser?> CreateOrSave(string item, Api.Model.RequestModel.User.User user)
     {
         string command = $"INSERT INTO {item} " +
                          "(FullName, Login, Role) " +
@@ -56,14 +55,14 @@ public class UserRepository(
             
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
+                
+            return await GetField(item, user.Login, "Login");
         }
         catch (MySqlException e)
         {
             logger.LogWarning(e.ToString());
-            return false;
+            return null;
         }
-
-        return true;
     }
 
     public async Task<List<DtoUser>?> GetAll(string item)
@@ -153,9 +152,8 @@ public class UserRepository(
         }
     }
 
-    public async Task<List<DtoUser>?> GetField(string item, string namePurpose, string field)
+    public async Task<DtoUser?> GetField(string item, string namePurpose, string field)
     {
-        _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
         
@@ -164,7 +162,7 @@ public class UserRepository(
             mySqlConnection = new MySqlConnection(_connect);
             await mySqlConnection.OpenAsync();
             mySqlCommand = new MySqlCommand(command, mySqlConnection);
-            mySqlCommand.Parameters.AddWithValue("@Name", namePurpose);
+            mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = namePurpose;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
@@ -178,7 +176,6 @@ public class UserRepository(
                     string role = _dataReader.GetString(3);
 
                     _dtoUser = new DtoUser(id, fullname, login, role);
-                    _dtoUsers.Add(_dtoUser);
                 }
             }
             else
@@ -189,7 +186,7 @@ public class UserRepository(
             await _dataReader.CloseAsync();
             await mySqlConnection.CloseAsync();
 
-            return _dtoUsers;
+            return _dtoUser;
         }
         catch (MySqlException e)
         {
@@ -318,7 +315,7 @@ public class UserRepository(
         return true;
     }
 
-    public async Task<bool> UpdateId(string item, Api.Model.RequestModel.User.User user, int id)
+    public async Task<DtoUser?> UpdateId(string item, Api.Model.RequestModel.User.User user, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET " +
@@ -345,10 +342,10 @@ public class UserRepository(
         catch (MySqlException e)
         {
             logger.LogWarning(e.ToString());
-            return false;
+            return null;
         }
 
-        return true;
+        return await GetField(item, user.Login, "Login");
     }
 
     public async Task<bool> Search(string item, string name, string field)
