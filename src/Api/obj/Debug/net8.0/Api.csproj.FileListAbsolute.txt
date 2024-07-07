@@ -544,3 +544,9 @@ C:\Users\Rider666\Desktop\RadioApi\src\Api\obj\Debug\net8.0\refint\Api.dll
 C:\Users\Rider666\Desktop\RadioApi\src\Api\obj\Debug\net8.0\Api.pdb
 C:\Users\Rider666\Desktop\RadioApi\src\Api\obj\Debug\net8.0\Api.genruntimeconfig.cache
 C:\Users\Rider666\Desktop\RadioApi\src\Api\obj\Debug\net8.0\ref\Api.dll
+C:\Users\Rider666\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.dll
+C:\Users\Rider666\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Asio.dll
+C:\Users\Rider666\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Core.dll
+C:\Users\Rider666\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Midi.dll
+C:\Users\Rider666\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.Wasapi.dll
+C:\Users\Rider666\Desktop\RadioApi\src\Api\bin\Debug\net8.0\NAudio.WinMM.dll

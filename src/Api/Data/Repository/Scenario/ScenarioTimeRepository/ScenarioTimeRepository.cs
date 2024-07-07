@@ -1,24 +1,23 @@
 ﻿using System.Data.Common;
-using Api.Interface;
 using Api.Interface.Repository;
-using Api.Model.ResponseModel.Scenario;
+using Api.Model.ResponseModel.PlayScenario;
 using Api.Services.JsonServices;
 using MySql.Data.MySqlClient;
 
-namespace Api.Data.Repository.Scenario;
+namespace Api.Data.Repository.Scenario.ScenarioTimeRepository;
 
-public class ScenarioRepository(
-    ILogger<ScenarioRepository> logger,
+public class ScenarioTimeRepository(
+    ILogger<ScenarioTimeRepository> logger,
     IConfiguration configuration,
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand,
     IJsonServices<int[]?> jsonServices,
     IJsonServices<string[]> jsonServicesS)
-    : IRepository<Model.RequestModel.Scenario.Scenario, DtoScenario, Model.RequestModel.Scenario.Scenario>
+    : IRepository<Model.RequestModel.Scenario.Scenario, DtoPlayScenario, Model.RequestModel.Scenario.Scenario>
 {
     private DbDataReader? _dataReader;
-    private List<DtoScenario>? _dtoScenarios;
-    private DtoScenario? _dtoScenario;
+    private List<DtoPlayScenario>? _dtoScenarios;
+    private DtoPlayScenario? _dtoScenario;
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
     
     public async Task<int> GetCount(string item)
@@ -38,7 +37,7 @@ public class ScenarioRepository(
         return -1;
     }
     
-    public async Task<DtoScenario?> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario)
+    public async Task<DtoPlayScenario?> CreateOrSave(string item, Model.RequestModel.Scenario.Scenario scenario)
     {
         string command = $"INSERT INTO {item} " +
                          "(Name, IdMicroControllers, " +
@@ -71,9 +70,9 @@ public class ScenarioRepository(
         return await GetField(item, scenario.Name, "Name");
     }
 
-    public async Task<List<DtoScenario>?> GetAll(string item)
+    public async Task<List<DtoPlayScenario>?> GetAll(string item)
     {
-        _dtoScenarios = new List<DtoScenario>();
+        _dtoScenarios = new List<DtoPlayScenario>();
         string command = $"SELECT * FROM {item} ";
         try
         {
@@ -97,7 +96,7 @@ public class ScenarioRepository(
 
                     int[]? array = jsonServices.DesJson(idMicroController);
                     if (array != null)
-                        _dtoScenario = new DtoScenario(id, name, array,
+                        _dtoScenario = new DtoPlayScenario(id, name, array,
                             time, days, idMusic);
                     if (_dtoScenario != null) _dtoScenarios.Add(_dtoScenario);
                 }
@@ -119,7 +118,7 @@ public class ScenarioRepository(
         }
     }
 
-    public async Task<DtoScenario?> GetId(string item, int id)
+    public async Task<DtoPlayScenario?> GetId(string item, int id)
     {
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
@@ -145,7 +144,7 @@ public class ScenarioRepository(
 
                     int[]? array = jsonServices.DesJson(idMicroController);
                     if (array != null)
-                        _dtoScenario = new DtoScenario(id, name, array,
+                        _dtoScenario = new DtoPlayScenario(id, name, array,
                             time, days, idMusic);
                     if (_dtoScenarios != null)
                         if (_dtoScenario != null)
@@ -169,7 +168,7 @@ public class ScenarioRepository(
         }
     }
 
-    public async Task<DtoScenario?> GetField(string item, string namePurpose, string field)
+    public async Task<DtoPlayScenario?> GetField(string item, string namePurpose, string field)
     {
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
@@ -195,7 +194,7 @@ public class ScenarioRepository(
 
                     int[]? array = jsonServices.DesJson(idMicroController);
                     if (array != null)
-                        _dtoScenario = new DtoScenario(id, name, array,
+                        _dtoScenario = new DtoPlayScenario(id, name, array,
                             time, days, idMusic);
                 }
             }
@@ -216,9 +215,9 @@ public class ScenarioRepository(
         }
     }
 
-    public async Task<List<DtoScenario>?> GetLike(string item, string namePurpose, string field)
+    public async Task<List<DtoPlayScenario>?> GetLike(string item, string namePurpose, string field)
     {
-        _dtoScenarios = new List<DtoScenario>();
+        _dtoScenarios = new List<DtoPlayScenario>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} LIKE @NamePurpose ";
 
@@ -244,7 +243,7 @@ public class ScenarioRepository(
 
                     int[]? array = jsonServices.DesJson(idMicroController);
                     if (array != null)
-                        _dtoScenario = new DtoScenario(id, name, array,
+                        _dtoScenario = new DtoPlayScenario(id, name, array,
                             time, days, idMusic);
                     if (_dtoScenarios != null)
                         if (_dtoScenario != null)
@@ -264,9 +263,9 @@ public class ScenarioRepository(
         }
     }
 
-    public async Task<List<DtoScenario>?> GetLimit(string item, int currentPage, int limit)
+    public async Task<List<DtoPlayScenario>?> GetLimit(string item, int currentPage, int limit)
     {
-        _dtoScenarios = new List<DtoScenario>();
+        _dtoScenarios = new List<DtoPlayScenario>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit " +
                          $"OFFSET @Sum";;
@@ -295,7 +294,7 @@ public class ScenarioRepository(
 
                     int[]? array = jsonServices.DesJson(idMicroController);
                     if (array != null)
-                        _dtoScenario = new DtoScenario(id, name, array,
+                        _dtoScenario = new DtoPlayScenario(id, name, array,
                             time, days, idMusic);
                     if (_dtoScenarios != null)
                         if (_dtoScenario != null)
@@ -321,7 +320,7 @@ public class ScenarioRepository(
 
     public async Task<bool> DeleteId(string item, int id)
     {
-        _dtoScenarios = new List<DtoScenario>();
+        _dtoScenarios = new List<DtoPlayScenario>();
         string command = $"DELETE FROM {item} " +
                          $"WHERE id = @Id";
 
@@ -345,7 +344,7 @@ public class ScenarioRepository(
         return true;
     }
 
-    public async Task<DtoScenario?> UpdateId(string item, Model.RequestModel.Scenario.Scenario scenario, int id)
+    public async Task<DtoPlayScenario?> UpdateId(string item, Model.RequestModel.Scenario.Scenario scenario, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET " +

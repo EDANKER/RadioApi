@@ -14,7 +14,7 @@ public class MicroControllerGetServices(
     {
         try
         {
-            List<DtoMicroController>? dtoMicroControllers = await microControllerServices.GetAll("MicroControllers");
+            List<DtoFloorMicroController>? dtoMicroControllers = await microControllerServices.GetAll("MicroControllers");
             if (dtoMicroControllers !=  null)
                 foreach (var data in dtoMicroControllers)
                     await hebrideanCacheServices.Put(data.Id.ToString(), JsonConvert.SerializeObject(data));
@@ -29,7 +29,7 @@ public class MicroControllerGetServices(
     {
         try
         {
-            List<DtoMicroController>? dtoMicroControllers = await microControllerServices.GetAll("MicroControllers");
+            List<DtoFloorMicroController>? dtoMicroControllers = await microControllerServices.GetAll("MicroControllers");
             if (dtoMicroControllers !=  null)
                 foreach (var data in dtoMicroControllers)
                     await hebrideanCacheServices.DeleteId(data.Id.ToString());

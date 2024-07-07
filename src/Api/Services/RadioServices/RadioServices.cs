@@ -1,4 +1,5 @@
 ﻿using Api.Services.HttpMicroControllerServices;
+using NAudio.Wave;
 
 namespace Api.Services.RadioServices;
 
@@ -11,6 +12,9 @@ public class RadioServices(IHttpMicroControllerServices httpMicroControllerServi
 {
     public async Task<bool> PostStream(Stream stream)
     {
-        return await httpMicroControllerServices.PostStream(stream);
+        var waveIn = new WaveInEvent();
+        waveIn.WaveFormat = new WaveFormat(44100, 1);
+        
+        return await httpMicroControllerServices.PostStream(stream, new WaveInProvider(waveIn));
     }
 }

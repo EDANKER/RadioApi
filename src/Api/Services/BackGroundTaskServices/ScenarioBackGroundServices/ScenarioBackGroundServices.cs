@@ -1,18 +1,18 @@
-﻿using Api.Model.ResponseModel.Scenario;
+﻿using Api.Model.ResponseModel.PlayScenario;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.JsonServices;
 using Api.Services.MusicServices;
-using Api.Services.ScenarioServices;
+using Api.Services.ScenarioServices.ScnearioServicesTime;
 
-namespace Api.Services.BackGroundTaskServices.ScenarioTimeGetServices;
+namespace Api.Services.BackGroundTaskServices.ScenarioBackGroundServices;
 
-public class ScenarioTimeGetServices(
-    IScenarioServices scenarioServices,
+public class ScenarioBackGroundServices(
+    IScenarioServicesTime scenarioServices,
     IHebrideanCacheServices hebrideanCacheServices,
-    IJsonServices<DtoScenario?> jsonServices,
+    IJsonServices<DtoPlayScenario?> jsonServices,
     IJsonServices<string[]?> jsonServicesS,
     IMusicServices musicServices,
-    ILogger<ScenarioTimeGetServices> logger) : BackgroundService
+    ILogger<ScenarioBackGroundServices> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -23,7 +23,7 @@ public class ScenarioTimeGetServices(
             DateTime oldDataTime = DateTime.Now;
             string oldTime = $"{oldDataTime.Hour}:{oldDataTime.Minute}";
 
-            List<DtoScenario>? dtoScenarios =
+            List<DtoPlayScenario>? dtoScenarios =
                 await scenarioServices.GetLike("Scenario", oldDataTime.Day.ToString("dddd"), "Days");
 
             if (dtoScenarios != null)
@@ -48,7 +48,7 @@ public class ScenarioTimeGetServices(
                     string? json = await hebrideanCacheServices.GetId(newTime);
                     if (json != null)
                     {
-                        DtoScenario? dtoScenario = jsonServices.DesJson(json);
+                        DtoPlayScenario? dtoScenario = jsonServices.DesJson(json);
                         if (dtoScenario != null)
                             if (await musicServices.Play(dtoScenario.IdMusic, dtoScenario.IdMicroControllers)
                                 || endeavors >= 3)

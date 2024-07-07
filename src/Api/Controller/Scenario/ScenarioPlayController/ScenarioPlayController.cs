@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Api.Model.ResponseModel.Scenario;
-using Api.Services.ScenarioServices;
+using Api.Model.ResponseModel.PlayScenario;
+using Api.Services.ScenarioServices.ScnearioServicesTime;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controller.Scenario;
+namespace Api.Controller.Scenario.ScenarioPlayController;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class ScenarioController(IScenarioServices scenarioServices) : ControllerBase
+public class ScenarioPlayController(IScenarioServicesTime scenarioServices) : ControllerBase
 {
     [HttpPost("CreateOrSave")]
     [Consumes("application/json")]
@@ -20,7 +20,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
         if (!await scenarioServices.ValidationTime(scenario.Time, scenario.Days))
             return BadRequest("Такое время уже занято");
         
-        DtoScenario? dtoScenario = await scenarioServices.CreateOrSave("Scenario", scenario);
+        DtoPlayScenario? dtoScenario = await scenarioServices.CreateOrSave("Scenario", scenario);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
@@ -33,7 +33,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
-        List<DtoScenario>? dtoScenario = await scenarioServices.GetLimit("Scenario", currentPage, limit);
+        List<DtoPlayScenario>? dtoScenario = await scenarioServices.GetLimit("Scenario", currentPage, limit);
         if (dtoScenario != null)
         {
             var response = new
@@ -53,7 +53,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        DtoScenario? dtoScenario = await scenarioServices.GetId("Scenario", id);
+        DtoPlayScenario? dtoScenario = await scenarioServices.GetId("Scenario", id);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
@@ -76,7 +76,7 @@ public class ScenarioController(IScenarioServices scenarioServices) : Controller
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        DtoScenario? dtoScenario = await scenarioServices.UpdateId("Scenario", scenario, id);
+        DtoPlayScenario? dtoScenario = await scenarioServices.UpdateId("Scenario", scenario, id);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 

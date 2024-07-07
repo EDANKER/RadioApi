@@ -13,7 +13,7 @@ public class ApplicationContext(IConfiguration configuration) : DbContext
     public DbSet<DtoMusic> Musics => Set<DtoMusic>();
     public DbSet<DtoUser> Users => Set<DtoUser>();
     public DbSet<MigrationsScenario> Scenario => Set<MigrationsScenario>();
-    public DbSet<DtoMicroController> MicroControllers => Set<DtoMicroController>();
+    public DbSet<DtoFloorMicroController> MicroControllers => Set<DtoFloorMicroController>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

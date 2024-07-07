@@ -78,7 +78,7 @@ public class MusicServices(
                 {
                     if (data < 0)
                         continue;
-                    DtoMicroController? dtoMicroController =
+                    DtoFloorMicroController? dtoMicroController =
                         await microControllerServices.GetId("MicroControllers", data);
                     if (dtoMicroController != null)
                         if (await httpMicroControllerServices.Play(
@@ -99,7 +99,7 @@ public class MusicServices(
             {
                 if (data < 0)
                     continue;
-                DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
+                DtoFloorMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
                 if (dtoMicroController != null)
                     return await httpMicroControllerServices.Play(
                         dtoMicroController);
@@ -116,7 +116,7 @@ public class MusicServices(
             if (data < 0)
                 continue;
 
-            DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
+            DtoFloorMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
             if (dtoMicroController != null)
                 return await httpMicroControllerServices.Stop(dtoMicroController);
         }

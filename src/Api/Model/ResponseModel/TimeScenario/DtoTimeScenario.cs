@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Api.Model.ResponseModel.Scenario;
+namespace Api.Model.ResponseModel.TimeScenario;
 
-public class DtoScenario(int id, string name, int[] idMicroControllers, string time, string days, int idMusic)
+public class DtoTimeScenario(int id, string name, int[] idMicroControllers, string time, string days, int idMusic)
 {
     public int Id { get; set; } = id;
     [StringLength(64, MinimumLength = 3, ErrorMessage = "< 64 > 3")]

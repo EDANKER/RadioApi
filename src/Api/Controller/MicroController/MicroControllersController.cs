@@ -19,7 +19,7 @@ public class MicroControllersController(IMicroControllerServices microController
         if (await microControllerServices.Search("MicroControllers", microController.Name, "Name")) 
             return BadRequest("Такой уже есть");
 
-        DtoMicroController? dtoMicroController = await microControllerServices.CreateOrSave("MicroControllers", microController);
+        DtoFloorMicroController? dtoMicroController = await microControllerServices.CreateOrSave("MicroControllers", microController);
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         return BadRequest();
@@ -28,7 +28,7 @@ public class MicroControllersController(IMicroControllerServices microController
     [HttpGet("GetAllMicroController")]
     public async Task<IActionResult> GetAllMicroController()
     {
-        List<DtoMicroController>? dtoMicroController = await microControllerServices.GetAll("MicroControllers");
+        List<DtoFloorMicroController>? dtoMicroController = await microControllerServices.GetAll("MicroControllers");
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         
@@ -49,7 +49,7 @@ public class MicroControllersController(IMicroControllerServices microController
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        DtoMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", id);
+        DtoFloorMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", id);
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         
@@ -59,7 +59,7 @@ public class MicroControllersController(IMicroControllerServices microController
     [HttpPut("UpdateMicroController")]
     public async Task<IActionResult> UpdateMicroController([Required] [FromQuery] int id, [FromBody] Model.RequestModel.MicroController.MicroController microController)
     {
-        DtoMicroController? dtoMicroController = await microControllerServices.UpdateId("MicroControllers", microController, id);
+        DtoFloorMicroController? dtoMicroController = await microControllerServices.UpdateId("MicroControllers", microController, id);
         if (dtoMicroController != null)
             return Ok(dtoMicroController);
         return BadRequest();
