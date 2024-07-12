@@ -38,7 +38,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Interface\ScenarioServices\" />
       <Folder Include="Model\RequestModel\Create\" />
+      <Folder Include="Model\ResponseModel\PlaceMicroController\" />
     </ItemGroup>
 
 </Project>

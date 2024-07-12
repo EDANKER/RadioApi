@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Model.RequestModel.MicroController;
+namespace Api.Model.RequestModel.MicroController.FloorMicroController;
 
-public class MicroController(string name, string ip, int port, int floor, int cabinet)
+public class MicroController(string name, string ip, int port, string place)
 {
     [Required]
     [StringLength(64, MinimumLength = 3, ErrorMessage = "< 64 > 3")]
@@ -14,8 +14,5 @@ public class MicroController(string name, string ip, int port, int floor, int ca
     public int Port { get; } = port;
     [Required]
     [Range(0, 64)]
-    public int Floor { get; } = floor;
-    [Required]
-    [Range(0, 64)]
-    public int Cabinet { get; } = cabinet;
+    public string Place { get; } = place;
 }

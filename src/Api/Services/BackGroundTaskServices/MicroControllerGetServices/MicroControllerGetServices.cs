@@ -1,12 +1,13 @@
-﻿using Api.Model.ResponseModel.MicroController;
+﻿using Api.Interface.MicroControllerServices;
+using Api.Model.RequestModel.MicroController.FloorMicroController;
+using Api.Model.ResponseModel.FloorMicroController;
 using Api.Services.HebrideanCacheServices;
-using Api.Services.MicroControllerServices;
 using Newtonsoft.Json;
 
 namespace Api.Services.BackGroundTaskServices.MicroControllerGetServices;
 
 public class MicroControllerGetServices(
-    IMicroControllerServices microControllerServices,
+    IMicroControllerServices<MicroController, DtoMicroController> floorMicroControllerServices,
     ILogger<MicroControllerGetServices> logger,
     IHebrideanCacheServices hebrideanCacheServices) : IHostedService
 {
@@ -14,9 +15,9 @@ public class MicroControllerGetServices(
     {
         try
         {
-            List<DtoFloorMicroController>? dtoMicroControllers = await microControllerServices.GetAll("MicroControllers");
-            if (dtoMicroControllers !=  null)
-                foreach (var data in dtoMicroControllers)
+            List<DtoMicroController>? dtoMicroControllersFloor = await floorMicroControllerServices.GetAll("MicroControllers");
+            if (dtoMicroControllersFloor !=  null)
+                foreach (var data in dtoMicroControllersFloor)
                     await hebrideanCacheServices.Put(data.Id.ToString(), JsonConvert.SerializeObject(data));
         }
         catch (Exception e)
@@ -29,11 +30,10 @@ public class MicroControllerGetServices(
     {
         try
         {
-            List<DtoFloorMicroController>? dtoMicroControllers = await microControllerServices.GetAll("MicroControllers");
-            if (dtoMicroControllers !=  null)
-                foreach (var data in dtoMicroControllers)
+            List<DtoMicroController>? dtoMicroControllersFloor = await floorMicroControllerServices.GetAll("MicroControllers");
+            if (dtoMicroControllersFloor !=  null)
+                foreach (var data in dtoMicroControllersFloor)
                     await hebrideanCacheServices.DeleteId(data.Id.ToString());
-            
         }
         catch (Exception e)
         {

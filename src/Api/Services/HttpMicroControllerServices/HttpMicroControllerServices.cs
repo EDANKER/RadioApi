@@ -1,18 +1,15 @@
 ﻿using System.Net;
-using System.Net.Sockets;
 using System.Text;
-using Api.Model.ResponseModel.MicroController;
+using Api.Model.ResponseModel.FloorMicroController;
 using NAudio.Wave;
-using Org.BouncyCastle.Asn1.Cms;
 
 namespace Api.Services.HttpMicroControllerServices;
 
 public interface IHttpMicroControllerServices
 {
-    Task<bool> PostVol(DtoFloorMicroController dtoFloorMicroController, int vol);
-    Task<bool> Play(DtoFloorMicroController dtoFloorMicroController);
+    Task<bool> Play(DtoMicroController dtoMicroController);
     Task<bool> PostStream(Stream stream, IWaveProvider waveProvider);
-    Task<bool> Stop(DtoFloorMicroController dtoFloorMicroController);
+    Task<bool> Stop(DtoMicroController dtoMicroController);
 }
 
 public class HttpMicroControllerServices(
@@ -20,28 +17,12 @@ public class HttpMicroControllerServices(
     HttpClient httpClient)
     : IHttpMicroControllerServices
 {
-    public async Task<bool> PostVol(DtoFloorMicroController dtoFloorMicroController, int vol)
-    {
-        try
-        {
-            httpClient.BaseAddress = new Uri($"http://{dtoFloorMicroController.Ip}:{dtoFloorMicroController.Port}");
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("",
-                new StringContent(vol.ToString(), Encoding.UTF8,
-                    "text/plain"));
-            return httpResponseMessage.Content.ReadAsStringAsync().Result == "готово";
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
-            return false;
-        }
-    }
 
-    public async Task<bool> Play(DtoFloorMicroController dtoFloorMicroController)
+    public async Task<bool> Play(DtoMicroController dtoMicroController)
     {
         try
         {
-            httpClient.BaseAddress = new Uri($"http://{dtoFloorMicroController.Ip}:{dtoFloorMicroController.Port}");
+            httpClient.BaseAddress = new Uri($"http://{dtoMicroController.Ip}:{dtoMicroController.Port}");
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("", new StringContent("start"));
 
             return await httpResponseMessage.Content.ReadAsStringAsync() == "start";
@@ -90,7 +71,7 @@ public class HttpMicroControllerServices(
         }
     }
 
-    public async Task<bool> Stop(DtoFloorMicroController dtoFloorMicroController)
+    public async Task<bool> Stop(DtoMicroController dtoMicroController)
     {
         try
         {

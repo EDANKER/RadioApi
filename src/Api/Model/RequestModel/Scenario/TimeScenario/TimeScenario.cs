@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Api.Model.RequestModel.Scenario;
+namespace Api.Model.RequestModel.Scenario.TimeScenario;
 
-public class Scenario(string name, int[]? idMicroController, string time, string[] days, int idMusic)
+public class TimeScenario(string name, int[]? idMicroController, string time, string[] days, int idMusic)
 {
     [Required]
     [StringLength(64, MinimumLength = 3, ErrorMessage = "< 64 > 3")]

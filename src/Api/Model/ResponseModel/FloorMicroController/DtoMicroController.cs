@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Model.ResponseModel.MicroController;
+namespace Api.Model.ResponseModel.FloorMicroController;
 
-public class DtoFloorMicroController(int id, string name, string ip, int port, int floor, int cabinet)
+public class DtoMicroController(int id, string name, string ip, int port, string place)
 {
     public int Id { get; set; } = id;
     [StringLength(64, MinimumLength = 3, ErrorMessage = "< 64 > 3")]
@@ -12,7 +12,5 @@ public class DtoFloorMicroController(int id, string name, string ip, int port, i
     [Range(0, 64, ErrorMessage = "< 64 > 3")]
     public int Port { get; set; } = port;
     [Range(0, 64, ErrorMessage = "< 64 > 3")]
-    public int Place { get; set; } = floor;
-    [Range(0, 64, ErrorMessage = "< 64 > 3")]
-    public int Cabinet { get; set; } = cabinet;
+    public string Place { get; set; } = place;
 }

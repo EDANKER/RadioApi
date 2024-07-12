@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Api.Model.ResponseModel.PlayScenario;
+using Api.Model.RequestModel.Scenario.TimeScenario;
+using Api.Model.ResponseModel.TimeScenario;
 using Api.Services.ScenarioServices.ScnearioServicesTime;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,20 +8,20 @@ namespace Api.Controller.Scenario.ScnearioTimeController;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class ScenarioTimeController(IScenarioServicesTime scenarioServices) : ControllerBase
+public class ScenarioTimeController(IScenarioTimeServices scenarioServices) : ControllerBase
 {
     [HttpPost("CreateOrSave")]
     [Consumes("application/json")]
-    public async Task<IActionResult> CreateOrSave([FromBody] Model.RequestModel.Scenario.Scenario scenario)
+    public async Task<IActionResult> CreateOrSave([FromBody] TimeScenario scenario)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        if (await scenarioServices.Search("Scenario", scenario.Name, "Name"))
+        if (await scenarioServices.Search("TimeMigrationsScenarios", scenario.Name, "Name"))
             return BadRequest("Имя уже занято");
-        if (!await scenarioServices.ValidationTime(scenario.Time, scenario.Days))
-            return BadRequest("Такое время уже занято");
+        if(await scenarioServices.ValidationTime(scenario.Time, scenario.Days))
+            return BadRequest("Время уже занято");
         
-        DtoPlayScenario? dtoScenario = await scenarioServices.CreateOrSave("Scenario", scenario);
+        DtoTimeScenario? dtoScenario = await scenarioServices.CreateOrSave("TimeMigrationsScenarios", scenario);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
@@ -33,12 +34,12 @@ public class ScenarioTimeController(IScenarioServicesTime scenarioServices) : Co
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
-        List<DtoPlayScenario>? dtoScenario = await scenarioServices.GetLimit("Scenario", currentPage, limit);
+        List<DtoTimeScenario>? dtoScenario = await scenarioServices.GetLimit("TimeMigrationsScenarios", currentPage, limit);
         if (dtoScenario != null)
         {
             var response = new
             {
-                Head = await scenarioServices.GetCountPage("Scenario", currentPage, limit),
+                Head = await scenarioServices.GetCountPage("TimeMigrationsScenarios", currentPage, limit),
                 Body = dtoScenario
             };
 
@@ -53,7 +54,7 @@ public class ScenarioTimeController(IScenarioServicesTime scenarioServices) : Co
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        DtoPlayScenario? dtoScenario = await scenarioServices.GetId("Scenario", id);
+        DtoTimeScenario? dtoScenario = await scenarioServices.GetId("TimeMigrationsScenarios", id);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
@@ -66,17 +67,17 @@ public class ScenarioTimeController(IScenarioServicesTime scenarioServices) : Co
         if (id < 0)
             return BadRequest("Некорректное значение id");
 
-        return Ok(await scenarioServices.DeleteId("Scenario", id));
+        return Ok(await scenarioServices.DeleteId("TimeMigrationsScenarios", id));
     }
 
     [HttpPut("UpdateScenario")]
-    public async Task<IActionResult> UpdateScenario([Required] [FromBody] Model.RequestModel.Scenario.Scenario scenario,
+    public async Task<IActionResult> UpdateScenario([Required] [FromBody] TimeScenario scenario,
         [FromQuery] int id)
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        DtoPlayScenario? dtoScenario = await scenarioServices.UpdateId("Scenario", scenario, id);
+        DtoTimeScenario? dtoScenario = await scenarioServices.UpdateId("TimeMigrationsScenarios", scenario, id);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 

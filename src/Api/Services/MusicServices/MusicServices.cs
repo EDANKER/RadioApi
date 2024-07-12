@@ -1,10 +1,11 @@
-﻿using Api.Interface.Repository;
+﻿using Api.Interface.MicroControllerServices;
+using Api.Interface.Repository;
 using Api.Model.RequestModel.Create.CreateMusic;
+using Api.Model.RequestModel.MicroController.FloorMicroController;
 using Api.Model.RequestModel.Update.UpdateMusic;
-using Api.Model.ResponseModel.MicroController;
+using Api.Model.ResponseModel.FloorMicroController;
 using Api.Model.ResponseModel.Music;
 using Api.Services.HttpMicroControllerServices;
-using Api.Services.MicroControllerServices;
 using Api.Services.RadioServices;
 using Api.Services.TimeCounterServices;
 
@@ -30,7 +31,7 @@ public class MusicServices(
     IRepository<CreateMusic, DtoMusic, UpdateMusic> musicRepository,
     IFileServices.IFileServices fileServices,
     IHttpMicroControllerServices httpMicroControllerServices,
-    IMicroControllerServices microControllerServices,
+    IMicroControllerServices<MicroController, DtoMicroController> floorMicroControllerServices,
     ITimeCounterServices timeCounterServices,
     IRadioServices radioServices) : IMusicServices
 {
@@ -78,12 +79,11 @@ public class MusicServices(
                 {
                     if (data < 0)
                         continue;
-                    DtoFloorMicroController? dtoMicroController =
-                        await microControllerServices.GetId("MicroControllers", data);
+                    DtoMicroController? dtoMicroController =
+                        await floorMicroControllerServices.GetId("MicroControllers", data);
                     if (dtoMicroController != null)
                         if (await httpMicroControllerServices.Play(
-                                dtoMicroController))
-                            ;
+                                dtoMicroController));
                 }
             }
         }
@@ -99,7 +99,7 @@ public class MusicServices(
             {
                 if (data < 0)
                     continue;
-                DtoFloorMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
+                DtoMicroController? dtoMicroController = await floorMicroControllerServices.GetId("MicroControllers", data);
                 if (dtoMicroController != null)
                     return await httpMicroControllerServices.Play(
                         dtoMicroController);
@@ -116,7 +116,7 @@ public class MusicServices(
             if (data < 0)
                 continue;
 
-            DtoFloorMicroController? dtoMicroController = await microControllerServices.GetId("MicroControllers", data);
+            DtoMicroController? dtoMicroController = await floorMicroControllerServices.GetId("MicroControllers", data);
             if (dtoMicroController != null)
                 return await httpMicroControllerServices.Stop(dtoMicroController);
         }

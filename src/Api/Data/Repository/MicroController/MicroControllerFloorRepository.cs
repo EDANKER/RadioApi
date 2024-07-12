@@ -1,22 +1,24 @@
 using System.Data.Common;
 using Api.Interface;
 using Api.Interface.Repository;
-using Api.Model.ResponseModel.MicroController;
+using Api.Model.RequestModel.MicroController.FloorMicroController;
+using Api.Model.ResponseModel.FloorMicroController;
 using MySql.Data.MySqlClient;
 
 namespace Api.Data.Repository.MicroController;
 
-public class MicroControllerRepository(
-    ILogger<MicroControllerRepository> logger,
+public class MicroControllerFloorRepository(
+    ILogger<MicroControllerFloorRepository> logger,
     MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand,
     IConfiguration configuration
-) : IRepository<Model.RequestModel.MicroController.MicroController, DtoFloorMicroController, Model.RequestModel.MicroController.MicroController>
+) : IRepository<Model.RequestModel.MicroController.FloorMicroController.MicroController, DtoMicroController, Model.RequestModel.MicroController.FloorMicroController.MicroController
+>
 {
     private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
     private DbDataReader? _dataReader;
-    private List<DtoFloorMicroController>? _dtoMicroControllers;
-    private DtoFloorMicroController? _dtoMicroController;
+    private List<DtoMicroController>? _dtoMicroControllers;
+    private DtoMicroController? _dtoMicroController;
     
     public async Task<int> GetCount(string item)
     {
@@ -35,12 +37,12 @@ public class MicroControllerRepository(
         return -1;
     }
     
-    public async Task<DtoFloorMicroController?> CreateOrSave(string item,
-        Model.RequestModel.MicroController.MicroController microController)
+    public async Task<DtoMicroController?> CreateOrSave(string item,
+        Model.RequestModel.MicroController.FloorMicroController.MicroController microController)
     {
-        string command = $"INSERT INTO {item} (Name, Ip, Port, Cabinet, Floor) " +
+        string command = $"INSERT INTO {item} (Name, Ip, Port, Place) " +
                          "VALUES (@Name, @Ip, @Port, " +
-                         "@Cabinet, @Floor)";
+                         "@Place)";
 
         try
         {
@@ -51,8 +53,7 @@ public class MicroControllerRepository(
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = microController.Name;
             mySqlCommand.Parameters.Add("@Ip", MySqlDbType.VarChar).Value = microController.Ip;
             mySqlCommand.Parameters.Add("@Port", MySqlDbType.Int32).Value = microController.Port;
-            mySqlCommand.Parameters.Add("@Cabinet", MySqlDbType.Int32).Value = microController.Cabinet;
-            mySqlCommand.Parameters.Add("@Floor", MySqlDbType.Int32).Value = microController.Floor;
+            mySqlCommand.Parameters.Add("@Place", MySqlDbType.VarChar).Value = microController.Place;
 
             await mySqlCommand.ExecuteNonQueryAsync();
             await mySqlConnection.CloseAsync();
@@ -66,9 +67,9 @@ public class MicroControllerRepository(
         }
     }
 
-    public async Task<List<DtoFloorMicroController>?> GetAll(string item)
+    public async Task<List<DtoMicroController>?> GetAll(string item)
     {
-        _dtoMicroControllers = new List<DtoFloorMicroController>();
+        _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} ";
         try
         {
@@ -87,10 +88,10 @@ public class MicroControllerRepository(
                     string name = _dataReader.GetString(1);
                     string ip = _dataReader.GetString(2);
                     int port = _dataReader.GetInt32(3);
-                    int cabinet = _dataReader.GetInt32(4);
-                    int floor = _dataReader.GetInt32(5);
+                    string place = _dataReader.GetString(4);
 
-                    _dtoMicroController = new DtoFloorMicroController(id, name, ip, port, cabinet, floor);
+                    _dtoMicroController = new DtoMicroController(id, name, ip,
+                        port, place);
                     _dtoMicroControllers.Add(_dtoMicroController);
                 }
             }
@@ -111,9 +112,9 @@ public class MicroControllerRepository(
         }
     }
 
-    public async Task<List<DtoFloorMicroController>?> GetLimit(string item, int currentPage, int limit)
+    public async Task<List<DtoMicroController>?> GetLimit(string item, int currentPage, int limit)
     {
-        _dtoMicroControllers = new List<DtoFloorMicroController>();
+        _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit " +
                          $"OFFSET @Sum";;
@@ -135,11 +136,10 @@ public class MicroControllerRepository(
                     string name = _dataReader.GetString(1);
                     string ip = _dataReader.GetString(2);
                     int port = _dataReader.GetInt32(3);
-                    int cabinet = _dataReader.GetInt32(4);
-                    limit = _dataReader.GetInt32(5);
+                    string place = _dataReader.GetString(4);
 
-                    _dtoMicroController = new DtoFloorMicroController(id, name, ip,
-                        port, limit, cabinet);
+                    _dtoMicroController = new DtoMicroController(id, name, ip,
+                        port, place);
                     _dtoMicroControllers.Add(_dtoMicroController);
                 }
             }
@@ -159,7 +159,7 @@ public class MicroControllerRepository(
         return _dtoMicroControllers;
     }
 
-    public async Task<DtoFloorMicroController?> GetId(string item, int id)
+    public async Task<DtoMicroController?> GetId(string item, int id)
     {
         string command = $"SELECT * FROM {item} " +
                          "WHERE Id = @Id";
@@ -179,11 +179,10 @@ public class MicroControllerRepository(
                     string name = _dataReader.GetString(1);
                     string ip = _dataReader.GetString(2);
                     int port = _dataReader.GetInt32(3);
-                    int cabinet = _dataReader.GetInt32(4);
-                    int floor = _dataReader.GetInt32(5);
+                    string place = _dataReader.GetString(4);
 
-                    _dtoMicroController = new DtoFloorMicroController(id, name, ip,
-                        port, floor, cabinet);
+                    _dtoMicroController = new DtoMicroController(id, name, ip,
+                        port, place);
                 }
             }
             else
@@ -202,7 +201,7 @@ public class MicroControllerRepository(
         return _dtoMicroController;
     }
 
-    public async Task<DtoFloorMicroController?> GetField(string item, string namePurpose, string field)
+    public async Task<DtoMicroController?> GetField(string item, string namePurpose, string field)
     {
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} = @NamePurpose";
@@ -222,10 +221,9 @@ public class MicroControllerRepository(
                     string name = _dataReader.GetString(1);
                     string ip = _dataReader.GetString(2);
                     int port = _dataReader.GetInt32(3);
-                    int cabinet = _dataReader.GetInt32(4);
-                    int floor = _dataReader.GetInt32(5);
+                    string place = _dataReader.GetString(4);
 
-                    _dtoMicroController = new DtoFloorMicroController(id, name, ip, port, cabinet, floor);
+                    _dtoMicroController = new DtoMicroController(id, name, ip, port, place);
                 }
             }
             else
@@ -245,9 +243,9 @@ public class MicroControllerRepository(
         }
     }
 
-    public async Task<List<DtoFloorMicroController>?> GetLike(string item, string namePurpose, string field)
+    public async Task<List<DtoMicroController>?> GetLike(string item, string namePurpose, string field)
     {
-        _dtoMicroControllers = new List<DtoFloorMicroController>();
+        _dtoMicroControllers = new List<DtoMicroController>();
         string command = $"SELECT * FROM {item} " +
                          $"WHERE {field} LIKE @NamePurpose ";
 
@@ -269,10 +267,9 @@ public class MicroControllerRepository(
                     string name = _dataReader.GetString(1);
                     string ip = _dataReader.GetString(2);
                     int port = _dataReader.GetInt32(3);
-                    int cabinet = _dataReader.GetInt32(4);
-                    int floor = _dataReader.GetInt32(5);
+                    string place = _dataReader.GetString(4);
 
-                    _dtoMicroController = new DtoFloorMicroController(id, name, ip, port, cabinet, floor);
+                    _dtoMicroController = new DtoMicroController(id, name, ip, port, place);
                     _dtoMicroControllers.Add(_dtoMicroController);
                 }
             }
@@ -319,14 +316,13 @@ public class MicroControllerRepository(
         }
     }
 
-    public async Task<DtoFloorMicroController?> UpdateId(string item, Model.RequestModel.MicroController.MicroController model, int id)
+    public async Task<DtoMicroController?> UpdateId(string item, Model.RequestModel.MicroController.FloorMicroController.MicroController model, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET Name = @Name," +
                          $"Ip = @Ip, " +
                          $"Port = @Port, " +
-                         $"Cabinet = @Cabinet, " +
-                         $"Floor = @Floor " +
+                         $"Place = @Place " +
                          $"WHERE Id = @Id";
         
         try
@@ -339,7 +335,7 @@ public class MicroControllerRepository(
             mySqlCommand.Parameters.Add("@Ip", MySqlDbType.LongText).Value = model.Ip;
             mySqlCommand.Parameters.Add("@Port", MySqlDbType.Int32).Value = model.Port;
             mySqlCommand.Parameters.Add("@Cabinet", MySqlDbType.Int32).Value = model.Ip;
-            mySqlCommand.Parameters.Add("@Floor", MySqlDbType.Int32).Value = model.Floor;
+            mySqlCommand.Parameters.Add("@Place", MySqlDbType.VarChar).Value = model.Place;
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             await mySqlCommand.ExecuteNonQueryAsync();
