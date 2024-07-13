@@ -1,6 +1,4 @@
-﻿using Api.Model.RequestModel.Scenario.TimeScenario;
-using Api.Model.ResponseModel.PlayScenario;
-using Api.Model.ResponseModel.TimeScenario;
+﻿using Api.Model.ResponseModel.TimeScenario;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.JsonServices;
 using Api.Services.MusicServices;

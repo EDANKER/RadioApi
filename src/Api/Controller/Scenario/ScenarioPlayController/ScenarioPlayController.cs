@@ -26,6 +26,12 @@ public class ScenarioPlayController(IScenarioPlayServices scenarioServices) : Co
         return BadRequest();
     }
 
+    [HttpPost("PlayScenario")]
+    public async Task<IActionResult> PlayScenario([Required] [FromQuery] int id)
+    {
+        return Ok(await scenarioServices.Play("PlayMigrationsScenarios", id));
+    }
+
     [HttpGet("GetScenarioLimit")]
     public async Task<IActionResult> GetScenarioLimit([Required] [FromQuery] int limit,
         [Required] [FromQuery] int currentPage)

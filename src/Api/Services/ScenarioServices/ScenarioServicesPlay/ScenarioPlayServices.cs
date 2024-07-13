@@ -7,6 +7,7 @@ namespace Api.Services.ScenarioServices.ScenarioServicesPlay;
 
 public interface IScenarioPlayServices
 {
+    Task<bool> Play(string item, int id);
     Task<int> GetCountPage(string item, int currentPage, int limit);
     Task<DtoPlayScenario?> CreateOrSave(string item, PlayScenario scenario);
     Task<DtoPlayScenario?> GetId(string item, int id);
@@ -23,6 +24,16 @@ public class ScenarioPlayServices(
     IRepository<PlayScenario, DtoPlayScenario, PlayScenario> scenarioRepository,
     IMusicServices musicServices) : IScenarioPlayServices
 {
+    public async Task<bool> Play(string item, int id)
+    {
+        DtoPlayScenario? dtoPlayScenario = await scenarioRepository.GetId(item, id);
+
+        if (dtoPlayScenario != null)
+            return await musicServices.Play(dtoPlayScenario.IdMusic, dtoPlayScenario.IdMicroControllers);
+        
+        return false;
+    }
+
     public async Task<int> GetCountPage(string item, int currentPage, int limit)
     {
         while (true)
@@ -41,7 +52,7 @@ public class ScenarioPlayServices(
     {
         if (await musicServices.GetId(item, scenario.IdMusic) != null)
             return await scenarioRepository.CreateOrSave(item, scenario);
-        
+
         return null;
     }
 
@@ -79,7 +90,7 @@ public class ScenarioPlayServices(
     {
         if (await musicServices.GetId(item, scenario.IdMusic) != null)
             return await scenarioRepository.CreateOrSave(item, scenario);
-        
+
         return null;
     }
 

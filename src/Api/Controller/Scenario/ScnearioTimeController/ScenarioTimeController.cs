@@ -18,7 +18,7 @@ public class ScenarioTimeController(IScenarioTimeServices scenarioServices) : Co
             return BadRequest(ModelState);
         if (await scenarioServices.Search("TimeMigrationsScenarios", scenario.Name, "Name"))
             return BadRequest("Имя уже занято");
-        if(await scenarioServices.ValidationTime(scenario.Time, scenario.Days))
+        if(!await scenarioServices.ValidationTime(scenario.Time, scenario.Days))
             return BadRequest("Время уже занято");
         
         DtoTimeScenario? dtoScenario = await scenarioServices.CreateOrSave("TimeMigrationsScenarios", scenario);

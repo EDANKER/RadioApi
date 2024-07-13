@@ -48,7 +48,7 @@ public class ScenarioTimeServices(
         foreach (var data in days)
         {
             List<DtoTimeScenario>? dtoScenarios =
-                await scenarioRepository.GetLike("Scenario", data, "Days");
+                await scenarioRepository.GetLike("TimeMigrationsScenarios", data, "Days");
 
             if (dtoScenarios != null)
             {
@@ -135,7 +135,7 @@ public class ScenarioTimeServices(
                     if (days == dataTime.ToString("dddd"))
                     {
                         DtoTimeScenario? dtoScenarios =
-                            await scenarioRepository.GetField("Scenario", scenario.Name, "Name");
+                            await scenarioRepository.GetField("TimeMigrationsScenarios", scenario.Name, "Name");
                         if (dtoScenarios != null)
                             await hebrideanCacheServices.Put(
                                 scenario.Time,
@@ -211,7 +211,7 @@ public class ScenarioTimeServices(
                     if (days == dataTime.ToString("dddd"))
                     {
                         DtoTimeScenario? dtoScenarios =
-                            await scenarioRepository.GetField("Scenario", scenario.Name, "Name");
+                            await scenarioRepository.GetField("TimeMigrationsScenarios", scenario.Name, "Name");
                         if (dtoScenarios != null)
                             await hebrideanCacheServices.Put(
                                 scenario.Time,
