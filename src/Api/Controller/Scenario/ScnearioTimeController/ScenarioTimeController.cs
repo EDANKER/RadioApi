@@ -21,7 +21,7 @@ public class ScenarioTimeController(IScenarioTimeServices scenarioServices) : Co
         if(!await scenarioServices.ValidationTime(scenario.Time, scenario.Days))
             return BadRequest("Время уже занято");
         
-        DtoTimeScenario? dtoScenario = await scenarioServices.CreateOrSave("TimeMigrationsScenarios", scenario);
+        DtoTimeScenario? dtoScenario = await scenarioServices.CreateOrSave("TimeScenarios", scenario);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
@@ -34,12 +34,12 @@ public class ScenarioTimeController(IScenarioTimeServices scenarioServices) : Co
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
-        List<DtoTimeScenario>? dtoScenario = await scenarioServices.GetLimit("TimeMigrationsScenarios", currentPage, limit);
+        List<DtoTimeScenario>? dtoScenario = await scenarioServices.GetLimit("TimeScenarios", currentPage, limit);
         if (dtoScenario != null)
         {
             var response = new
             {
-                Head = await scenarioServices.GetCountPage("TimeMigrationsScenarios", currentPage, limit),
+                Head = await scenarioServices.GetCountPage("TimeScenarios", currentPage, limit),
                 Body = dtoScenario
             };
 
@@ -54,7 +54,7 @@ public class ScenarioTimeController(IScenarioTimeServices scenarioServices) : Co
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        DtoTimeScenario? dtoScenario = await scenarioServices.GetId("TimeMigrationsScenarios", id);
+        DtoTimeScenario? dtoScenario = await scenarioServices.GetId("TimeScenarios", id);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
@@ -67,7 +67,7 @@ public class ScenarioTimeController(IScenarioTimeServices scenarioServices) : Co
         if (id < 0)
             return BadRequest("Некорректное значение id");
 
-        return Ok(await scenarioServices.DeleteId("TimeMigrationsScenarios", id));
+        return Ok(await scenarioServices.DeleteId("TimeScenarios", id));
     }
 
     [HttpPut("UpdateScenario")]
@@ -77,7 +77,7 @@ public class ScenarioTimeController(IScenarioTimeServices scenarioServices) : Co
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        DtoTimeScenario? dtoScenario = await scenarioServices.UpdateId("TimeMigrationsScenarios", scenario, id);
+        DtoTimeScenario? dtoScenario = await scenarioServices.UpdateId("TimeScenarios", scenario, id);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 

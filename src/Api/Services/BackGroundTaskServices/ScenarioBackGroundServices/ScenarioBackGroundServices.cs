@@ -24,7 +24,7 @@ public class ScenarioBackGroundServices(
             string oldTime = $"{oldDataTime.Hour}:{oldDataTime.Minute}";
 
             List<DtoTimeScenario>? dtoScenarios =
-                await scenarioServices.GetLike("TimeMigrationsScenarios", oldDataTime.Day.ToString("dddd"), "Days");
+                await scenarioServices.GetLike("TimeScenarios", oldDataTime.Day.ToString("dddd"), "Days");
 
             if (dtoScenarios != null)
             {
@@ -53,7 +53,6 @@ public class ScenarioBackGroundServices(
                             if (await musicServices.Play(dtoScenario.IdMusic, dtoScenario.IdMicroControllers)
                                 || endeavors >= 3)
                             {
-                                Console.WriteLine("Hello");
                                 await hebrideanCacheServices.DeleteId(dtoScenario.Time.Split('-')[0]);
                             }
                             else
@@ -64,7 +63,7 @@ public class ScenarioBackGroundServices(
 
             if (stoppingToken.IsCancellationRequested)
             {
-                dtoScenarios = await scenarioServices.GetAll("Scenario");
+                dtoScenarios = await scenarioServices.GetAll("TimeScenarios");
                 if (dtoScenarios != null)
                     foreach (var data in dtoScenarios)
                         await hebrideanCacheServices.DeleteId(data.Time.Split('-')[0]);

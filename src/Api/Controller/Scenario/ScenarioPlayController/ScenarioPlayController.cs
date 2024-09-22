@@ -16,7 +16,7 @@ public class ScenarioPlayController(IScenarioPlayServices scenarioServices) : Co
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        if (await scenarioServices.Search("PlayMigrationsScenarios", scenario.Name, "Name"))
+        if (await scenarioServices.Search("PlayScenarios", scenario.Name, "Name"))
             return BadRequest("Имя уже занято");
         
         DtoPlayScenario? dtoScenario = await scenarioServices.CreateOrSave("PlayMigrationsScenarios", scenario);
@@ -29,7 +29,7 @@ public class ScenarioPlayController(IScenarioPlayServices scenarioServices) : Co
     [HttpPost("PlayScenario")]
     public async Task<IActionResult> PlayScenario([Required] [FromQuery] int id)
     {
-        return Ok(await scenarioServices.Play("PlayMigrationsScenarios", id));
+        return Ok(await scenarioServices.Play("PlayScenarios", id));
     }
 
     [HttpGet("GetScenarioLimit")]
@@ -38,12 +38,12 @@ public class ScenarioPlayController(IScenarioPlayServices scenarioServices) : Co
     {
         if (limit < 0)
             return BadRequest("Некорректное значение limit");
-        List<DtoPlayScenario>? dtoScenario = await scenarioServices.GetLimit("PlayMigrationsScenarios", currentPage, limit);
+        List<DtoPlayScenario>? dtoScenario = await scenarioServices.GetLimit("PlayScenarios", currentPage, limit);
         if (dtoScenario != null)
         {
             var response = new
             {
-                Head = await scenarioServices.GetCountPage("PlayMigrationsScenarios", currentPage, limit),
+                Head = await scenarioServices.GetCountPage("PlayScenarios", currentPage, limit),
                 Body = dtoScenario
             };
 
@@ -58,7 +58,7 @@ public class ScenarioPlayController(IScenarioPlayServices scenarioServices) : Co
     {
         if (id < 0)
             return BadRequest("Некорректное значение id");
-        DtoPlayScenario? dtoScenario = await scenarioServices.GetId("PlayMigrationsScenarios", id);
+        DtoPlayScenario? dtoScenario = await scenarioServices.GetId("PlayScenarios", id);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 
@@ -71,7 +71,7 @@ public class ScenarioPlayController(IScenarioPlayServices scenarioServices) : Co
         if (id < 0)
             return BadRequest("Некорректное значение id");
 
-        return Ok(await scenarioServices.DeleteId("PlayMigrationsScenarios", id));
+        return Ok(await scenarioServices.DeleteId("PlayScenarios", id));
     }
 
     [HttpPut("UpdateScenario")]
@@ -81,7 +81,7 @@ public class ScenarioPlayController(IScenarioPlayServices scenarioServices) : Co
         if (id < 0)
             return BadRequest("Некорректное значение id");
         
-        DtoPlayScenario? dtoScenario = await scenarioServices.UpdateId("PlayMigrationsScenarios", scenario, id);
+        DtoPlayScenario? dtoScenario = await scenarioServices.UpdateId("PlayScenarios", scenario, id);
         if (dtoScenario != null)
             return Ok(dtoScenario);
 

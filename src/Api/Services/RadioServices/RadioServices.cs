@@ -12,9 +12,6 @@ public class RadioServices(IHttpMicroControllerServices httpMicroControllerServi
 {
     public async Task<bool> PostStream(Stream stream)
     {
-        var waveIn = new WaveInEvent();
-        waveIn.WaveFormat = new WaveFormat(44100, 1);
-        
-        return await httpMicroControllerServices.PostStream(stream, new WaveInProvider(waveIn));
+        return await httpMicroControllerServices.PostStream(stream);
     }
 }

@@ -13,8 +13,8 @@ public class ApplicationContext(IConfiguration configuration) : DbContext
     public DbSet<DtoPlayList> PlayLists => Set<DtoPlayList>();
     public DbSet<DtoMusic> Musics => Set<DtoMusic>();
     public DbSet<DtoUser> Users => Set<DtoUser>();
-    public DbSet<TimeMigrationsScenario> TimeMigrationsScenarios => Set<TimeMigrationsScenario>();
-    public DbSet<PlayMigrationsScenario> PlayMigrationsScenarios => Set<PlayMigrationsScenario>();
+    public DbSet<TimeMigrationsScenario> TimeScenarios => Set<TimeMigrationsScenario>();
+    public DbSet<PlayMigrationsScenario> PlayScenarios => Set<PlayMigrationsScenario>();
     public DbSet<DtoMicroController> MicroControllers => Set<DtoMicroController>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

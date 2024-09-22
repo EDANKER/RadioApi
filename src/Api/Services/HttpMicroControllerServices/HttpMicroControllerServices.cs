@@ -8,7 +8,7 @@ namespace Api.Services.HttpMicroControllerServices;
 public interface IHttpMicroControllerServices
 {
     Task<bool> Play(DtoMicroController dtoMicroController);
-    Task<bool> PostStream(Stream stream, IWaveProvider waveProvider);
+    Task<bool> PostStream(Stream stream);
     Task<bool> Stop(DtoMicroController dtoMicroController);
 }
 
@@ -17,7 +17,6 @@ public class HttpMicroControllerServices(
     HttpClient httpClient)
     : IHttpMicroControllerServices
 {
-
     public async Task<bool> Play(DtoMicroController dtoMicroController)
     {
         try
@@ -34,35 +33,29 @@ public class HttpMicroControllerServices(
         }
     }
 
-    public async Task<bool> PostStream(Stream stream, IWaveProvider waveProvider)
+    public async Task<bool> PostStream(Stream stream)
     {
         string au = "source:hackme";
         byte[] bytes = Encoding.ASCII.GetBytes(au);
-        
+
         try
         {
-            HttpWebRequest httpWebRequest = (HttpWebRequest) WebRequest.Create("http://10.3.16.220:8000/example.mp3");
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("http://10.3.16.220:8000/example.mp3");
             httpWebRequest.Method = "PUT";
             httpWebRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(bytes));
             httpWebRequest.Headers.Add("Content-Type", "audio/mpeg");
-            
+
             Stream netStream = await httpWebRequest.GetRequestStreamAsync();
 
             byte[] buffer = new byte[8192];
             int byteRead;
-
+            
             while ((byteRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-            {
                 await netStream.WriteAsync(buffer, 0, byteRead);
-            }
-
             HttpWebResponse httpWebResponse = (HttpWebResponse)await httpWebRequest.GetResponseAsync();
-            Console.WriteLine(httpWebResponse.StatusCode);
             if (httpWebResponse.StatusCode.ToString() == "OK")
-            
                 return true;
-            
-            return false;
+            return true;
         }
         catch (Exception e)
         {

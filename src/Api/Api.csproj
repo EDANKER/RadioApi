@@ -38,6 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Abstract\" />
       <Folder Include="Interface\ScenarioServices\" />
       <Folder Include="Model\RequestModel\Create\" />
       <Folder Include="Model\ResponseModel\PlaceMicroController\" />
