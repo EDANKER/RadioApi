@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Text;
+﻿using System.Text;
 using Api.Data.Minio;
 using Api.Data.Repository.Admin;
 using Api.Data.Repository.CacheRepository.DistributedCacheRepository;
@@ -40,10 +39,8 @@ using Api.Services.MicroControllerServices;
 using Api.Services.MusicServices;
 using Api.Services.PlayListServices;
 using Api.Services.RadioServices;
-using Api.Services.ScenarioServices;
 using Api.Services.ScenarioServices.ScenarioServicesPlay;
 using Api.Services.ScenarioServices.ScnearioServicesTime;
-using Api.Services.StreamToByteArrayServices;
 using Api.Services.TimeCounterServices;
 using Api.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -68,7 +65,6 @@ public static class ConfigFile
         service.AddSingleton<IJsonServices<PlayScenario>, JsonServices<PlayScenario>>();
         service.AddSingleton<IJsonServices<DtoMicroController>, JsonServices<DtoMicroController>>();
         service.AddSingleton<IJsonServices<MicroController>, JsonServices<MicroController>>();
-        service.AddSingleton<IStreamToByteArrayServices, StreamToByteArrayServices>();
         service.AddTransient<HttpClient>();
         service.AddTransient<MySqlConnection>();
         service.AddTransient<MySqlCommand>();
