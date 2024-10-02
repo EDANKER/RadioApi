@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using Api.Interface;
 using Api.Interface.Repository;
 using Api.Model.RequestModel.Create.CreatePlayList;
 using Api.Model.RequestModel.Update.UpdatePlayList;
@@ -11,29 +10,38 @@ namespace Api.Data.Repository.PlayList;
 public class PlayListRepository(
     ILogger<PlayListRepository> logger,
     IConfiguration configuration,
-    MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand) : IRepository<CreatePlayList, DtoPlayList, UpdatePlayList>
 {
     private DbDataReader? _dataReader;
     private List<DtoPlayList>? _dtoPlayLists;
     private DtoPlayList? _dtoPlayList;
-    private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
+    private readonly MySqlConnection _mySqlConnection = new(configuration.GetConnectionString("MySql"));
     
     public async Task<int> GetCount(string item)
     {
-        string command = $"SELECT COUNT(*) FROM {item}";
+        try
+        {
+            string command = $"SELECT COUNT(*) FROM {item}";
 
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        object? count = await mySqlCommand.ExecuteScalarAsync();
-        await mySqlConnection.CloseAsync();
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
-        if (count != null)
-            return Convert.ToInt32(count);
-
-        return -1;
+            object? count = await mySqlCommand.ExecuteScalarAsync();
+            if (count != null)
+                return Convert.ToInt32(count);
+            return -1;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return -1;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
     }
 
     public async Task<DtoPlayList?> CreateOrSave(string item, CreatePlayList createPlayList)
@@ -44,25 +52,27 @@ public class PlayListRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = createPlayList.Name;
             mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = createPlayList.Description;
             mySqlCommand.Parameters.Add("@ImgPath", MySqlDbType.LongText).Value = createPlayList.ImgPath;
 
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
-            
-            return await GetField(item, createPlayList.Name, "Name");
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
         }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
+        return await GetField(item, createPlayList.Name, "Name");
     }
 
     public async Task<List<DtoPlayList>?> GetAll(string item)
@@ -71,9 +81,8 @@ public class PlayListRepository(
         string command = $"SELECT * FROM {item} ";
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            await _mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)
             {
@@ -88,20 +97,18 @@ public class PlayListRepository(
                     _dtoPlayLists.Add(_dtoPlayList);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoPlayLists;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -112,10 +119,9 @@ public class PlayListRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
@@ -131,20 +137,18 @@ public class PlayListRepository(
                     _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await _dataReader.CloseAsync();
-            await mySqlConnection.CloseAsync();
-
             return _dtoPlayList;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -154,9 +158,8 @@ public class PlayListRepository(
                          $"WHERE {field} = @NamePurpose";
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            await _mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.AddWithValue("@NamePurpose", namePurpose);
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
             if (_dataReader.HasRows)
@@ -171,20 +174,18 @@ public class PlayListRepository(
                     _dtoPlayList = new DtoPlayList(id, name, description, imgPath);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoPlayList;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -196,10 +197,9 @@ public class PlayListRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.String).Value = $"%{namePurpose}%";
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
@@ -216,14 +216,6 @@ public class PlayListRepository(
                     _dtoPlayLists.Add(_dtoPlayList);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await _dataReader.CloseAsync();
-            await mySqlConnection.CloseAsync();
-
             return _dtoPlayLists;
         }
         catch (MySqlException e)
@@ -231,23 +223,26 @@ public class PlayListRepository(
             logger.LogError(e.ToString());
             return null;
         }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
     }
 
     public async Task<List<DtoPlayList>?> GetLimit(string item, int currentPage, int limit)
     {
-        int sumFullPage = 0;
         _dtoPlayLists = new List<DtoPlayList>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit " +
                          $"OFFSET @Sum";
-        ;
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
             mySqlCommand.Parameters.Add("@Sum", MySqlDbType.Int32).Value = (currentPage - 1) * limit;
 
@@ -256,7 +251,6 @@ public class PlayListRepository(
             {
                 while (await _dataReader.ReadAsync())
                 {
-                    ++sumFullPage;
                     int id = _dataReader.GetInt32(0);
                     string name = _dataReader.GetString(1);
                     string description = _dataReader.GetString(2);
@@ -266,21 +260,18 @@ public class PlayListRepository(
                     _dtoPlayLists.Add(_dtoPlayList);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await _dataReader.CloseAsync();
-            await mySqlConnection.CloseAsync();
-
-
             return _dtoPlayLists;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -291,22 +282,24 @@ public class PlayListRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
+            return true;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return false;
         }
-
-        return true;
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
     }
 
     public async Task<DtoPlayList?> UpdateId(string item, UpdatePlayList updatePlayList, int id)
@@ -318,21 +311,24 @@ public class PlayListRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = updatePlayList.Name;
             mySqlCommand.Parameters.Add("@Description", MySqlDbType.LongText).Value = updatePlayList.Description;
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
 
         return await GetField(item, updatePlayList.Name, "Name");
@@ -343,22 +339,24 @@ public class PlayListRepository(
                          $"WHERE {field} = @Name)";
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = namePurpose;
 
             object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);
-            await mySqlConnection.CloseAsync();
-
             return convertBool;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return false;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 }

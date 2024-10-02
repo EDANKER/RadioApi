@@ -1,6 +1,6 @@
 ﻿using Api.Model.Migrations.Scenario.PlayMigrationsScenario;
 using Api.Model.Migrations.Scenario.TimeMigrationsScenario;
-using Api.Model.ResponseModel.FloorMicroController;
+using Api.Model.ResponseModel.MicroController;
 using Api.Model.ResponseModel.Music;
 using Api.Model.ResponseModel.PlayList;
 using Api.Model.ResponseModel.User;

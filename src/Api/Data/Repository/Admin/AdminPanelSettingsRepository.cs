@@ -7,9 +7,8 @@ using MySql.Data.MySqlClient;
 namespace Api.Data.Repository.Admin;
 
 public class AdminPanelSettingsRepository(
-    IConfiguration configuration,
     ILogger<AdminPanelSettingsRepository> logger,
-    MySqlConnection mySqlConnection,
+    IConfiguration configuration,
     MySqlCommand mySqlCommand,
     IJsonServices<string[]> jsonServices) : IRepository<Model.RequestModel.User.User, DtoUser, Model.RequestModel.User.User>
 {
@@ -17,52 +16,64 @@ public class AdminPanelSettingsRepository(
     private List<DtoUser>? _dtoUsers;
     private DtoUser? _dtoUser;
 
-    private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
+    private readonly MySqlConnection _mySqlConnection = new(configuration.GetConnectionString("MySql"));
 
     public async Task<int> GetCount(string item)
     {
-        string command = $"SELECT COUNT(*) FROM {item}";
+        try
+        {
+            string command = $"SELECT COUNT(*) FROM {item}";
 
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        object? count = await mySqlCommand.ExecuteScalarAsync();
-        await mySqlConnection.CloseAsync();
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
-        if (count != null)
-            return Convert.ToInt32(count);
-        
-        return -1;
+            object? count = await mySqlCommand.ExecuteScalarAsync();
+            if (count != null)
+                return Convert.ToInt32(count);
+            return -1;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return -1;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
     }
     
-    public async Task<DtoUser?> CreateOrSave(string item, Api.Model.RequestModel.User.User user)
+    public async Task<DtoUser?> CreateOrSave(string item, Model.RequestModel.User.User user)
     {
         string command = $"INSERT INTO {item} " +
                          "(FullName, Login, Role) " +
                          "VALUES(@FullName, @Login, @Role)";
 
         try
-        { 
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+        {
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
             mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
             mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
             mySqlCommand.Parameters.Add("@Role", MySqlDbType.LongText).Value = jsonServices.SerJson(user.Role);
-            
+
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
-                
-            return await GetField(item, user.Login, "Login");
         }
         catch (MySqlException e)
         {
-            logger.LogWarning(e.ToString());
+            logger.LogError(e.ToString());
             return null;
         }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
+        return await GetField(item, user.Login, "Login");
     }
 
     public async Task<List<DtoUser>?> GetAll(string item)
@@ -70,13 +81,12 @@ public class AdminPanelSettingsRepository(
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          "WHERE id = @Id";
-        
+
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
@@ -92,20 +102,18 @@ public class AdminPanelSettingsRepository(
                     _dtoUser = new DtoUser(id, fullname, login, role);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoUsers;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+            await _dataReader.DisposeAsync();
         }
     }
 
@@ -116,10 +124,9 @@ public class AdminPanelSettingsRepository(
         
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
@@ -135,20 +142,18 @@ public class AdminPanelSettingsRepository(
                     _dtoUser = new DtoUser(id, fullname, login, role);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoUser;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+            await _dataReader.DisposeAsync();
         }
     }
 
@@ -159,9 +164,8 @@ public class AdminPanelSettingsRepository(
         
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            await _mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.VarChar).Value = namePurpose;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
@@ -178,20 +182,18 @@ public class AdminPanelSettingsRepository(
                     _dtoUser = new DtoUser(id, fullname, login, role);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await _dataReader.CloseAsync();
-            await mySqlConnection.CloseAsync();
-
             return _dtoUser;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+            await _dataReader.DisposeAsync();
         }
     }
 
@@ -203,10 +205,9 @@ public class AdminPanelSettingsRepository(
         
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.String).Value = $"%{namePurpose}%";
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
@@ -224,20 +225,18 @@ public class AdminPanelSettingsRepository(
                     _dtoUsers.Add(_dtoUser);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoUsers;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+            await _dataReader.DisposeAsync();
         }
     }
 
@@ -246,18 +245,16 @@ public class AdminPanelSettingsRepository(
         _dtoUsers = new List<DtoUser>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit " +
-                         $"OFFSET @Sum";;
+                         $"OFFSET @Sum";
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
             mySqlCommand.Parameters.Add("@Sum", MySqlDbType.Int32).Value = (currentPage - 1) * limit;
-
-
+            
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
             if (_dataReader.HasRows)
@@ -273,20 +270,18 @@ public class AdminPanelSettingsRepository(
                     _dtoUsers.Add(_dtoUser);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoUsers;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+            await _dataReader.DisposeAsync();
         }
     }
 
@@ -297,25 +292,27 @@ public class AdminPanelSettingsRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
+            return true;
         }
         catch (MySqlException e)
         {
-            logger.LogWarning(e.ToString());
+            logger.LogError(e.ToString());
             return false;
         }
-
-        return true;
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
     }
 
-    public async Task<DtoUser?> UpdateId(string item, Api.Model.RequestModel.User.User user, int id)
+    public async Task<DtoUser?> UpdateId(string item, Model.RequestModel.User.User user, int id)
     {
         string command = $"UPDATE {item} " +
                          $"SET " +
@@ -326,10 +323,9 @@ public class AdminPanelSettingsRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
             mySqlCommand.Parameters.Add("@FullName", MySqlDbType.LongText).Value = user.FullName;
             mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = user.Login;
@@ -337,14 +333,18 @@ public class AdminPanelSettingsRepository(
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
             
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
+
         }
         catch (MySqlException e)
         {
-            logger.LogWarning(e.ToString());
+            logger.LogError(e.ToString());
             return null;
         }
-
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
         return await GetField(item, user.Login, "Login");
     }
 
@@ -354,22 +354,24 @@ public class AdminPanelSettingsRepository(
                          $"WHERE {field} = @Login)";
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Login", MySqlDbType.LongText).Value = name;
 
             object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);
-            await mySqlConnection.CloseAsync();
-            
             return convertBool;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return false;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 }

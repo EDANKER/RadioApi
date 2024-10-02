@@ -1,6 +1,6 @@
 ﻿using Api.Interface.MicroControllerServices;
-using Api.Model.RequestModel.MicroController.FloorMicroController;
-using Api.Model.ResponseModel.FloorMicroController;
+using Api.Model.RequestModel.MicroController;
+using Api.Model.ResponseModel.MicroController;
 using Api.Services.HebrideanCacheServices;
 using Newtonsoft.Json;
 

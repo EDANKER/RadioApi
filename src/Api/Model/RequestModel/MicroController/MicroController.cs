@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Model.RequestModel.MicroController.FloorMicroController;
+namespace Api.Model.RequestModel.MicroController;
 
 public class MicroController(string name, string ip, int port, string place)
 {
@@ -13,6 +13,5 @@ public class MicroController(string name, string ip, int port, string place)
     [Required]
     public int Port { get; } = port;
     [Required]
-    [Range(0, 64)]
     public string Place { get; } = place;
 }

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text;
-using Api.Model.ResponseModel.FloorMicroController;
+using Api.Model.ResponseModel.MicroController;
 using NAudio.Wave;
 
 namespace Api.Services.HttpMicroControllerServices;
@@ -55,7 +55,7 @@ public class HttpMicroControllerServices(
             HttpWebResponse httpWebResponse = (HttpWebResponse)await httpWebRequest.GetResponseAsync();
             if (httpWebResponse.StatusCode.ToString() == "OK")
                 return true;
-            return true;
+            return false;
         }
         catch (Exception e)
         {

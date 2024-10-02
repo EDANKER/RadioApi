@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Api.Interface.MicroControllerServices;
-using Api.Model.RequestModel.MicroController.FloorMicroController;
-using Api.Model.ResponseModel.FloorMicroController;
+using Api.Model.ResponseModel.MicroController;
 using Api.Services.MicroControllerServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +8,12 @@ namespace Api.Controller.MicroController;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class MicroControllersFloorController(IMicroControllerServices<Model.RequestModel.MicroController.FloorMicroController.MicroController, DtoMicroController> microControllerServices) : ControllerBase
+public class MicroController(IMicroControllerServices<Model.RequestModel.MicroController.MicroController, DtoMicroController> microControllerServices) : ControllerBase
 {
     
     [HttpPost("CreateMicroController")]
     [Consumes("application/json")]
-    public async Task<IActionResult> CreateMicroController([FromBody]Model.RequestModel.MicroController.FloorMicroController.MicroController microController)
+    public async Task<IActionResult> CreateMicroController([FromBody]Model.RequestModel.MicroController.MicroController microController)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -50,7 +49,7 @@ public class MicroControllersFloorController(IMicroControllerServices<Model.Requ
     }
 
     [HttpPut("UpdateMicroController")]
-    public async Task<IActionResult> UpdateMicroController([Required] [FromQuery] int id, [FromBody] Model.RequestModel.MicroController.FloorMicroController.MicroController microController)
+    public async Task<IActionResult> UpdateMicroController([Required] [FromQuery] int id, [FromBody] Model.RequestModel.MicroController.MicroController microController)
     {
         DtoMicroController? dtoMicroController = await microControllerServices.UpdateId("MicroControllers", microController, id);
         if (dtoMicroController != null)

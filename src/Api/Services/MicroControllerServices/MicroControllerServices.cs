@@ -1,20 +1,20 @@
 using Api.Interface.MicroControllerServices;
 using Api.Interface.Repository;
-using Api.Model.RequestModel.MicroController.FloorMicroController;
-using Api.Model.ResponseModel.FloorMicroController;
+using Api.Model.RequestModel.MicroController;
+using Api.Model.ResponseModel.MicroController;
 using Api.Services.HebrideanCacheServices;
 using Api.Services.HttpMicroControllerServices;
 using Api.Services.JsonServices;
 
 namespace Api.Services.MicroControllerServices;
 
-public class MicroControllerFloorServices(
+public class MicroControllerServices(
     IJsonServices<DtoMicroController?> dtoJsonServices,
-    IJsonServices<MicroController> jsonServices,
+    IJsonServices<Model.RequestModel.MicroController.MicroController> jsonServices,
     IHttpMicroControllerServices httpMicroControllerServices,
-    IRepository<MicroController, DtoMicroController, MicroController> controllerRepository,
+    IRepository<Model.RequestModel.MicroController.MicroController, DtoMicroController, Model.RequestModel.MicroController.MicroController> controllerRepository,
     IHebrideanCacheServices hebrideanCacheServices)
-    : IMicroControllerServices<MicroController, DtoMicroController>
+    : IMicroControllerServices<Model.RequestModel.MicroController.MicroController, DtoMicroController>
 {
     public async Task<int> GetCountPage(string item, int currentPage, int limit)
     {
@@ -30,7 +30,7 @@ public class MicroControllerFloorServices(
         return --currentPage;
     }
 
-    public async Task<DtoMicroController?> CreateOrSave(string item, MicroController microController)
+    public async Task<DtoMicroController?> CreateOrSave(string item, Model.RequestModel.MicroController.MicroController microController)
     {
         DtoMicroController? dtoMicroController = await controllerRepository.CreateOrSave(item, microController);
 
@@ -75,7 +75,7 @@ public class MicroControllerFloorServices(
         return false;
     }
 
-    public async Task<DtoMicroController?> UpdateId(string item, MicroController microController, int id)
+    public async Task<DtoMicroController?> UpdateId(string item, Model.RequestModel.MicroController.MicroController microController, int id)
     {
         if (await hebrideanCacheServices.DeleteId(id.ToString()))
         {

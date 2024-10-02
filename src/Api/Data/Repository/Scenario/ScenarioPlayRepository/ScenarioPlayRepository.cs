@@ -10,32 +10,40 @@ namespace Api.Data.Repository.Scenario.ScenarioPlayRepository;
 public class ScenarioPlayRepository(
     ILogger<ScenarioTimeRepository.ScenarioTimeRepository> logger,
     IConfiguration configuration,
-    MySqlConnection mySqlConnection,
     MySqlCommand mySqlCommand,
-    IJsonServices<int[]?> jsonServices,
-    IJsonServices<string[]> jsonServicesS)
+    IJsonServices<int[]?> jsonServices)
     : IRepository<PlayScenario, DtoPlayScenario, PlayScenario>
 {
-    private DbDataReader? _dataReader;
-    private List<DtoPlayScenario>? _dtoScenarios;
-    private DtoPlayScenario? _dtoScenario;
-    private readonly string _connect = configuration.GetConnectionString("MySql") ?? string.Empty;
+    private DbDataReader _dataReader;
+    private List<DtoPlayScenario> _dtoScenarios;
+    private DtoPlayScenario _dtoScenario;
+    private readonly MySqlConnection _mySqlConnection = new(configuration.GetConnectionString("MySql"));
     
     public async Task<int> GetCount(string item)
     {
-        string command = $"SELECT COUNT(*) FROM {item}";
+        try
+        {
+            string command = $"SELECT COUNT(*) FROM {item}";
 
-        mySqlConnection = new MySqlConnection(_connect);
-        await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-        mySqlCommand = new MySqlCommand(command, mySqlConnection);
-        object? count = await mySqlCommand.ExecuteScalarAsync();
-        await mySqlConnection.CloseAsync();
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
-        if (count != null)
-            return Convert.ToInt32(count);
-        
-        return -1;
+            object? count = await mySqlCommand.ExecuteScalarAsync();
+            if (count != null)
+                return Convert.ToInt32(count);
+            return -1;
+        }
+        catch (MySqlException e)
+        {
+            logger.LogError(e.ToString());
+            return -1;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
     }
     
     public async Task<DtoPlayScenario?> CreateOrSave(string item, PlayScenario scenario)
@@ -48,22 +56,25 @@ public class ScenarioPlayRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
             mySqlCommand.Parameters.Add("@IdMicroControllers", MySqlDbType.LongText).Value = jsonServices.SerJson(scenario.IdMicroController);
             mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
 
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
 
         return await GetField(item, scenario.Name, "Name");
@@ -75,10 +86,9 @@ public class ScenarioPlayRepository(
         string command = $"SELECT * FROM {item} ";
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
 
@@ -95,24 +105,21 @@ public class ScenarioPlayRepository(
                     if (array != null)
                         _dtoScenario = new DtoPlayScenario(id, name, array,
                             idMusic);
-                    if (_dtoScenario != null) 
-                        _dtoScenarios.Add(_dtoScenario);
+                    _dtoScenarios.Add(_dtoScenario);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoScenarios;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -122,10 +129,9 @@ public class ScenarioPlayRepository(
                          "WHERE id = @Id";
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("Id", MySqlDbType.Int32).Value = id;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
@@ -142,25 +148,21 @@ public class ScenarioPlayRepository(
                     if (array != null)
                         _dtoScenario = new DtoPlayScenario(id, name, array,
                             idMusic);
-                    if (_dtoScenarios != null)
-                        if (_dtoScenario != null)
-                            _dtoScenarios.Add(_dtoScenario);
+                    _dtoScenarios.Add(_dtoScenario);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoScenario;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -170,9 +172,8 @@ public class ScenarioPlayRepository(
                          $"WHERE {field} = @NamePurpose";
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            await _mySqlConnection.OpenAsync();
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.LongText).Value = namePurpose;
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
@@ -192,20 +193,18 @@ public class ScenarioPlayRepository(
                             idMusic);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await _dataReader.CloseAsync();
-            await mySqlConnection.CloseAsync();
-
             return _dtoScenario;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -217,10 +216,9 @@ public class ScenarioPlayRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
             
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@NamePurpose", MySqlDbType.String).Value = $"%{namePurpose}%";
 
             _dataReader = await mySqlCommand.ExecuteReaderAsync();
@@ -237,21 +235,21 @@ public class ScenarioPlayRepository(
                     if (array != null)
                         _dtoScenario = new DtoPlayScenario(id, name, array,
                             idMusic);
-                    if (_dtoScenarios != null)
-                        if (_dtoScenario != null)
-                            _dtoScenarios.Add(_dtoScenario);
+                    _dtoScenarios.Add(_dtoScenario);
                 }
             }
-
-            await _dataReader.CloseAsync();
-            await mySqlConnection.CloseAsync();
-
             return _dtoScenarios;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -260,14 +258,13 @@ public class ScenarioPlayRepository(
         _dtoScenarios = new List<DtoPlayScenario>();
         string command = $"SELECT * FROM {item} " +
                          $"LIMIT @Limit " +
-                         $"OFFSET @Sum";;
+                         $"OFFSET @Sum";
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Limit", MySqlDbType.Int32).Value = limit;
             mySqlCommand.Parameters.Add("@Sum", MySqlDbType.Int32).Value = (currentPage - 1) * limit;
             
@@ -286,25 +283,21 @@ public class ScenarioPlayRepository(
                     if (array != null)
                         _dtoScenario = new DtoPlayScenario(id, name, array,
                             idMusic);
-                    if (_dtoScenarios != null)
-                        if (_dtoScenario != null)
-                            _dtoScenarios.Add(_dtoScenario);
+                    _dtoScenarios.Add(_dtoScenario);
                 }
             }
-            else
-            {
-                return null;
-            }
-
-            await mySqlConnection.CloseAsync();
-            await _dataReader.CloseAsync();
-
             return _dtoScenarios;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _dataReader.DisposeAsync();
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 
@@ -316,22 +309,24 @@ public class ScenarioPlayRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
+            return true;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return false;
         }
-
-        return true;
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
+        }
     }
 
     public async Task<DtoPlayScenario?> UpdateId(string item, PlayScenario scenario, int id)
@@ -345,10 +340,9 @@ public class ScenarioPlayRepository(
 
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
 
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = scenario.Name;
             mySqlCommand.Parameters.Add("@IdMicroController", MySqlDbType.LongText).Value = jsonServices.SerJson(scenario.IdMicroController);
@@ -356,12 +350,16 @@ public class ScenarioPlayRepository(
             mySqlCommand.Parameters.Add("@IdMusic", MySqlDbType.Int32).Value = scenario.IdMusic;
 
             await mySqlCommand.ExecuteNonQueryAsync();
-            await mySqlConnection.CloseAsync();
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return null;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
 
         return await GetField(item, scenario.Name, "Name");
@@ -373,22 +371,24 @@ public class ScenarioPlayRepository(
                          $"WHERE {field} = @Name)";
         try
         {
-            mySqlConnection = new MySqlConnection(_connect);
-            await mySqlConnection.OpenAsync();
+            await _mySqlConnection.OpenAsync();
 
-            mySqlCommand = new MySqlCommand(command, mySqlConnection);
+            mySqlCommand = new MySqlCommand(command, _mySqlConnection);
             mySqlCommand.Parameters.Add("@Name", MySqlDbType.LongText).Value = name;
 
             object? exist = await mySqlCommand.ExecuteScalarAsync();
             bool convertBool = Convert.ToBoolean(exist);
-            await mySqlConnection.CloseAsync();
-
             return convertBool;
         }
         catch (MySqlException e)
         {
             logger.LogError(e.ToString());
             return false;
+        }
+        finally
+        {
+            await _mySqlConnection.DisposeAsync();
+            await mySqlCommand.DisposeAsync();
         }
     }
 }

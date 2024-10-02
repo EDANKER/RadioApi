@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Model.ResponseModel.FloorMicroController;
+namespace Api.Model.ResponseModel.MicroController;
 
 public class DtoMicroController(int id, string name, string ip, int port, string place)
 {
